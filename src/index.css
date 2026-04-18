@@ -1,0 +1,73 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/forms";
+@plugin "@tailwindcss/container-queries";
+
+@theme {
+  --color-primary-fixed: #ffdad5;
+  --color-inverse-surface: #2f3131;
+  --color-on-primary-container: #ffa193;
+  --color-on-tertiary: #ffffff;
+  --color-surface-container: #eeeeee;
+  --color-primary-container: #93170f;
+  --color-on-primary-fixed: #410000;
+  --color-on-error: #ffffff;
+  --color-secondary-container: #e4e2e2;
+  --color-on-tertiary-fixed: #121e1f;
+  --color-secondary: #5e5e5e;
+  --color-surface-bright: #f9f9f9;
+  --color-primary: #6f0001;
+  --color-secondary-fixed: #e4e2e2;
+  --color-secondary-fixed-dim: #c8c6c6;
+  --color-on-surface-variant: #444748;
+  --color-surface-container-highest: #e2e2e2;
+  --color-on-primary: #ffffff;
+  --color-surface-container-high: #e8e8e8;
+  --color-tertiary-container: #404c4d;
+  --color-on-secondary-fixed-variant: #474747;
+  --color-surface-variant: #e2e2e2;
+  --color-on-tertiary-fixed-variant: #3d494a;
+  --color-surface: #f9f9f9;
+  --color-surface-dim: #dadada;
+  --color-outline-variant: #c4c7c7;
+  --color-on-tertiary-container: #afbcbd;
+  --color-inverse-on-surface: #f1f1f1;
+  --color-error: #ba1a1a;
+  --color-tertiary: #293536;
+  --color-background: #f9f9f9;
+  --color-surface-container-low: #f3f3f3;
+  --color-on-secondary: #ffffff;
+  --color-surface-tint: #b02d21;
+  --color-outline: #747878;
+  --color-on-secondary-fixed: #1b1c1c;
+  --color-tertiary-fixed-dim: #bcc9ca;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+  --color-tertiary-fixed: #d8e5e6;
+  --color-on-secondary-container: #646464;
+  --color-surface-container-lowest: #ffffff;
+  --color-primary-fixed-dim: #ffb4a9;
+  --color-on-surface: #1a1c1c;
+  --color-on-primary-fixed-variant: #8e130c;
+  --color-inverse-primary: #ffb4a9;
+  --color-on-background: #1a1c1c;
+
+  --font-headline: "Space Grotesk", sans-serif;
+  --font-body: "Work Sans", sans-serif;
+  --font-label: "Inter", sans-serif;
+}
+
+@layer base {
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+}
+
+@layer utilities {
+  .molten-gradient {
+    background: linear-gradient(135deg, #6f0001 0%, #93170f 100%);
+  }
+  .glass-panel {
+    background: rgba(249, 249, 249, 0.8);
+    backdrop-filter: blur(24px);
+  }
+}
