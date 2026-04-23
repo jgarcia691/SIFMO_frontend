@@ -1,12 +1,43 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 
 const LoginForm = () => {
     const navigate = useNavigate();
+    const [ficha, setFicha] = useState('');
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        navigate('/dashboard');
+        setError(null);
+        setLoading(true);
+
+        try {
+            const response = await fetch('http://localhost:3000/api/users/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ ficha: parseInt(ficha, 10) })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Error al iniciar sesión');
+            }
+
+            // Opcional: guardar el usuario en localStorage para persistencia
+            if (data.user) {
+                localStorage.setItem('user', JSON.stringify(data.user));
+            }
+
+            navigate('/dashboard');
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -15,6 +46,13 @@ const LoginForm = () => {
                 <h2 className="font-headline text-3xl font-bold text-on-surface mb-2">Inicio de Sesión</h2>
                 <p className="text-on-surface-variant font-body">Ingrese sus credenciales para continuar</p>
             </div>
+            
+            {error && (
+                <div className="mb-6 p-4 bg-error-container text-on-error-container rounded-lg font-body text-sm flex items-center gap-2">
+                    <span className="material-symbols-outlined">error</span>
+                    {error}
+                </div>
+            )}
             
             <form onSubmit={handleSubmit} className="space-y-8">
                 {/* Ficha Input Field */}
@@ -28,8 +66,12 @@ const LoginForm = () => {
                         <input 
                             className="w-full bg-surface-container-low border-none h-16 pl-12 pr-4 text-xl font-headline font-semibold text-on-surface focus:ring-0 focus:bg-surface-container-high transition-all border-b-2 border-transparent focus:border-primary" 
                             id="ficha" 
-                            placeholder="XXXX-XXXX" 
-                            type="text" 
+                            name="ficha"
+                            value={ficha}
+                            onChange={(e) => setFicha(e.target.value)}
+                            placeholder="12345" 
+                            type="number" 
+                            required
                         />
                     </div>
                     <p className="text-[10px] text-outline uppercase font-label">Requerido para iniciar sesión.</p>
@@ -37,11 +79,12 @@ const LoginForm = () => {
                 
                 {/* Action Button */}
                 <button 
-                    className="w-full h-16 molten-gradient text-on-primary font-headline font-bold text-lg rounded-lg shadow-lg hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-3" 
+                    className="w-full h-16 molten-gradient text-on-primary font-headline font-bold text-lg rounded-lg shadow-lg hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed" 
                     type="submit"
+                    disabled={loading}
                 >
-                    ENTRAR
-                    <span className="material-symbols-outlined" data-icon="login">login</span>
+                    {loading ? 'ENTRANDO...' : 'ENTRAR'}
+                    {!loading && <span className="material-symbols-outlined" data-icon="login">login</span>}
                 </button>
             </form>
             
@@ -56,10 +99,10 @@ const LoginForm = () => {
                     </div>
                 </div>
                 <div className="flex flex-col gap-4">
-                    <a className="font-headline font-bold text-primary hover:text-primary-container transition-colors text-lg inline-flex items-center justify-center gap-2" href="#">
+                    <Link className="font-headline font-bold text-primary hover:text-primary-container transition-colors text-lg inline-flex items-center justify-center gap-2" to="/register">
                         No estas registrado? Registrate aqui
                         <span className="material-symbols-outlined text-base" data-icon="arrow_forward">arrow_forward</span>
-                    </a>
+                    </Link>
                     <a className="font-label text-sm text-on-surface-variant hover:text-on-surface transition-colors" href="#">
                         ¿Olvidaste tus credenciales? Clickea aqui
                     </a>

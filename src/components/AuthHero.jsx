@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const LoginHero = () => {
+const AuthHero = () => {
     const [serverStatus, setServerStatus] = useState('VERIFICANDO...');
 
     useEffect(() => {
@@ -79,4 +79,4 @@ const LoginHero = () => {
     );
 };
 
-export default LoginHero;
+export default AuthHero;
