@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
 const RegistrationForm = () => {
@@ -13,6 +13,24 @@ const RegistrationForm = () => {
     });
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [areas, setAreas] = useState([]);
+
+    useEffect(() => {
+        const fetchAreas = async () => {
+            try {
+                const response = await fetch('http://localhost:3000/api/areas/listar/');
+                if (response.ok) {
+                    const data = await response.json();
+                    setAreas(data);
+                } else {
+                    console.error("Error al obtener las áreas");
+                }
+            } catch (err) {
+                console.error("Error de conexión al obtener áreas:", err);
+            }
+        };
+        fetchAreas();
+    }, []);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -142,10 +160,11 @@ const RegistrationForm = () => {
                                 required
                             >
                                 <option value="" disabled>Seleccione</option>
-                                <option value="1">Minería</option>
-                                <option value="2">Procesamiento</option>
-                                <option value="3">Logística</option>
-                                <option value="4">Mantenimiento</option>
+                                {areas.map((area) => (
+                                    <option key={area.id} value={area.id}>
+                                        {area.nombre}
+                                    </option>
+                                ))}
                             </select>
                             <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none text-xl" data-icon="expand_more">expand_more</span>
                         </div>
