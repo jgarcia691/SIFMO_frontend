@@ -1,6 +1,14 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
+    const navigate = useNavigate();
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        navigate('/dashboard');
+    };
+
     return (
         <div className="col-span-1 lg:col-span-5 p-8 lg:p-16 flex flex-col justify-center bg-surface">
             <div className="mb-12">
@@ -8,7 +16,7 @@ const LoginForm = () => {
                 <p className="text-on-surface-variant font-body">Ingrese sus credenciales para continuar</p>
             </div>
             
-            <form action="#" className="space-y-8">
+            <form onSubmit={handleSubmit} className="space-y-8">
                 {/* Ficha Input Field */}
                 <div className="space-y-2">
                     <label className="font-label text-xs font-semibold uppercase tracking-widest text-on-surface-variant flex justify-between" htmlFor="ficha">
