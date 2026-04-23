@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Sidebar = () => {
   return (
@@ -8,9 +9,8 @@ const Sidebar = () => {
           <div className="w-8 h-8 shrink-0 bg-primary rounded flex items-center justify-center">
             <span className="material-symbols-outlined text-white text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>precision_manufacturing</span>
           </div>
-          <h2 className="font-headline text-lg font-black text-stone-900 dark:text-stone-100 uppercase tracking-tight opacity-0 group-hover:opacity-100 transition-opacity duration-300">Industrial Tectonics</h2>
+          <h2 className="font-headline text-lg font-black text-stone-900 dark:text-stone-100 uppercase tracking-tight opacity-0 group-hover:opacity-100 transition-opacity duration-300">SIFMO</h2>
         </div>
-        <p className="font-body text-[10px] uppercase font-bold tracking-widest text-stone-500 px-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">Technical HUD v1.0</p>
       </div>
       <nav className="flex-1 space-y-1">
         <a className="flex items-center gap-3 px-3 py-3 bg-stone-200 dark:bg-stone-800 text-red-700 dark:text-red-400 border-l-4 border-red-700 font-headline text-sm uppercase font-semibold transition-transform active:scale-90" href="#dashboard">
@@ -27,10 +27,10 @@ const Sidebar = () => {
         </a>
       </nav>
       <div className="mt-auto pt-6 border-t border-stone-200 dark:border-stone-800 space-y-4">
-        <a className="flex items-center gap-3 px-3 py-2 text-stone-600 dark:text-stone-400 hover:text-red-600 font-headline text-sm uppercase font-semibold border-l-4 border-transparent" href="#logout">
+        <Link className="flex items-center gap-3 px-3 py-2 text-stone-600 dark:text-stone-400 hover:text-red-600 font-headline text-sm uppercase font-semibold border-l-4 border-transparent" to="/login">
           <span className="material-symbols-outlined text-xl shrink-0">logout</span>
           <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">Cerrar Sesión</span>
-        </a>
+        </Link>
       </div>
     </aside>
   );

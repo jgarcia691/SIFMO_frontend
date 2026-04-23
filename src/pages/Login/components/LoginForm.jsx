@@ -32,21 +32,7 @@ const LoginForm = () => {
                             type="text" 
                         />
                     </div>
-                    <p className="text-[10px] text-outline uppercase font-label">Official company ID required for session token.</p>
-                </div>
-                
-                {/* Password/Secondary Verification (Standard UX) */}
-                <div className="space-y-2">
-                    <label className="font-label text-xs font-semibold uppercase tracking-widest text-on-surface-variant" htmlFor="pass">Contraseña</label>
-                    <div className="relative">
-                        <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline" data-icon="lock">lock</span>
-                        <input 
-                            className="w-full bg-surface-container-low border-none h-16 pl-12 pr-4 text-xl font-headline font-semibold text-on-surface focus:ring-0 focus:bg-surface-container-high transition-all border-b-2 border-transparent focus:border-primary" 
-                            id="pass" 
-                            placeholder="••••••••" 
-                            type="password" 
-                        />
-                    </div>
+                    <p className="text-[10px] text-outline uppercase font-label">Requerido para iniciar sesión.</p>
                 </div>
                 
                 {/* Action Button */}
@@ -66,16 +52,16 @@ const LoginForm = () => {
                         <div className="w-full border-t border-outline-variant/30"></div>
                     </div>
                     <div className="relative flex justify-center text-xs uppercase">
-                        <span className="bg-surface px-4 text-outline font-label">Account Services</span>
+                        <span className="bg-surface px-4 text-outline font-label"> </span>
                     </div>
                 </div>
                 <div className="flex flex-col gap-4">
                     <a className="font-headline font-bold text-primary hover:text-primary-container transition-colors text-lg inline-flex items-center justify-center gap-2" href="#">
-                        Not registered? Sign up here
+                        No estas registrado? Registrate aqui
                         <span className="material-symbols-outlined text-base" data-icon="arrow_forward">arrow_forward</span>
                     </a>
                     <a className="font-label text-sm text-on-surface-variant hover:text-on-surface transition-colors" href="#">
-                        Forgot your credentials? Contact Supervisor
+                        ¿Olvidaste tus credenciales? Clickea aqui
                     </a>
                 </div>
             </div>

@@ -7,9 +7,8 @@ const MainContent = () => {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12">
           <div className="space-y-2">
             <h1 className="text-5xl font-headline font-black text-on-surface uppercase tracking-tighter leading-none">
-              Technical <span className="text-primary italic">Overview</span>
+              Panel de <span className="text-primary italic">Control</span>
             </h1>
-            <p className="text-stone-500 font-body text-lg max-w-md">Control panel for industrial maintenance operations and active technical incident reporting.</p>
           </div>
           <div className="flex items-center gap-4 bg-surface-container-low p-2 rounded-lg">
             <div className="px-4 py-2 text-center">

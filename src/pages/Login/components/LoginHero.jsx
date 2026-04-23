@@ -1,6 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const LoginHero = () => {
+    const [serverStatus, setServerStatus] = useState('VERIFICANDO...');
+
+    useEffect(() => {
+        const checkServer = async () => {
+            try {
+                // Intenta contactar la ruta raiz del API
+                const response = await fetch('http://localhost:3000/');
+                if (response.ok) {
+                    setServerStatus('ACTIVO');
+                } else {
+                    setServerStatus('ERROR');
+                }
+            } catch (error) {
+                // Si la red falla o el servidor está apagado
+                setServerStatus('INACTIVO');
+            }
+        };
+
+        checkServer();
+        const intervalId = setInterval(checkServer, 10000); // Polling cada 10 seg
+        return () => clearInterval(intervalId);
+    }, []);
+
+    const getStatusDotColor = () => {
+        if (serverStatus === 'ACTIVO') return 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]';
+        if (serverStatus === 'VERIFICANDO...') return 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.6)]';
+        return 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)] animate-none';
+    };
+
     return (
         <div className="hidden lg:flex lg:col-span-7 relative flex-col justify-between p-12 bg-tertiary overflow-hidden">
             {/* Background Image with Texture */}
@@ -29,15 +58,15 @@ const LoginHero = () => {
                     EL HIERRO <br/>QUE MUEVE A VENEZUELA.
                 </h1>
                 <p className="text-on-tertiary-container max-w-md font-body text-lg">
-                    Access the Industrial Technical HUD. Secure authentication for authorized Ferrominera field engineers and technical staff.
+                    Plataforma de Soporte Técnico de Ferrominera Orinoco para el personal de la empresa, con el fin de gestionar y dar seguimiento a las incidencias técnicas.
                 </p>
                 
                 <div className="mt-8 flex gap-6">
                     <div className="bg-surface-container-low/10 backdrop-blur px-4 py-2 rounded-sm border border-outline-variant/10">
-                        <span className="font-label text-xs uppercase text-tertiary-fixed-dim block">Estado del Sistema</span>
+                        <span className="font-label text-xs uppercase text-tertiary-fixed-dim block">Estado del Servidor</span>
                         <span className="font-headline font-bold text-on-tertiary flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-tertiary-fixed-dim animate-pulse"></span>
-                            ACTIVO
+                            <span className={`w-2 h-2 rounded-full ${getStatusDotColor()} ${serverStatus === 'ACTIVO' ? 'animate-pulse' : ''}`}></span>
+                            {serverStatus}
                         </span>
                     </div>
                   {/*}  <div className="bg-surface-container-low/10 backdrop-blur px-4 py-2 rounded-sm border border-outline-variant/10">
