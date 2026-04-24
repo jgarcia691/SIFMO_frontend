@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { API_URL } from '../../../config/api';
 
 const NewIncidentModal = () => {
   const [step, setStep] = useState('selection'); // 'selection' or 'form'
@@ -42,7 +43,7 @@ const NewIncidentModal = () => {
   useEffect(() => {
     const fetchEquipos = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/equipos/');
+        const response = await fetch(`${API_URL}/equipos/`);
         if (response.ok) {
           const data = await response.json();
           setEquipos(data);
@@ -144,7 +145,7 @@ const NewIncidentModal = () => {
     };
 
     try {
-      const response = await fetch('http://localhost:3000/api/incidentes/crear/', {
+      const response = await fetch(`${API_URL}/incidentes/crear/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { API_URL } from '../../../config/api';
 
 const RegistrationForm = () => {
     const navigate = useNavigate();
@@ -18,7 +19,7 @@ const RegistrationForm = () => {
     useEffect(() => {
         const fetchAreas = async () => {
             try {
-                const response = await fetch('http://localhost:3000/api/areas/listar/');
+                const response = await fetch(`${API_URL}/areas/listar/`);
                 if (response.ok) {
                     const data = await response.json();
                     setAreas(data);
@@ -42,7 +43,7 @@ const RegistrationForm = () => {
         setLoading(true);
 
         try {
-            const response = await fetch('http://localhost:3000/api/users', {
+            const response = await fetch(`${API_URL}/users`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

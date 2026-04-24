@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { API_URL } from '../../../config/api';
 import IncidentDetailsModal from './IncidentDetailsModal';
 
 const MainContent = () => {
@@ -18,7 +19,7 @@ const MainContent = () => {
           return;
         }
 
-        const response = await fetch(`http://localhost:3000/api/incidentes/listar/cliente/${user.ficha}`);
+        const response = await fetch(`${API_URL}/incidentes/listar/cliente/${user.ficha}`);
         if (response.ok) {
           const data = await response.json();
           // Formatear fechas para que se vean bien

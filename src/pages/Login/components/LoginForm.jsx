@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { API_URL } from '../../../config/api';
 
 const LoginForm = () => {
     const navigate = useNavigate();
@@ -13,7 +14,7 @@ const LoginForm = () => {
         setLoading(true);
 
         try {
-            const response = await fetch('http://localhost:3000/api/users/login', {
+            const response = await fetch(`${API_URL}/users/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { API_URL } from '../../../config/api';
 
 const EquiposContent = () => {
   const [equipos, setEquipos] = useState([]);
@@ -7,7 +8,7 @@ const EquiposContent = () => {
   useEffect(() => {
     const fetchEquipos = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/equipos/');
+        const response = await fetch(`${API_URL}/equipos/`);
         if (response.ok) {
           const data = await response.json();
           setEquipos(data);

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { API_URL } from '../../../config/api';
 
 const NewWorkstationModal = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -16,8 +17,8 @@ const NewWorkstationModal = () => {
     const fetchData = async () => {
       try {
         const [areasRes, marcasRes] = await Promise.all([
-          fetch('http://localhost:3000/api/areas/listar/'),
-          fetch('http://localhost:3000/api/marcas/')
+          fetch(`${API_URL}/areas/listar/`),
+          fetch(`${API_URL}/marcas/`)
         ]);
         
         if (areasRes.ok) setAreas(await areasRes.json());
@@ -47,7 +48,7 @@ const NewWorkstationModal = () => {
     };
 
     try {
-      const response = await fetch('http://localhost:3000/api/equipos/', {
+      const response = await fetch(`${API_URL}/equipos/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
