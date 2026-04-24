@@ -67,50 +67,55 @@ const EquiposContent = () => {
              <p className="text-on-surface-variant font-body">No se encontraron equipos registrados.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {equipos.map((equipo) => {
-              const statusClass = statusColors[equipo.status] || 'bg-stone-100 text-stone-800';
-              return (
-                <div 
-                  key={equipo.fmo} 
-                  className="bg-surface-container-lowest p-6 rounded-lg shadow-sm border border-outline-variant/10 group hover:bg-white transition-colors duration-300 flex flex-col"
-                >
-                  <div className="flex justify-between items-start mb-6">
-                    <div className="flex flex-col gap-1">
-                      <span className="text-[10px] font-label font-bold text-stone-400">FMO #{equipo.fmo}</span>
-                      <span className={`${statusClass} text-[10px] font-label font-black px-2 py-1 rounded-sm uppercase tracking-tighter w-fit`}>
-                        {equipo.status || 'Operativo'}
+          <div className="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/10 overflow-hidden">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-stone-50 border-b border-stone-100">
+                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">FMO</th>
+                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Nombre / Identificador</th>
+                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Área</th>
+                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Marca</th>
+                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Serial</th>
+                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 text-right">Acciones</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-stone-100">
+                {equipos.map((equipo) => (
+                  <tr key={equipo.fmo} className="hover:bg-stone-50/50 transition-colors group">
+                    <td className="px-6 py-4">
+                      <span className="font-label font-bold text-primary">#{equipo.fmo}</span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <span className="material-symbols-outlined text-stone-300 text-lg">computer</span>
+                        <span className="font-headline font-bold text-on-surface uppercase text-sm">{equipo.nombre}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="text-sm text-on-surface-variant font-body">{equipo.area_nombre || 'Sin área'}</span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="px-2 py-1 bg-stone-100 text-stone-600 rounded text-[10px] font-label font-black uppercase tracking-tighter">
+                        {equipo.marca_nombre || 'Genérica'}
                       </span>
-                    </div>
-                    <span className="material-symbols-outlined text-stone-300">computer</span>
-                  </div>
-                  
-                  <h3 className="text-xl font-headline font-bold text-on-surface mb-2 uppercase">
-                    {equipo.nombre}
-                  </h3>
-                  
-                  <div className="space-y-2 mb-6">
-                    <div className="flex items-center gap-2 text-sm text-on-surface-variant font-body">
-                      <span className="material-symbols-outlined text-xs">location_on</span>
-                      {equipo.area || 'Sin área registrada'}
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-on-surface-variant font-body">
-                      <span className="material-symbols-outlined text-xs">barcode</span>
-                      S/N: {equipo.serial || 'Sin serial'}
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center justify-end mt-auto gap-2">
-                    <button className="text-stone-400 material-symbols-outlined hover:text-primary transition-colors p-2 rounded-full hover:bg-stone-50">
-                      edit
-                    </button>
-                    <button className="text-stone-400 material-symbols-outlined hover:text-error transition-colors p-2 rounded-full hover:bg-stone-50">
-                      delete
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="text-xs text-stone-400 font-label tracking-tight">{equipo.serial}</span>
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button className="p-2 text-stone-400 hover:text-primary transition-colors rounded-full hover:bg-stone-100">
+                          <span className="material-symbols-outlined text-xl">edit</span>
+                        </button>
+                        <button className="p-2 text-stone-400 hover:text-error transition-colors rounded-full hover:bg-stone-100">
+                          <span className="material-symbols-outlined text-xl">delete</span>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
       </section>
