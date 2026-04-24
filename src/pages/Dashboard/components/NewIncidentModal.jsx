@@ -3,14 +3,83 @@ import React, { useState, useEffect } from 'react';
 const NewIncidentModal = () => {
   const [step, setStep] = useState('selection'); // 'selection' or 'form'
   const [incidentType, setIncidentType] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [equipos, setEquipos] = useState([]);
+  
+  const [formData, setFormData] = useState({
+    cpu_fmo: '',
+    so: '',
+    tipo_falla: '',
+    respaldo: false,
+    ram: false,
+    cpu: false,
+    disco: false,
+    tarj_video: false,
+    pila: false,
+    fuente: false,
+    motherboard: false,
+    tarj_red: false,
+    cant_ram: '',
+    usuario: '',
+    password: '',
+    observacion: '',
+    // para el tipo general
+    categoria: 'Maquinaria Pesada',
+    descripcion: '',
+    urgencia: 'Baja',
+    area: ''
+  });
 
-  // Reset state when modal closes
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+  };
+
+  // Fetch equipos and handle Reset state when modal closes
   useEffect(() => {
+    const fetchEquipos = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/api/equipos/');
+        if (response.ok) {
+          const data = await response.json();
+          setEquipos(data);
+        }
+      } catch (error) {
+        console.error('Error fetching equipos:', error);
+      }
+    };
+    fetchEquipos();
+
     const handleHashChange = () => {
       if (window.location.hash !== '#modal-new-incident') {
         setTimeout(() => {
           setStep('selection');
           setIncidentType('');
+          setFormData({
+            cpu_fmo: '',
+            so: '',
+            tipo_falla: '',
+            respaldo: false,
+            ram: false,
+            cpu: false,
+            disco: false,
+            tarj_video: false,
+            pila: false,
+            fuente: false,
+            motherboard: false,
+            tarj_red: false,
+            cant_ram: '',
+            usuario: '',
+            password: '',
+            observacion: '',
+            categoria: 'Maquinaria Pesada',
+            descripcion: '',
+            urgencia: 'Baja',
+            area: ''
+          });
         }, 300); // Wait for transition
       }
     };
@@ -21,6 +90,86 @@ const NewIncidentModal = () => {
   const handleSelectType = (type) => {
     setIncidentType(type);
     setStep('form');
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    // Mapear el tipo de incidente al formato que espera el backend
+    const typeMap = {
+      'Reparación de estaciones de trabajo': 'reparacion de estacion de trabajo',
+      'Reparación de periférico': 'reparacion de periferico',
+      'Solicitud': 'solicitud'
+    };
+
+    // Obtener el ID del usuario actual (si existe en localStorage)
+    const storedUser = localStorage.getItem('user');
+    const user = storedUser ? JSON.parse(storedUser) : null;
+    
+    if (!user) {
+      alert('Error: No se detectó una sesión activa. Por favor, inicie sesión nuevamente.');
+      setIsSubmitting(false);
+      return;
+    }
+
+    const clienteId = user.ficha;
+
+    const payload = {
+      cliente: clienteId,
+      tipo: typeMap[incidentType] || incidentType,
+      workstationData: incidentType === 'Reparación de estaciones de trabajo' ? {
+        cpu_fmo: parseInt(formData.cpu_fmo) || 0,
+        tipo_falla: formData.tipo_falla,
+        respaldo: formData.respaldo ? 1 : 0,
+        ram: formData.ram ? 1 : 0,
+        cant_ram: parseInt(formData.cant_ram) || 0,
+        cpu: formData.cpu ? 1 : 0,
+        so: formData.so,
+        disco: formData.disco ? 1 : 0,
+        tarj_video: formData.tarj_video ? 1 : 0,
+        pila: formData.pila ? 1 : 0,
+        fuente: formData.fuente ? 1 : 0,
+        motherboard: formData.motherboard ? 1 : 0,
+        tarj_red: formData.tarj_red ? 1 : 0,
+        observacion: formData.observacion,
+        usuario: formData.usuario,
+        password: formData.password
+      } : {
+        categoria: formData.categoria,
+        descripcion: formData.descripcion,
+        urgencia: formData.urgencia,
+        area: formData.area
+      }
+    };
+
+    try {
+      const response = await fetch('http://localhost:3000/api/incidentes/crear/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        alert('Incidente creado con éxito. ID: ' + (result.id || 'Generado'));
+        
+        // Disparar evento para recargar la lista en el dashboard
+        window.dispatchEvent(new Event('incident-created'));
+        
+        window.location.hash = '#'; // Cerrar modal
+      } else {
+        const errorData = await response.json();
+        alert('Error al crear el incidente: ' + (errorData.message || 'Intente de nuevo'));
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error de conexión con el servidor');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -78,7 +227,7 @@ const NewIncidentModal = () => {
           )}
 
           {step === 'form' && (
-            <form className="p-8 space-y-8">
+            <form className="p-8 space-y-8" onSubmit={handleSubmit}>
               <div className="flex items-center gap-2 mb-4 -mt-2">
                 <button type="button" onClick={() => setStep('selection')} className="text-xs font-label text-primary hover:underline flex items-center gap-1">
                   <span className="material-symbols-outlined text-[14px]">arrow_back</span> Volver a selección
@@ -89,18 +238,25 @@ const NewIncidentModal = () => {
                 <div className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">CPU FMO #</label>
-                      <input type="number" className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" placeholder="Ej: 12345" />
+                      <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">Seleccionar Equipo (FMO)</label>
+                      <select name="cpu_fmo" value={formData.cpu_fmo} onChange={handleChange} className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" required>
+                        <option value="">Seleccione un equipo</option>
+                        {equipos.map(equipo => (
+                          <option key={equipo.fmo} value={equipo.fmo}>
+                            {equipo.fmo} - {equipo.nombre}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                     <div>
                       <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">Sistema Operativo</label>
-                      <input type="text" className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" placeholder="Ej: Windows 10, Linux..." />
+                      <input name="so" value={formData.so} onChange={handleChange} type="text" className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" placeholder="Ej: Windows 10, Linux..." />
                     </div>
                   </div>
 
                   <div>
                     <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">Tipo de Falla</label>
-                    <textarea className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" placeholder="Describa el problema observado..." rows="2"></textarea>
+                    <textarea name="tipo_falla" value={formData.tipo_falla} onChange={handleChange} className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" placeholder="Describa el problema observado..." rows="2" required></textarea>
                   </div>
 
                   <div className="bg-stone-50 p-4 rounded-lg border border-stone-100">
@@ -118,7 +274,7 @@ const NewIncidentModal = () => {
                         { id: 'tarj_red', label: 'Tarj. Red' },
                       ].map((item) => (
                         <label key={item.id} className="flex items-center gap-2 cursor-pointer group">
-                          <input type="checkbox" className="w-4 h-4 rounded text-primary focus:ring-primary border-stone-300" />
+                          <input name={item.id} checked={formData[item.id]} onChange={handleChange} type="checkbox" className="w-4 h-4 rounded text-primary focus:ring-primary border-stone-300" />
                           <span className="text-xs font-body text-on-surface-variant group-hover:text-primary transition-colors">{item.label}</span>
                         </label>
                       ))}
@@ -128,29 +284,29 @@ const NewIncidentModal = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">Cantidad RAM (GB)</label>
-                      <input type="number" className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" placeholder="Ej: 8" />
+                      <input name="cant_ram" value={formData.cant_ram} onChange={handleChange} type="number" className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" placeholder="Ej: 8" />
                     </div>
                     <div>
                       <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">Usuario / Credenciales</label>
-                      <input type="text" className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" placeholder="Usuario" />
+                      <input name="usuario" value={formData.usuario} onChange={handleChange} type="text" className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" placeholder="Usuario" />
                     </div>
                   </div>
 
                   <div>
                     <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">Contraseña</label>
-                    <input type="password" title="Contraseña" className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" placeholder="••••••••" />
+                    <input name="password" value={formData.password} onChange={handleChange} type="password" title="Contraseña" className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" placeholder="••••••••" />
                   </div>
 
                   <div>
                     <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">Observaciones Adicionales</label>
-                    <textarea className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" placeholder="Cualquier detalle relevante..." rows="3"></textarea>
+                    <textarea name="observacion" value={formData.observacion} onChange={handleChange} className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" placeholder="Cualquier detalle relevante..." rows="3"></textarea>
                   </div>
                 </div>
               ) : (
                 <div className="space-y-6">
                   <div>
                     <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">Categoría del Problema</label>
-                    <select title="Categoría" className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all">
+                    <select name="categoria" value={formData.categoria} onChange={handleChange} title="Categoría" className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all">
                       <option>Maquinaria Pesada</option>
                       <option>Sistemas Eléctricos</option>
                       <option>Software / PLC</option>
@@ -160,19 +316,19 @@ const NewIncidentModal = () => {
                   </div>
                   <div>
                     <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">Descripción Detallada</label>
-                    <textarea title="Descripción" className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" placeholder="Describa los síntomas observados..." rows="4"></textarea>
+                    <textarea name="descripcion" value={formData.descripcion} onChange={handleChange} title="Descripción" className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" placeholder="Describa los síntomas observados..." rows="4" required></textarea>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">Urgencia</label>
                       <div className="flex gap-2">
-                        <button className="flex-1 py-2 text-[10px] font-black uppercase tracking-tighter border border-stone-200 rounded hover:bg-stone-100" type="button">Baja</button>
-                        <button className="flex-1 py-2 text-[10px] font-black uppercase tracking-tighter bg-primary text-white rounded" type="button">Crítica</button>
+                        <button type="button" onClick={() => setFormData(p => ({...p, urgencia: 'Baja'}))} className={`flex-1 py-2 text-[10px] font-black uppercase tracking-tighter border border-stone-200 rounded ${formData.urgencia === 'Baja' ? 'bg-stone-100' : 'hover:bg-stone-50'}`}>Baja</button>
+                        <button type="button" onClick={() => setFormData(p => ({...p, urgencia: 'Crítica'}))} className={`flex-1 py-2 text-[10px] font-black uppercase tracking-tighter rounded ${formData.urgencia === 'Crítica' ? 'bg-primary text-white' : 'border border-stone-200 hover:bg-stone-50'}`}>Crítica</button>
                       </div>
                     </div>
                     <div>
                       <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">Área / Sector</label>
-                      <input type="text" title="Área" className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" placeholder="Ej: B-12 Fundición" />
+                      <input name="area" value={formData.area} onChange={handleChange} type="text" title="Área" className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" placeholder="Ej: B-12 Fundición" />
                     </div>
                   </div>
                 </div>
@@ -182,8 +338,8 @@ const NewIncidentModal = () => {
                 <a className="flex-1 flex items-center justify-center py-4 text-stone-500 font-headline font-bold text-sm uppercase tracking-wider rounded-md bg-stone-100 hover:bg-stone-200 transition-colors" href="#">
                   Cancelar
                 </a>
-                <button className="flex-[2] py-4 bg-gradient-to-br from-primary to-primary-container text-white font-headline font-bold text-sm uppercase tracking-wider rounded-md transition-transform active:scale-95 shadow-lg shadow-primary/20" type="button">
-                  Enviar Reporte
+                <button disabled={isSubmitting} className="flex-[2] py-4 bg-gradient-to-br from-primary to-primary-container text-white font-headline font-bold text-sm uppercase tracking-wider rounded-md transition-transform active:scale-95 shadow-lg shadow-primary/20 disabled:opacity-50 disabled:scale-100" type="submit">
+                  {isSubmitting ? 'Enviando...' : 'Enviar Reporte'}
                 </button>
               </div>
             </form>

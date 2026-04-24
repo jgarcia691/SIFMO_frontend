@@ -14,7 +14,7 @@ const MobileNav = () => {
       <a className="flex items-center justify-center -mt-8 bg-primary w-14 h-14 rounded-full text-white shadow-lg shadow-primary/30" href="#modal-new-incident">
         <span className="material-symbols-outlined text-3xl">add</span>
       </a>
-      <a className="flex flex-col items-center justify-center gap-1 text-stone-400" href="#equipment">
+      <a className="flex flex-col items-center justify-center gap-1 text-stone-400" href="#equipos">
         <span className="material-symbols-outlined">precision_manufacturing</span>
         <span className="text-[9px] uppercase font-label">Equip</span>
       </a>

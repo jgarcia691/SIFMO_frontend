@@ -21,9 +21,9 @@ const Sidebar = () => {
           <span className="material-symbols-outlined text-xl shrink-0">report_problem</span>
           <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">Historial</span>
         </a>
-        <a className="flex items-center gap-3 px-3 py-3 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 hover:bg-stone-200/70 dark:hover:bg-stone-800/70 font-headline text-sm uppercase font-semibold transition-transform active:scale-90 border-l-4 border-transparent" href="#admin">
-          <span className="material-symbols-outlined text-xl shrink-0">settings_suggest</span>
-          <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">Configuración</span>
+        <a className="flex items-center gap-3 px-3 py-3 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 hover:bg-stone-200/70 dark:hover:bg-stone-800/70 font-headline text-sm uppercase font-semibold transition-transform active:scale-90 border-l-4 border-transparent" href="#equipos">
+          <span className="material-symbols-outlined text-xl shrink-0">computer</span>
+          <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">Equipos</span>
         </a>
       </nav>
       <div className="mt-auto pt-6 border-t border-stone-200 dark:border-stone-800 space-y-4">
