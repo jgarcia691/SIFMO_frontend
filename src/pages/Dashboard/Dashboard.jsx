@@ -8,6 +8,7 @@ import NewIncidentModal from './components/NewIncidentModal';
 import NewWorkstationModal from './components/NewWorkstationModal';
 import MobileNav from './components/MobileNav';
 import FloatingActionButton from './components/FloatingActionButton';
+import UsersContent from './components/UsersContent';
 
 const Dashboard = () => {
   const [currentView, setCurrentView] = useState('dashboard');
@@ -26,6 +27,8 @@ const Dashboard = () => {
         setCurrentView('equipos');
       } else if (hash === '#incidents') {
         setCurrentView('incidents');
+      } else if (hash === '#users') {
+        setCurrentView('users');
       } else {
         setCurrentView('dashboard');
       }
@@ -43,10 +46,11 @@ const Dashboard = () => {
       <Sidebar activeView={currentView} />
       {(() => {
         if (currentView === 'equipos') return <EquiposContent />;
+        if (userRole === 'Administrador' && currentView === 'users') return <UsersContent />;
         if (userRole === 'Administrador' && (currentView === 'dashboard' || currentView === 'incidents')) {
-           return <AdminContent />;
+           return <AdminContent activeView={currentView} />;
         }
-        return <MainContent />;
+        return <MainContent activeView={currentView} />;
       })()}
       <NewIncidentModal />
       <NewWorkstationModal />

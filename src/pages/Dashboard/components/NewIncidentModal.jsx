@@ -28,7 +28,10 @@ const NewIncidentModal = () => {
     categoria: 'Maquinaria Pesada',
     descripcion: '',
     urgencia: 'Baja',
-    area: ''
+    area: '',
+    // para periféricos y solicitudes
+    tipo_solicitud: '',
+    falla: ''
   });
 
   const handleChange = (e) => {
@@ -79,7 +82,9 @@ const NewIncidentModal = () => {
             categoria: 'Maquinaria Pesada',
             descripcion: '',
             urgencia: 'Baja',
-            area: ''
+            area: '',
+            tipo_solicitud: '',
+            falla: ''
           });
         }, 300); // Wait for transition
       }
@@ -136,12 +141,15 @@ const NewIncidentModal = () => {
         observacion: formData.observacion,
         usuario: formData.usuario,
         password: formData.password
-      } : {
-        categoria: formData.categoria,
-        descripcion: formData.descripcion,
-        urgencia: formData.urgencia,
-        area: formData.area
-      }
+      } : null,
+      peripheralData: incidentType === 'Reparación de periférico' ? {
+        tipo_solicitud: formData.tipo_solicitud,
+        falla: formData.falla
+      } : null,
+      solicitudData: incidentType === 'Solicitud' ? {
+        tipo_solicitud: formData.tipo_solicitud,
+        descripcion: formData.descripcion
+      } : null
     };
 
     try {
@@ -303,34 +311,40 @@ const NewIncidentModal = () => {
                     <textarea name="observacion" value={formData.observacion} onChange={handleChange} className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" placeholder="Cualquier detalle relevante..." rows="3"></textarea>
                   </div>
                 </div>
-              ) : (
+              ) : incidentType === 'Reparación de periférico' ? (
                 <div className="space-y-6">
                   <div>
-                    <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">Categoría del Problema</label>
-                    <select name="categoria" value={formData.categoria} onChange={handleChange} title="Categoría" className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all">
-                      <option>Maquinaria Pesada</option>
-                      <option>Sistemas Eléctricos</option>
-                      <option>Software / PLC</option>
-                      <option>Infraestructura Civil</option>
-                      <option>Seguridad Industrial</option>
+                    <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">Tipo de Periférico</label>
+                    <select name="tipo_solicitud" value={formData.tipo_solicitud} onChange={handleChange} title="Tipo de Periférico" className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" required>
+                      <option value="">Seleccione un periférico</option>
+                      <option value="Monitor">Monitor</option>
+                      <option value="Teclado">Teclado</option>
+                      <option value="Mouse">Mouse</option>
+                      <option value="Impresora">Impresora</option>
+                      <option value="Otro">Otro</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">Descripción Detallada</label>
-                    <textarea name="descripcion" value={formData.descripcion} onChange={handleChange} title="Descripción" className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" placeholder="Describa los síntomas observados..." rows="4" required></textarea>
+                    <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">Falla Reportada</label>
+                    <textarea name="falla" value={formData.falla} onChange={handleChange} title="Falla Reportada" className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" placeholder="Describa el problema del periférico..." rows="4" required></textarea>
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">Urgencia</label>
-                      <div className="flex gap-2">
-                        <button type="button" onClick={() => setFormData(p => ({...p, urgencia: 'Baja'}))} className={`flex-1 py-2 text-[10px] font-black uppercase tracking-tighter border border-stone-200 rounded ${formData.urgencia === 'Baja' ? 'bg-stone-100' : 'hover:bg-stone-50'}`}>Baja</button>
-                        <button type="button" onClick={() => setFormData(p => ({...p, urgencia: 'Crítica'}))} className={`flex-1 py-2 text-[10px] font-black uppercase tracking-tighter rounded ${formData.urgencia === 'Crítica' ? 'bg-primary text-white' : 'border border-stone-200 hover:bg-stone-50'}`}>Crítica</button>
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">Área / Sector</label>
-                      <input name="area" value={formData.area} onChange={handleChange} type="text" title="Área" className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" placeholder="Ej: B-12 Fundición" />
-                    </div>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">Tipo de Solicitud</label>
+                    <select name="tipo_solicitud" value={formData.tipo_solicitud} onChange={handleChange} title="Tipo de Solicitud" className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" required>
+                      <option value="">Seleccione el tipo</option>
+                      <option value="Nuevo Equipo">Nuevo Equipo / Periférico</option>
+                      <option value="Software">Instalación de Software</option>
+                      <option value="Acceso">Acceso a Sistemas</option>
+                      <option value="Insumos">Insumos (Tóner, Papel, etc.)</option>
+                      <option value="Otro">Otro</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">Descripción y Justificación</label>
+                    <textarea name="descripcion" value={formData.descripcion} onChange={handleChange} title="Descripción" className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" placeholder="Detalle su solicitud y la razón de la misma..." rows="4" required></textarea>
                   </div>
                 </div>
               )}

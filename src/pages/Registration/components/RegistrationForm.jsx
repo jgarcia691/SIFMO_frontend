@@ -171,27 +171,6 @@ const RegistrationForm = () => {
                         </div>
                     </div>
 
-                    {/* Rol Select Field */}
-                    <div className="space-y-2">
-                        <label className="font-label text-[10px] font-semibold uppercase tracking-widest text-on-surface-variant flex justify-between" htmlFor="rol">
-                            Rol
-                        </label>
-                        <div className="relative">
-                            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-xl" data-icon="work">work</span>
-                            <select 
-                                className="w-full bg-surface-container-low border-none h-14 pl-10 pr-8 text-sm font-headline font-semibold text-on-surface focus:ring-0 focus:bg-surface-container-high transition-all border-b-2 border-transparent focus:border-primary appearance-none" 
-                                id="rol" 
-                                name="rol"
-                                value={formData.rol}
-                                onChange={handleChange}
-                            >
-                                <option value="Operador">Operador</option>
-                                <option value="Supervisor">Supervisor</option>
-                                <option value="Administrador">Administrador</option>
-                            </select>
-                            <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none text-xl" data-icon="expand_more">expand_more</span>
-                        </div>
-                    </div>
                 </div>
 
                 {/* Email Input Field */}
