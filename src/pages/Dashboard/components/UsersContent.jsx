@@ -88,6 +88,8 @@ const UsersContent = () => {
                     <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Ficha</th>
                     <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Nombre</th>
                     <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Rol</th>
+                    <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Área</th>
+                    <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Teléfono</th>
                     <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Correo</th>
                     <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 text-right">Acciones</th>
                   </tr>
@@ -107,6 +109,12 @@ const UsersContent = () => {
                           <span className={`px-2 py-1 rounded text-[10px] font-label font-black uppercase tracking-tighter ${roleClass}`}>
                             {user.rol}
                           </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className="text-xs text-on-surface-variant font-body uppercase">{user.area || 'N/A'}</span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className="text-xs text-stone-500 font-label">{user.numero || 'N/A'}</span>
                         </td>
                         <td className="px-6 py-4">
                           <span className="text-xs text-stone-500 font-label">{user.correo || 'N/A'}</span>
@@ -133,15 +141,25 @@ const UsersContent = () => {
                 const roleClass = roleColors[user.rol] || 'bg-stone-100 text-stone-800';
                 return (
                   <div key={user.ficha} className="p-4 flex justify-between items-center bg-white" onClick={() => openDetailsModal(user)}>
-                    <div className="flex flex-col gap-1">
+                    <div className="flex flex-col gap-1 flex-1">
                       <div className="flex items-center gap-2">
                         <span className="text-xs font-label font-bold text-primary">#{user.ficha}</span>
                         <span className={`px-2 py-0.5 rounded text-[8px] font-label font-black uppercase tracking-tighter ${roleClass}`}>
                           {user.rol}
                         </span>
+                        <span className="text-[8px] font-label text-stone-400 uppercase tracking-widest">• {user.area || 'Sin área'}</span>
                       </div>
                       <h4 className="font-headline font-bold text-on-surface uppercase text-sm">{user.nombre}</h4>
-                      <p className="text-[10px] text-stone-500 font-label truncate max-w-[150px]">{user.correo || 'Sin correo'}</p>
+                      <div className="flex flex-col gap-0.5">
+                        <div className="flex items-center gap-1 text-stone-500">
+                          <span className="material-symbols-outlined text-[12px]">call</span>
+                          <span className="text-[10px] font-label">{user.numero || 'Sin teléfono'}</span>
+                        </div>
+                        <div className="flex items-center gap-1 text-stone-500">
+                          <span className="material-symbols-outlined text-[12px]">mail</span>
+                          <span className="text-[10px] font-label truncate max-w-[180px]">{user.correo || 'Sin correo'}</span>
+                        </div>
+                      </div>
                     </div>
                     <button className="p-2 text-primary material-symbols-outlined">
                       chevron_right

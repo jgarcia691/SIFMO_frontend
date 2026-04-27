@@ -23,11 +23,15 @@ const AdminContent = ({ activeView }) => {
           // Formatear fechas
           const formattedData = data.map(inc => ({
             ...inc,
-            date: new Date(inc.fecha).toLocaleDateString('es-ES', {
-              day: '2-digit',
-              month: 'short',
-              year: 'numeric'
-            }).toUpperCase()
+            date: (() => {
+              if (!inc.fecha) return 'PENDIENTE';
+              const d = new Date(inc.fecha);
+              return isNaN(d.getTime()) ? inc.fecha : d.toLocaleDateString('es-ES', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric'
+              }).toUpperCase();
+            })()
           }));
           setIncidents(formattedData);
           
@@ -78,32 +82,31 @@ const AdminContent = ({ activeView }) => {
   return (
     <main className="md:ml-20 pt-16 md:pt-24 px-4 md:px-10 pb-20 md:pb-12 bg-surface min-h-screen">
       <section className="max-w-7xl mx-auto">
-        <header className="mb-12">
-          <h1 className="text-3xl md:text-5xl font-headline font-black text-on-surface uppercase tracking-tighter leading-none mb-2">
-            Panel de <span className="text-primary italic">Control</span>
-          </h1>
-          <p className="text-stone-500 font-label uppercase tracking-widest text-xs">Administración Global SIFMO</p>
-        </header>
+        <header className="mb-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+          <div className="space-y-2">
+            <h1 className="text-3xl md:text-5xl font-headline font-black text-on-surface uppercase tracking-tighter leading-none mb-2">
+              Panel de <span className="text-primary italic">Control</span>
+            </h1>
+            <p className="text-stone-500 font-label uppercase tracking-widest text-xs">Administración Global SIFMO</p>
+          </div>
 
-        {/* Tarjetas de Métricas */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          {[
-            { label: 'Incidentes Totales', value: stats.total, icon: 'analytics', trend: '+5%', color: 'text-primary' },
-            { label: 'Pendientes', value: stats.pending, icon: 'pending_actions', trend: '-2', color: 'text-amber-500' },
-            { label: 'Resueltos', value: stats.resolved, icon: 'check_circle', trend: '+12%', color: 'text-green-500' },
-            { label: 'MTTR (Promedio)', value: stats.mttr, icon: 'timer', trend: '-8%', color: 'text-blue-500' },
-          ].map((stat, i) => (
-            <div key={i} className="bg-surface-container-lowest p-4 md:p-6 rounded-2xl border border-outline-variant/10 shadow-sm">
-              <div className="flex justify-between items-start mb-2 md:mb-4">
-                <div className={`p-1.5 md:p-2 rounded-lg bg-stone-50 ${stat.color}`}>
-                  <span className="material-symbols-outlined text-[20px] md:text-[24px]">{stat.icon}</span>
-                </div>
-              </div>
-              <p className="text-[8px] md:text-[10px] font-label font-bold text-stone-400 uppercase tracking-widest mb-1">{stat.label}</p>
-              <h3 className="text-xl md:text-3xl font-headline font-black text-on-surface">{stat.value}</h3>
+          <div className="flex items-center gap-2 md:gap-4 bg-surface-container-low p-2 md:p-3 rounded-2xl border border-outline-variant/10 scale-90 md:scale-100 origin-left">
+            <div className="px-3 md:px-4 text-center">
+              <p className="text-[8px] md:text-[10px] font-label font-bold text-stone-400 uppercase tracking-widest">Total</p>
+              <p className="text-xl md:text-2xl font-headline font-bold text-on-surface">{stats.total}</p>
             </div>
-          ))}
-        </div>
+            <div className="w-[1px] h-8 md:h-10 bg-stone-200"></div>
+            <div className="px-3 md:px-4 text-center">
+              <p className="text-[8px] md:text-[10px] font-label font-bold text-amber-500 uppercase tracking-widest">Espera</p>
+              <p className="text-xl md:text-2xl font-headline font-bold text-on-surface">{stats.pending}</p>
+            </div>
+            <div className="w-[1px] h-8 md:h-10 bg-stone-200"></div>
+            <div className="px-3 md:px-4 text-center">
+              <p className="text-[8px] md:text-[10px] font-label font-bold text-green-600 uppercase tracking-widest">Listos</p>
+              <p className="text-xl md:text-2xl font-headline font-bold text-on-surface">{stats.resolved}</p>
+            </div>
+          </div>
+        </header>
 
         <div className="mb-8">
           <h2 className="text-2xl font-headline font-bold text-on-surface uppercase tracking-tight">

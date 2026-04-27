@@ -25,11 +25,15 @@ const MainContent = ({ activeView }) => {
           // Formatear fechas para que se vean bien
           const formattedData = data.map(inc => ({
             ...inc,
-            date: new Date(inc.fecha).toLocaleDateString('es-ES', {
-              day: '2-digit',
-              month: 'short',
-              year: 'numeric'
-            }).toUpperCase()
+            date: (() => {
+              if (!inc.fecha) return 'PENDIENTE';
+              const d = new Date(inc.fecha);
+              return isNaN(d.getTime()) ? inc.fecha : d.toLocaleDateString('es-ES', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric'
+              }).toUpperCase();
+            })()
           }));
           setIncidents(formattedData);
         }
