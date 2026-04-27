@@ -73,11 +73,11 @@ const MainContent = ({ activeView }) => {
   };
 
   return (
-    <main className="md:ml-20 pt-24 px-6 md:px-10 pb-12 bg-surface min-h-screen">
+    <main className="md:ml-20 pt-16 md:pt-24 px-4 md:px-10 pb-20 md:pb-12 bg-surface min-h-screen">
       <section className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12">
           <div className="space-y-2">
-            <h1 className="text-5xl font-headline font-black text-on-surface uppercase tracking-tighter leading-none">
+            <h1 className="text-3xl md:text-5xl font-headline font-black text-on-surface uppercase tracking-tighter leading-none">
               {activeView === 'incidents' ? (
                 <>Historial de <span className="text-primary italic">Solicitudes</span></>
               ) : (
@@ -85,15 +85,15 @@ const MainContent = ({ activeView }) => {
               )}
             </h1>
           </div>
-          <div className="flex items-center gap-4 bg-surface-container-low p-2 rounded-lg">
-            <div className="px-4 py-2 text-center">
-              <p className="text-[10px] font-label font-bold uppercase text-stone-400 tracking-widest">Total Reportes</p>
-              <p className="text-2xl font-headline font-bold text-on-surface">{incidents.length}</p>
+          <div className="flex items-center gap-2 md:gap-4 bg-surface-container-low p-2 rounded-lg scale-90 md:scale-100 origin-left">
+            <div className="px-2 md:px-4 py-1 md:py-2 text-center">
+              <p className="text-[8px] md:text-[10px] font-label font-bold uppercase text-stone-400 tracking-widest">Total</p>
+              <p className="text-xl md:text-2xl font-headline font-bold text-on-surface">{incidents.length}</p>
             </div>
-            <div className="w-[1px] h-10 bg-stone-200"></div>
-            <div className="px-4 py-2 text-center">
-              <p className="text-[10px] font-label font-bold uppercase text-stone-400 tracking-widest">Pendientes</p>
-              <p className="text-2xl font-headline font-bold text-primary">
+            <div className="w-[1px] h-8 md:h-10 bg-stone-200"></div>
+            <div className="px-2 md:px-4 py-1 md:py-2 text-center">
+              <p className="text-[8px] md:text-[10px] font-label font-bold uppercase text-stone-400 tracking-widest">Pendientes</p>
+              <p className="text-xl md:text-2xl font-headline font-bold text-primary">
                 {incidents.filter(i => i.status === 'Pendiente' || i.status === 'En revisión').length}
               </p>
             </div>

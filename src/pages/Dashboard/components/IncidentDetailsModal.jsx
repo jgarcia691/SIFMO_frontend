@@ -103,11 +103,11 @@ const IncidentDetailsModal = ({ incident, isOpen, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="flex flex-row items-stretch gap-4 max-h-[90vh] max-w-[95vw]">
+    <div className="fixed inset-0 z-50 flex items-start md:items-center justify-center p-2 md:p-4 bg-black/50 backdrop-blur-sm overflow-y-auto pt-10 md:pt-4">
+      <div className="flex flex-col md:flex-row items-center md:items-stretch gap-0 md:gap-4 max-w-[95vw] w-full md:w-auto pb-10 md:pb-0">
         
         {/* Main Modal Panel */}
-        <div className="bg-surface w-[600px] max-w-full rounded-2xl shadow-xl overflow-hidden flex flex-col h-full">
+        <div className="bg-surface w-full md:w-[600px] rounded-2xl shadow-xl overflow-hidden flex flex-col shrink-0 max-h-[85vh] md:max-h-[90vh]">
           
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-outline-variant/20 bg-surface-container-lowest">
@@ -239,16 +239,16 @@ const IncidentDetailsModal = ({ incident, isOpen, onClose }) => {
                 <button 
                   onClick={handleDelete}
                   disabled={isDeleting || isUpdating}
-                  className="px-6 py-2.5 rounded-full font-label font-bold bg-red-100 text-red-700 hover:bg-red-200 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  className="px-4 md:px-6 py-2 md:py-2.5 rounded-full font-label font-bold bg-red-100 text-red-700 hover:bg-red-200 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-xs md:text-base"
                 >
-                  {isDeleting ? 'Eliminando...' : 'Eliminar Solicitud'}
+                  {isDeleting ? 'Eliminando...' : 'Eliminar'}
                 </button>
               )}
             </div>
             <div className="flex gap-3">
               <button 
                 onClick={onClose}
-                className="px-6 py-2.5 rounded-full font-label font-bold text-on-surface hover:bg-surface-container transition-colors"
+                className="px-4 md:px-6 py-2 md:py-2.5 rounded-full font-label font-bold text-on-surface hover:bg-surface-container transition-colors text-xs md:text-base"
               >
                 Cerrar
               </button>
@@ -256,14 +256,20 @@ const IncidentDetailsModal = ({ incident, isOpen, onClose }) => {
                 <button 
                   onClick={handleUpdate}
                   disabled={isUpdating || isDeleting}
-                  className="px-6 py-2.5 rounded-full font-label font-bold bg-primary text-on-primary hover:bg-primary/90 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  className="px-4 md:px-6 py-2 md:py-2.5 rounded-full font-label font-bold bg-primary text-on-primary hover:bg-primary/90 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-xs md:text-base"
                 >
                   {isUpdating ? (
                     <>
-                      <span className="animate-spin material-symbols-outlined text-[18px]">progress_activity</span>
-                      Actualizando...
+                      <span className="animate-spin material-symbols-outlined text-[16px] md:text-[18px]">progress_activity</span>
+                      <span className="hidden md:inline">Actualizando...</span>
+                      <span className="md:hidden">Espere...</span>
                     </>
-                  ) : 'Actualizar Estado'}
+                  ) : (
+                    <>
+                      <span className="hidden md:inline">Actualizar Estado</span>
+                      <span className="md:hidden">Actualizar</span>
+                    </>
+                  )}
                 </button>
               )}
             </div>
@@ -272,8 +278,8 @@ const IncidentDetailsModal = ({ incident, isOpen, onClose }) => {
 
         {/* Side Panel (Analyst Contact Information) */}
         {incident.encargado && (
-          <div className={`transition-all duration-300 ease-in-out h-full overflow-hidden ${isContactExpanded ? 'w-80 opacity-100 ml-4' : 'w-0 opacity-0 ml-0'}`}>
-            <div className="bg-surface w-80 rounded-2xl shadow-xl h-full border border-primary/20 flex flex-col overflow-hidden">
+          <div className={`transition-all duration-300 ease-in-out overflow-hidden shrink-0 ${isContactExpanded ? 'w-full md:w-80 max-h-[500px] md:max-h-[90vh] opacity-100 mt-4 md:mt-0 md:ml-4' : 'max-h-0 md:max-h-full w-full md:w-0 opacity-0'}`}>
+            <div className="bg-surface w-full md:w-80 rounded-2xl shadow-xl h-full border border-primary/20 flex flex-col overflow-hidden">
               <div className="p-6 border-b border-outline-variant/20 bg-surface-container-lowest flex items-center gap-3 shrink-0">
                 <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center">
                   <span className="material-symbols-outlined">support_agent</span>

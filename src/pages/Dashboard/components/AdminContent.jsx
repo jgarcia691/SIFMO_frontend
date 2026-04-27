@@ -76,10 +76,10 @@ const AdminContent = ({ activeView }) => {
   };
 
   return (
-    <main className="md:ml-20 pt-24 px-6 md:px-10 pb-12 bg-surface min-h-screen">
+    <main className="md:ml-20 pt-16 md:pt-24 px-4 md:px-10 pb-20 md:pb-12 bg-surface min-h-screen">
       <section className="max-w-7xl mx-auto">
         <header className="mb-12">
-          <h1 className="text-5xl font-headline font-black text-on-surface uppercase tracking-tighter leading-none mb-2">
+          <h1 className="text-3xl md:text-5xl font-headline font-black text-on-surface uppercase tracking-tighter leading-none mb-2">
             Panel de <span className="text-primary italic">Control</span>
           </h1>
           <p className="text-stone-500 font-label uppercase tracking-widest text-xs">Administración Global SIFMO</p>
@@ -93,14 +93,14 @@ const AdminContent = ({ activeView }) => {
             { label: 'Resueltos', value: stats.resolved, icon: 'check_circle', trend: '+12%', color: 'text-green-500' },
             { label: 'MTTR (Promedio)', value: stats.mttr, icon: 'timer', trend: '-8%', color: 'text-blue-500' },
           ].map((stat, i) => (
-            <div key={i} className="bg-surface-container-lowest p-6 rounded-2xl border border-outline-variant/10 shadow-sm">
-              <div className="flex justify-between items-start mb-4">
-                <div className={`p-2 rounded-lg bg-stone-50 ${stat.color}`}>
-                  <span className="material-symbols-outlined">{stat.icon}</span>
+            <div key={i} className="bg-surface-container-lowest p-4 md:p-6 rounded-2xl border border-outline-variant/10 shadow-sm">
+              <div className="flex justify-between items-start mb-2 md:mb-4">
+                <div className={`p-1.5 md:p-2 rounded-lg bg-stone-50 ${stat.color}`}>
+                  <span className="material-symbols-outlined text-[20px] md:text-[24px]">{stat.icon}</span>
                 </div>
               </div>
-              <p className="text-[10px] font-label font-bold text-stone-400 uppercase tracking-widest mb-1">{stat.label}</p>
-              <h3 className="text-3xl font-headline font-black text-on-surface">{stat.value}</h3>
+              <p className="text-[8px] md:text-[10px] font-label font-bold text-stone-400 uppercase tracking-widest mb-1">{stat.label}</p>
+              <h3 className="text-xl md:text-3xl font-headline font-black text-on-surface">{stat.value}</h3>
             </div>
           ))}
         </div>
