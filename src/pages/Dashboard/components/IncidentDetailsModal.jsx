@@ -119,7 +119,7 @@ const IncidentDetailsModal = ({ incident, isOpen, onClose }) => {
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-outline-variant/20 bg-surface-container-lowest">
             <div>
-              <h2 className="text-2xl font-headline font-bold text-on-surface">Detalles de la Solicitud</h2>
+              <h2 className="text-2xl font-headline font-bold text-on-surface-variant">Detalles de la Solicitud</h2>
               <div className="flex items-center gap-3 mt-1">
                 <span className="text-xs font-label font-bold bg-stone-100 text-stone-500 px-2 py-0.5 rounded uppercase tracking-tighter">ID #{incident.id}</span>
                 <span className="text-xs font-label text-stone-400 flex items-center gap-1 uppercase tracking-tighter">
@@ -143,11 +143,11 @@ const IncidentDetailsModal = ({ incident, isOpen, onClose }) => {
           <div className="p-6 overflow-y-auto flex-1 space-y-8">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
-                <h3 className="text-xs font-label font-bold text-stone-400 uppercase tracking-widest mb-1">Tipo de Incidente</h3>
-                <p className="text-lg font-body font-bold text-on-surface uppercase">{incident.tipo}</p>
+                <h3 className="text-xs font-label font-bold text-stone-400 dark:text-on-surface-variant uppercase tracking-widest mb-1">Tipo de Incidente</h3>
+                <p className="text-lg font-body font-bold text-on-surface-variant uppercase">{incident.tipo}</p>
               </div>
               <div>
-                <h3 className="text-xs font-label font-bold text-stone-400 uppercase tracking-widest mb-1">Estado Actual</h3>
+                <h3 className="text-xs font-label font-bold text-stone-400 dark:text-on-surface-variant uppercase tracking-widest mb-1">Estado Actual</h3>
                 {canEditStatus ? (
                   <select 
                     className="px-3 py-1.5 rounded-lg text-sm font-label font-bold uppercase tracking-wider bg-surface-container-high text-on-surface border border-outline-variant/20 outline-none focus:ring-2 focus:ring-primary cursor-pointer"
@@ -167,7 +167,7 @@ const IncidentDetailsModal = ({ incident, isOpen, onClose }) => {
             </div>
 
             <div>
-              <h3 className="text-xs font-label font-bold text-stone-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+              <h3 className="text-xs font-label font-bold text-stone-400 dark:text-on-surface-variant uppercase tracking-widest mb-2 flex items-center gap-2">
                 <span className="material-symbols-outlined text-base">description</span>
                 Detalles Técnicos / Descripción
               </h3>
@@ -249,12 +249,12 @@ const IncidentDetailsModal = ({ incident, isOpen, onClose }) => {
                          </p>
                          <div className="grid grid-cols-2 gap-4 text-sm font-medium">
                             <p className="flex flex-col gap-0.5">
-                              <span className="text-stone-400 uppercase text-[10px]">Usuario</span>
-                              <span className="text-stone-800 font-bold">{incident.workstation_usuario || 'N/A'}</span>
+                              <span className="text-stone-400 dark:text-on-surface-variant uppercase text-[10px]">Usuario</span>
+                              <span className="text-stone-800 dark:text-on-surface-variant font-bold">{incident.workstation_usuario || 'N/A'}</span>
                             </p>
                             <p className="flex flex-col gap-0.5">
-                              <span className="text-stone-400 uppercase text-[10px]">Contraseña</span>
-                              <span className="text-stone-800 font-bold">{incident.password || 'N/A'}</span>
+                              <span className="text-stone-400 dark:text-on-surface-variant uppercase text-[10px]">Contraseña</span>
+                              <span className="text-stone-800 dark:text-on-surface-variant font-bold">{incident.password || 'N/A'}</span>
                             </p>
                          </div>
                        </div>
@@ -271,26 +271,26 @@ const IncidentDetailsModal = ({ incident, isOpen, onClose }) => {
                         </div>
                         <div>
                           <p className="text-[10px] font-label font-bold text-stone-400 uppercase tracking-widest">Información del Periférico</p>
-                          <h4 className="font-headline font-bold text-on-surface uppercase">{incident.periferico_nombre || 'Equipo no identificado'}</h4>
+                          <h4 className="font-headline font-bold text-on-surface-variant uppercase">{incident.periferico_nombre || 'Equipo no identificado'}</h4>
                         </div>
                       </div>
                       
                       <div className="grid grid-cols-2 gap-y-4 gap-x-2 text-sm">
                         <div>
-                          <p className="text-stone-400 uppercase text-[9px] font-bold mb-0.5">FMO #</p>
+                          <p className="text-stone-400 dark:text-on-surface-variant uppercase text-[9px] font-bold mb-0.5">FMO #</p>
                           <p className="font-bold text-primary">#{incident.periferico_fmo || 'N/A'}</p>
                         </div>
                         <div>
-                          <p className="text-stone-400 uppercase text-[9px] font-bold mb-0.5">Tipo</p>
-                          <p className="font-bold text-on-surface uppercase">{incident.periferico_tipo || 'N/A'}</p>
+                          <p className="text-stone-400 dark:text-on-surface-variant uppercase text-[9px] font-bold mb-0.5">Tipo</p>
+                          <p className="font-bold text-on-surface-variant uppercase">{incident.periferico_tipo || 'N/A'}</p>
                         </div>
                         <div>
-                          <p className="text-stone-400 uppercase text-[9px] font-bold mb-0.5">Marca</p>
-                          <p className="font-bold text-on-surface uppercase">{incident.periferico_marca || 'Genérica'}</p>
+                          <p className="text-stone-400 dark:text-on-surface-variant uppercase text-[9px] font-bold mb-0.5">Marca</p>
+                          <p className="font-bold text-on-surface-variant uppercase">{incident.periferico_marca || 'Genérica'}</p>
                         </div>
                         <div>
-                          <p className="text-stone-400 uppercase text-[9px] font-bold mb-0.5">Serial</p>
-                          <p className="font-bold text-stone-600">{incident.periferico_serial || 'N/A'}</p>
+                          <p className="text-stone-400 dark:text-on-surface-variant uppercase text-[9px] font-bold mb-0.5">Serial</p>
+                          <p className="font-bold text-stone-600 dark:text-on-surface-variant">{incident.periferico_serial || 'N/A'}</p>
                         </div>
                       </div>
                     </div>
@@ -300,7 +300,7 @@ const IncidentDetailsModal = ({ incident, isOpen, onClose }) => {
                         <span className="material-symbols-outlined text-sm">report_problem</span>
                         Falla Reportada
                       </p>
-                      <p className="text-on-surface leading-relaxed">{incident.periferico_falla || 'Sin descripción de falla'}</p>
+                      <p className="text-on-surface-variant leading-relaxed">{incident.periferico_falla || 'Sin descripción de falla'}</p>
                     </div>
                   </div>
                 )}
@@ -309,11 +309,11 @@ const IncidentDetailsModal = ({ incident, isOpen, onClose }) => {
                   <div className="space-y-4 text-base">
                     <div>
                       <p className="text-[10px] font-label font-bold text-stone-400 uppercase tracking-widest mb-1">Categoría de Solicitud</p>
-                      <p className="font-bold text-on-surface uppercase">{incident.solicitud_tipo || 'General'}</p>
+                      <p className="font-bold text-on-surface-variant uppercase">{incident.solicitud_tipo || 'General'}</p>
                     </div>
                     <div>
                       <p className="text-[10px] font-label font-bold text-stone-400 uppercase tracking-widest mb-1">Descripción</p>
-                      <p className="text-on-surface">{incident.solicitud_descripcion || 'Sin descripción detallada'}</p>
+                      <p className="text-on-surface-variant">{incident.solicitud_descripcion || 'Sin descripción detallada'}</p>
                     </div>
                   </div>
                 )}
@@ -343,11 +343,11 @@ const IncidentDetailsModal = ({ incident, isOpen, onClose }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-surface-container-lowest p-6 rounded-2xl border border-outline-variant/10">
                  <h3 className="text-xs font-label font-bold text-stone-400 uppercase tracking-widest mb-1">Área / Departamento</h3>
-                 <p className="text-base font-body font-bold text-on-surface">{incident.area || 'No especificada'}</p>
+                 <p className="text-base font-body font-bold text-on-surface-variant">{incident.area || 'No especificada'}</p>
               </div>
               <div className="bg-surface-container-lowest p-6 rounded-2xl border border-outline-variant/10">
                  <h3 className="text-xs font-label font-bold text-stone-400 uppercase tracking-widest mb-1">Solicitante</h3>
-                 <p className="text-base font-body font-bold text-on-surface">{incident.solicitante || 'Usuario Desconocido'}</p>
+                 <p className="text-base font-body font-bold text-on-surface-variant">{incident.solicitante || 'Usuario Desconocido'}</p>
                  {canEditStatus && (
                     <button 
                       onClick={() => setIsClientContactExpanded(!isClientContactExpanded)}
@@ -381,7 +381,7 @@ const IncidentDetailsModal = ({ incident, isOpen, onClose }) => {
               <div className="bg-surface-container-lowest p-4 rounded-xl border border-primary/20 bg-primary/5 mt-4">
                 <h3 className="text-sm font-label font-bold text-primary uppercase tracking-wider mb-2">Asignar Encargado (Analista/Admin)</h3>
                 <select 
-                  className="w-full px-4 py-2 rounded-lg bg-surface border border-outline-variant/20 text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none"
+                  className="w-full px-4 py-2 rounded-lg bg-surface border border-outline-variant/20 text-on-surface-variant focus:border-primary focus:ring-1 focus:ring-primary outline-none"
                   value={newEncargado}
                   onChange={(e) => setNewEncargado(e.target.value)}
                 >

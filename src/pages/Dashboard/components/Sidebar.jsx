@@ -16,20 +16,20 @@ const Sidebar = ({ activeView }) => {
 
   const getLinkClasses = (view) => {
     const base = "flex items-center gap-3 px-3 py-3 font-headline text-sm uppercase font-semibold transition-transform active:scale-90 border-l-4";
-    const active = "bg-stone-200 dark:bg-stone-800 text-red-700 dark:text-red-400 border-red-700";
-    const inactive = "text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 hover:bg-stone-200/70 dark:hover:bg-stone-800/70 border-transparent";
+    const active = "bg-stone-300 dark:bg-surface-container-high text-primary border-primary";
+    const inactive = "text-stone-700 dark:text-on-surface-variant hover:text-stone-900 dark:hover:text-on-surface hover:bg-stone-300/50 dark:hover:bg-surface-container border-transparent";
     
     return `${base} ${activeView === view ? active : inactive}`;
   };
 
   return (
-    <aside className="group flex flex-col fixed left-0 top-0 pt-20 pb-8 px-4 h-screen w-20 hover:w-64 transition-[width] duration-300 ease-in-out border-r-0 bg-stone-100 dark:bg-stone-950 z-40 hidden md:flex overflow-hidden whitespace-nowrap">
+    <aside className="group flex flex-col fixed left-0 top-0 pt-20 pb-8 px-4 h-screen w-20 hover:w-64 transition-[width] duration-300 ease-in-out border-r border-stone-300 dark:border-outline-variant/10 bg-stone-200 dark:bg-surface-container z-40 hidden md:flex overflow-hidden whitespace-nowrap">
       <div className="mb-8 px-2">
         <div className="flex items-center gap-3 mb-2">
           <div className="w-8 h-8 shrink-0 bg-primary rounded flex items-center justify-center">
-            <span className="material-symbols-outlined text-white text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>precision_manufacturing</span>
+            <span className="material-symbols-outlined text-on-primary text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>precision_manufacturing</span>
           </div>
-          <h2 className="font-headline text-lg font-black text-stone-900 dark:text-stone-100 uppercase tracking-tight opacity-0 group-hover:opacity-100 transition-opacity duration-300">SIFMO</h2>
+          <h2 className="font-headline text-lg font-black text-stone-600 dark:text-on-surface-variant uppercase tracking-tight opacity-0 group-hover:opacity-100 transition-opacity duration-300">SIFMO</h2>
         </div>
       </div>
       <nav className="flex-1 space-y-1">
@@ -60,8 +60,8 @@ const Sidebar = ({ activeView }) => {
           </>
         )}
       </nav>
-      <div className="mt-auto pt-6 border-t border-stone-200 dark:border-stone-800 space-y-4">
-        <Link className="flex items-center gap-3 px-3 py-2 text-stone-600 dark:text-stone-400 hover:text-red-600 font-headline text-sm uppercase font-semibold border-l-4 border-transparent" to="/login">
+      <div className="mt-auto pt-6 border-t border-outline-variant/10 space-y-4">
+        <Link className="flex items-center gap-3 px-3 py-2 text-stone-600 dark:text-on-surface-variant hover:text-primary font-headline text-sm uppercase font-semibold border-l-4 border-transparent" to="/login">
           <span className="material-symbols-outlined text-xl shrink-0">logout</span>
           <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">Cerrar Sesión</span>
         </Link>

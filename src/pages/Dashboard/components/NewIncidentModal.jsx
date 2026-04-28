@@ -186,13 +186,13 @@ const NewIncidentModal = () => {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-stone-900/60 backdrop-blur-sm p-4 opacity-0 pointer-events-none transition-opacity duration-300 target:opacity-100 target:pointer-events-auto" id="modal-new-incident">
-      <div className="bg-white w-full max-w-lg rounded-xl shadow-2xl overflow-hidden relative max-h-[90vh] flex flex-col">
-        <div className="bg-stone-50 px-8 py-6 border-b border-stone-100 flex justify-between items-center shrink-0">
+      <div className="bg-surface w-full max-w-lg rounded-xl shadow-2xl overflow-hidden relative max-h-[90vh] flex flex-col">
+        <div className="bg-surface-container px-8 py-6 border-b border-outline-variant/10 flex justify-between items-center shrink-0">
           <div>
-            <h2 className="text-2xl font-headline font-bold text-on-surface tracking-tight uppercase">
+            <h2 className="text-2xl font-headline font-bold text-on-surface-variant tracking-tight uppercase">
               {step === 'selection' ? 'Tipo de Solicitud' : 'Nueva Solicitud'}
             </h2>
-            <p className="text-xs font-label text-stone-500 tracking-widest uppercase">
+            <p className="text-xs font-label text-stone-500 dark:text-on-surface-variant tracking-widest uppercase">
               {step === 'selection' ? 'Seleccione una opción' : incidentType}
             </p>
           </div>
@@ -202,36 +202,36 @@ const NewIncidentModal = () => {
         <div className="overflow-y-auto">
           {step === 'selection' && (
             <div className="p-8 space-y-4">
-              <button onClick={() => handleSelectType('Reparación de estaciones de trabajo')} className="w-full text-left p-6 rounded-xl border border-stone-200 hover:border-primary hover:bg-surface-container-lowest transition-all group">
+              <button onClick={() => handleSelectType('Reparación de estaciones de trabajo')} className="w-full text-left p-6 rounded-xl border border-outline-variant/10 hover:border-primary hover:bg-surface-container-lowest transition-all group">
                 <div className="flex items-center gap-4">
                   <div className="bg-primary-fixed p-3 rounded-full text-primary group-hover:scale-110 transition-transform">
                     <span className="material-symbols-outlined">desktop_windows</span>
                   </div>
                   <div>
-                    <h3 className="font-headline font-bold text-on-surface text-lg">Reparación de estaciones de trabajo</h3>
-                    <p className="text-sm font-body text-stone-500">Reporte de fallas en CPUs y estaciones de trabajo de la planta.</p>
+                    <h3 className="font-headline font-bold text-on-surface-variant text-lg">Reparación de estaciones de trabajo</h3>
+                    <p className="text-sm font-body text-stone-500 dark:text-on-surface-variant">Reporte de fallas en CPUs y estaciones de trabajo de la planta.</p>
                   </div>
                 </div>
               </button>
-              <button onClick={() => handleSelectType('Reparación de periférico')} className="w-full text-left p-6 rounded-xl border border-stone-200 hover:border-primary hover:bg-surface-container-lowest transition-all group">
+              <button onClick={() => handleSelectType('Reparación de periférico')} className="w-full text-left p-6 rounded-xl border border-outline-variant/10 hover:border-primary hover:bg-surface-container-lowest transition-all group">
                 <div className="flex items-center gap-4">
                   <div className="bg-primary-fixed p-3 rounded-full text-primary group-hover:scale-110 transition-transform">
                     <span className="material-symbols-outlined">mouse</span>
                   </div>
                   <div>
-                    <h3 className="font-headline font-bold text-on-surface text-lg">Reparación de periférico</h3>
-                    <p className="text-sm font-body text-stone-500">Fallas en monitores, teclados u otros periféricos.</p>
+                    <h3 className="font-headline font-bold text-on-surface-variant text-lg">Reparación de periférico</h3>
+                    <p className="text-sm font-body text-stone-500 dark:text-on-surface-variant">Fallas en monitores, teclados u otros periféricos.</p>
                   </div>
                 </div>
               </button>
-              <button onClick={() => handleSelectType('Solicitud')} className="w-full text-left p-6 rounded-xl border border-stone-200 hover:border-primary hover:bg-surface-container-lowest transition-all group">
+              <button onClick={() => handleSelectType('Solicitud')} className="w-full text-left p-6 rounded-xl border border-outline-variant/10 hover:border-primary hover:bg-surface-container-lowest transition-all group">
                 <div className="flex items-center gap-4">
                   <div className="bg-primary-fixed p-3 rounded-full text-primary group-hover:scale-110 transition-transform">
                     <span className="material-symbols-outlined">support_agent</span>
                   </div>
                   <div>
-                    <h3 className="font-headline font-bold text-on-surface text-lg">Solicitud</h3>
-                    <p className="text-sm font-body text-stone-500">Requerimientos de nuevos accesos, software o insumos.</p>
+                    <h3 className="font-headline font-bold text-on-surface-variant text-lg">Solicitud</h3>
+                    <p className="text-sm font-body text-stone-500 dark:text-on-surface-variant">Requerimientos de nuevos accesos, software o insumos.</p>
                   </div>
                 </div>
               </button>
@@ -251,7 +251,7 @@ const NewIncidentModal = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">Seleccionar Equipo (FMO)</label>
-                      <select name="cpu_fmo" value={formData.cpu_fmo} onChange={handleChange} className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" required>
+                      <select name="cpu_fmo" value={formData.cpu_fmo} onChange={handleChange} className="w-full bg-surface-container-low border-0 border-b-2 border-outline-variant/20 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" required>
                         <option value="">Seleccione un equipo</option>
                         {equipos.map(equipo => (
                           <option key={equipo.fmo} value={equipo.fmo}>
@@ -262,16 +262,16 @@ const NewIncidentModal = () => {
                     </div>
                     <div>
                       <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">Sistema Operativo</label>
-                      <input name="so" value={formData.so} onChange={handleChange} type="text" className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" placeholder="Ej: Windows 10, Linux..." />
+                      <input name="so" value={formData.so} onChange={handleChange} type="text" className="w-full bg-surface-container-low border-0 border-b-2 border-outline-variant/20 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" placeholder="Ej: Windows 10, Linux..." />
                     </div>
                   </div>
 
                   <div>
                     <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">Tipo de Falla</label>
-                    <textarea name="tipo_falla" value={formData.tipo_falla} onChange={handleChange} className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" placeholder="Describa el problema observado..." rows="2" required></textarea>
+                    <textarea name="tipo_falla" value={formData.tipo_falla} onChange={handleChange} className="w-full bg-surface-container-low border-0 border-b-2 border-outline-variant/20 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" placeholder="Describa el problema observado..." rows="2" required></textarea>
                   </div>
 
-                  <div className="bg-stone-50 p-4 rounded-lg border border-stone-100">
+                  <div className="bg-surface-container p-4 rounded-lg border border-outline-variant/10">
                     <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-4">Revisión de Hardware / Componentes</label>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-y-4 gap-x-2">
                       {[
@@ -296,17 +296,17 @@ const NewIncidentModal = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">Cantidad RAM (GB)</label>
-                      <input name="cant_ram" value={formData.cant_ram} onChange={handleChange} type="number" className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" placeholder="Ej: 8" />
+                      <input name="cant_ram" value={formData.cant_ram} onChange={handleChange} type="number" className="w-full bg-surface-container-low border-0 border-b-2 border-outline-variant/20 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" placeholder="Ej: 8" />
                     </div>
                     <div>
                       <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">Usuario / Credenciales</label>
-                      <input name="usuario" value={formData.usuario} onChange={handleChange} type="text" className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" placeholder="Usuario" />
+                      <input name="usuario" value={formData.usuario} onChange={handleChange} type="text" className="w-full bg-surface-container-low border-0 border-b-2 border-outline-variant/20 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" placeholder="Usuario" />
                     </div>
                   </div>
 
                   <div>
                     <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">Contraseña</label>
-                    <input name="password" value={formData.password} onChange={handleChange} type="password" title="Contraseña" className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" placeholder="••••••••" />
+                    <input name="password" value={formData.password} onChange={handleChange} type="password" title="Contraseña" className="w-full bg-surface-container-low border-0 border-b-2 border-outline-variant/20 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" placeholder="••••••••" />
                   </div>
 
                   <div>
@@ -346,20 +346,20 @@ const NewIncidentModal = () => {
                         <p className="text-[10px] font-label font-bold text-primary uppercase tracking-widest mb-2">Información del Equipo Seleccionado</p>
                         <div className="grid grid-cols-2 gap-4 text-xs">
                           <div>
-                            <p className="text-stone-400 uppercase text-[9px] mb-0.5">Nombre</p>
-                            <p className="font-bold text-on-surface">{selected.nombre}</p>
+                            <p className="text-stone-400 dark:text-on-surface-variant uppercase text-[9px] mb-0.5">Nombre</p>
+                            <p className="font-bold text-on-surface-variant">{selected.nombre}</p>
                           </div>
                           <div>
-                            <p className="text-stone-400 uppercase text-[9px] mb-0.5">Marca</p>
-                            <p className="font-bold text-on-surface">{selected.marca_nombre || 'Genérica'}</p>
+                            <p className="text-stone-400 dark:text-on-surface-variant uppercase text-[9px] mb-0.5">Marca</p>
+                            <p className="font-bold text-on-surface-variant">{selected.marca_nombre || 'Genérica'}</p>
                           </div>
                           <div>
-                            <p className="text-stone-400 uppercase text-[9px] mb-0.5">Área Original</p>
-                            <p className="font-bold text-on-surface">{selected.area_nombre || 'N/A'}</p>
+                            <p className="text-stone-400 dark:text-on-surface-variant uppercase text-[9px] mb-0.5">Área Original</p>
+                            <p className="font-bold text-on-surface-variant">{selected.area_nombre || 'N/A'}</p>
                           </div>
                           <div>
-                            <p className="text-stone-400 uppercase text-[9px] mb-0.5">Serial</p>
-                            <p className="font-bold text-on-surface">{selected.serial || 'N/A'}</p>
+                            <p className="text-stone-400 dark:text-on-surface-variant uppercase text-[9px] mb-0.5">Serial</p>
+                            <p className="font-bold text-on-surface-variant">{selected.serial || 'N/A'}</p>
                           </div>
                         </div>
                       </div>
@@ -403,10 +403,10 @@ const NewIncidentModal = () => {
               )}
 
               <div className="pt-4 flex gap-4 shrink-0">
-                <a className="flex-1 flex items-center justify-center py-4 text-stone-500 font-headline font-bold text-sm uppercase tracking-wider rounded-md bg-stone-100 hover:bg-stone-200 transition-colors" href="#">
+                <a className="flex-1 flex items-center justify-center py-4 text-on-surface-variant font-headline font-bold text-sm uppercase tracking-wider rounded-md bg-surface-container hover:bg-surface-container-high transition-colors" href="#">
                   Cancelar
                 </a>
-                <button disabled={isSubmitting} className="flex-[2] py-4 bg-gradient-to-br from-primary to-primary-container text-white font-headline font-bold text-sm uppercase tracking-wider rounded-md transition-transform active:scale-95 shadow-lg shadow-primary/20 disabled:opacity-50 disabled:scale-100" type="submit">
+                <button disabled={isSubmitting} className="flex-[2] py-4 bg-gradient-to-br from-primary to-primary-container text-on-primary font-headline font-bold text-sm uppercase tracking-wider rounded-md transition-transform active:scale-95 shadow-lg shadow-primary/20 disabled:opacity-50 disabled:scale-100" type="submit">
                   {isSubmitting ? 'Enviando...' : 'Enviar Reporte'}
                 </button>
               </div>

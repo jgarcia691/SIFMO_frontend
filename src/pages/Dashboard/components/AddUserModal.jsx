@@ -86,7 +86,7 @@ const AddUserModal = ({ isOpen, onClose }) => {
         <div className="flex items-center justify-between p-6 border-b border-outline-variant/20 bg-surface-container-lowest">
           <div>
             <h2 className="text-2xl font-headline font-bold text-on-surface">Agregar Nuevo Usuario</h2>
-            <p className="text-sm font-label text-stone-500 mt-1">Gestión de Administradores y Analistas</p>
+            <p className="text-sm font-label text-stone-500 dark:text-on-surface-variant mt-1">Gestión de Administradores y Analistas</p>
           </div>
           <button 
             onClick={onClose}

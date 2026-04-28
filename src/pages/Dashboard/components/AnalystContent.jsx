@@ -92,7 +92,7 @@ const AnalystContent = ({ activeView }) => {
       <section className="max-w-7xl mx-auto">
         <header className="mb-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
           <div className="space-y-2">
-            <h1 className="text-3xl md:text-5xl font-headline font-black text-on-surface uppercase tracking-tighter leading-none mb-2">
+            <h1 className="text-3xl md:text-5xl font-headline font-black text-on-surface-variant uppercase tracking-tighter leading-none mb-2">
               Panel de <span className="text-primary italic">Analista</span>
             </h1>
             <p className="text-stone-500 font-label uppercase tracking-widest text-xs">Gestión de Incidencias Asignadas</p>
@@ -100,15 +100,15 @@ const AnalystContent = ({ activeView }) => {
 
           <div className="flex items-center gap-2 md:gap-4 bg-surface-container-low p-2 md:p-3 rounded-2xl border border-outline-variant/10 scale-90 md:scale-100 origin-left">
             <div className="px-3 md:px-4 text-center">
-              <p className="text-[8px] md:text-[10px] font-label font-bold text-stone-400 uppercase tracking-widest">Asignados</p>
+              <p className="text-[8px] md:text-[10px] font-label font-bold text-stone-400 dark:text-on-surface-variant uppercase tracking-widest">Asignados</p>
               <p className="text-xl md:text-2xl font-headline font-bold text-on-surface">{stats.total}</p>
             </div>
-            <div className="w-[1px] h-8 md:h-10 bg-stone-200"></div>
+            <div className="w-[1px] h-8 md:h-10 bg-outline-variant/20"></div>
             <div className="px-3 md:px-4 text-center">
               <p className="text-[8px] md:text-[10px] font-label font-bold text-amber-500 uppercase tracking-widest">Pendientes</p>
               <p className="text-xl md:text-2xl font-headline font-bold text-on-surface">{stats.pending}</p>
             </div>
-            <div className="w-[1px] h-8 md:h-10 bg-stone-200"></div>
+            <div className="w-[1px] h-8 md:h-10 bg-outline-variant/20"></div>
             <div className="px-3 md:px-4 text-center">
               <p className="text-[8px] md:text-[10px] font-label font-bold text-green-600 uppercase tracking-widest">Listos</p>
               <p className="text-xl md:text-2xl font-headline font-bold text-on-surface">{stats.resolved}</p>
@@ -117,7 +117,7 @@ const AnalystContent = ({ activeView }) => {
         </header>
 
         <div className="mb-8">
-          <h2 className="text-2xl font-headline font-bold text-on-surface uppercase tracking-tight">
+          <h2 className="text-2xl font-headline font-bold text-on-surface-variant uppercase tracking-tight">
             {activeView === 'incidents' ? (
               <>Historial de <span className="text-primary">Reparaciones</span></>
             ) : (
@@ -134,8 +134,8 @@ const AnalystContent = ({ activeView }) => {
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
           </div>
         ) : incidents.length === 0 ? (
-          <div className="text-center py-20 bg-surface-container-lowest rounded-xl border border-dashed border-stone-200">
-             <span className="material-symbols-outlined text-stone-300 text-6xl mb-4">task</span>
+          <div className="text-center py-20 bg-surface-container-lowest rounded-xl border border-dashed border-outline-variant/20">
+             <span className="material-symbols-outlined text-outline-variant text-6xl mb-4">task</span>
              <p className="text-on-surface-variant font-body uppercase tracking-widest text-sm">No tienes incidencias asignadas actualmente.</p>
           </div>
         ) : (
@@ -146,20 +146,20 @@ const AnalystContent = ({ activeView }) => {
                 return i.status === 'Pendiente' || i.status === 'En revisión';
               })
               .map((incident) => {
-              const statusStyle = statusIndicators[incident.status] || { color: 'bg-stone-500', text: 'text-stone-700', pulse: false };
-              const typeClass = typeColors[incident.tipo] || 'bg-stone-100 text-stone-800';
+               const statusStyle = statusIndicators[incident.status] || { color: 'bg-outline-variant/20', text: 'text-on-surface-variant', pulse: false };
+               const typeClass = typeColors[incident.tipo] || 'bg-surface-container text-on-surface-variant';
 
               if (activeView === 'incidents') return null;
 
               return (
                 <div 
                   key={incident.id} 
-                  className="bg-surface-container-lowest p-6 rounded-lg shadow-sm border border-outline-variant/10 group hover:bg-white transition-colors duration-300 cursor-pointer flex flex-col"
+                  className="bg-surface-container-lowest p-6 rounded-lg shadow-sm border border-outline-variant/10 group hover:bg-surface-container transition-colors duration-300 cursor-pointer flex flex-col"
                   onClick={() => openModal(incident)}
                 >
                   <div className="flex justify-between items-start mb-6">
                     <div className="flex flex-col gap-1">
-                      <span className="text-[10px] font-label font-bold text-stone-400"># {incident.id} • CLIENTE: {incident.solicitante}</span>
+                      <span className="text-[10px] font-label font-bold text-stone-400 dark:text-on-surface-variant"># {incident.id} • CLIENTE: {incident.solicitante}</span>
                       <div className="flex items-center gap-2">
                         <span className={`${typeClass} text-[10px] font-label font-black px-2 py-1 rounded-sm uppercase tracking-tighter w-fit`}>
                           {incident.tipo}
@@ -172,7 +172,7 @@ const AnalystContent = ({ activeView }) => {
                     <span className="text-stone-400 text-xs font-label">{incident.date}</span>
                   </div>
                   
-                  <h3 className="text-xl font-headline font-bold text-on-surface mb-2 group-hover:text-primary transition-colors uppercase">
+                  <h3 className="text-xl font-headline font-bold text-on-surface-variant mb-2 group-hover:text-primary transition-colors uppercase">
                     {incident.tipo}
                   </h3>
                   
@@ -186,7 +186,7 @@ const AnalystContent = ({ activeView }) => {
                       <span className={`text-[10px] font-label font-bold uppercase ${statusStyle.text}`}>{incident.status}</span>
                     </div>
                     <div className="flex items-center gap-4">
-                        <span className="text-[10px] font-label font-bold text-stone-400 uppercase">{incident.area}</span>
+                        <span className="text-[10px] font-label font-bold text-stone-400 dark:text-on-surface-variant uppercase">{incident.area}</span>
                         <button className="text-primary material-symbols-outlined hover:bg-primary-fixed p-1 rounded-full transition-colors group-hover:bg-primary-fixed">
                         open_in_new
                         </button>
@@ -203,21 +203,21 @@ const AnalystContent = ({ activeView }) => {
           <div className="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/10 overflow-hidden">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-stone-50 border-b border-stone-100">
-                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">ID</th>
-                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Tipo / Cliente</th>
-                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Departamento</th>
-                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Fecha</th>
-                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Estado</th>
-                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 text-right">Acciones</th>
+                <tr className="bg-surface-container border-b border-outline-variant/10">
+                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">ID</th>
+                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Tipo / Cliente</th>
+                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Departamento</th>
+                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Fecha</th>
+                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Estado</th>
+                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant text-right">Acciones</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-stone-100">
+              <tbody className="divide-y divide-outline-variant/10">
                 {incidents.map((incident) => {
                   const statusStyle = statusIndicators[incident.status] || { color: 'bg-stone-500', text: 'text-stone-700', pulse: false };
                   
                   return (
-                    <tr key={incident.id} className="hover:bg-stone-50/50 transition-colors group">
+                    <tr key={incident.id} className="hover:bg-surface-container/30 transition-colors group">
                       <td className="px-6 py-4">
                         <span className="font-label font-bold text-primary">#{incident.id}</span>
                       </td>

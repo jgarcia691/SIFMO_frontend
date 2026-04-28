@@ -3,11 +3,11 @@ import React from 'react';
 const MobileNav = ({ activeView }) => {
   const getLinkClasses = (view) => {
     const isActive = activeView === view || (view === 'dashboard' && activeView === 'incidents');
-    return `flex flex-col items-center justify-center gap-1 ${isActive ? 'text-red-700 font-bold' : 'text-stone-400'}`;
+    return `flex flex-col items-center justify-center gap-1 ${isActive ? 'text-primary font-bold' : 'text-stone-600 dark:text-on-surface-variant'}`;
   };
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 w-full bg-white border-t-0 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-50 flex justify-around items-center h-16">
+    <nav className="md:hidden fixed bottom-0 left-0 w-full bg-stone-200 dark:bg-surface-container border-t-0 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-50 flex justify-around items-center h-16">
       <a className={getLinkClasses('dashboard')} href="#dashboard">
         <span className="material-symbols-outlined" style={{ fontVariationSettings: activeView === 'dashboard' || activeView === 'incidents' ? "'FILL' 1" : "''" }}>dashboard</span>
         <span className="text-[9px] uppercase font-label">HUD</span>

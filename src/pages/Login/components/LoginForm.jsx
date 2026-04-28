@@ -42,9 +42,9 @@ const LoginForm = () => {
     };
 
     return (
-        <div className="col-span-1 lg:col-span-5 p-8 lg:p-16 flex flex-col justify-center bg-surface">
+        <div className="col-span-1 lg:col-span-5 p-8 lg:p-16 flex flex-col justify-center bg-transparent">
             <div className="mb-12">
-                <h2 className="font-headline text-3xl font-bold text-on-surface mb-2">Inicio de Sesión</h2>
+                <h2 className="font-headline text-3xl font-bold text-on-surface-variant mb-2">Inicio de Sesión</h2>
                 <p className="text-on-surface-variant font-body">Ingrese sus credenciales para continuar</p>
             </div>
             
@@ -65,7 +65,7 @@ const LoginForm = () => {
                     <div className="relative">
                         <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline" data-icon="badge">badge</span>
                         <input 
-                            className="w-full bg-surface-container-low border-none h-16 pl-12 pr-4 text-xl font-headline font-semibold text-on-surface focus:ring-0 focus:bg-surface-container-high transition-all border-b-2 border-transparent focus:border-primary" 
+                            className="w-full bg-surface-container-low border-none h-16 pl-12 pr-4 text-xl font-headline font-semibold text-on-surface-variant focus:ring-0 focus:bg-surface-container-high transition-all border-b-2 border-transparent focus:border-primary" 
                             id="ficha" 
                             name="ficha"
                             value={ficha}
@@ -96,7 +96,7 @@ const LoginForm = () => {
                         <div className="w-full border-t border-outline-variant/30"></div>
                     </div>
                     <div className="relative flex justify-center text-xs uppercase">
-                        <span className="bg-surface px-4 text-outline font-label"> </span>
+                        <span className="bg-transparent px-4 text-outline font-label"> </span>
                     </div>
                 </div>
                 <div className="flex flex-col gap-4">

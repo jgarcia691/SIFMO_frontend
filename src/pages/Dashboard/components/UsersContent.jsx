@@ -55,14 +55,14 @@ const UsersContent = () => {
       <section className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12">
           <div className="space-y-2">
-            <h1 className="text-3xl md:text-5xl font-headline font-black text-on-surface uppercase tracking-tighter leading-none">
+            <h1 className="text-3xl md:text-5xl font-headline font-black text-on-surface-variant uppercase tracking-tighter leading-none">
               Gestión de <span className="text-primary italic">Usuarios</span>
             </h1>
           </div>
           
           <button 
             onClick={() => setIsAddUserModalOpen(true)}
-            className="flex items-center gap-2 bg-primary text-white px-4 md:px-6 py-2.5 md:py-3 rounded-lg font-headline font-bold uppercase tracking-wider hover:brightness-110 transition-all shadow-lg shadow-primary/20 text-xs md:text-base"
+            className="flex items-center gap-2 bg-primary text-on-primary px-4 md:px-6 py-2.5 md:py-3 rounded-lg font-headline font-bold uppercase tracking-wider hover:brightness-110 transition-all shadow-lg shadow-primary/20 text-xs md:text-base"
           >
             <span className="material-symbols-outlined">person_add</span>
             Agregar Usuario
@@ -74,8 +74,8 @@ const UsersContent = () => {
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
           </div>
         ) : users.length === 0 ? (
-          <div className="text-center py-20 bg-surface-container-lowest rounded-xl border border-dashed border-stone-200">
-             <span className="material-symbols-outlined text-stone-300 text-6xl mb-4">group_off</span>
+          <div className="text-center py-20 bg-surface-container-lowest rounded-xl border border-dashed border-outline-variant/20">
+             <span className="material-symbols-outlined text-outline-variant text-6xl mb-4">group_off</span>
              <p className="text-on-surface-variant font-body">No se encontraron usuarios registrados.</p>
           </div>
         ) : (
@@ -84,26 +84,26 @@ const UsersContent = () => {
             <div className="hidden md:block">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-stone-50 border-b border-stone-100">
-                    <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Ficha</th>
-                    <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Nombre</th>
-                    <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Rol</th>
-                    <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Área</th>
-                    <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Teléfono</th>
-                    <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Correo</th>
-                    <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 text-right">Acciones</th>
+                  <tr className="bg-surface-container border-b border-outline-variant/10">
+                    <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Ficha</th>
+                    <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Nombre</th>
+                    <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Rol</th>
+                    <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Área</th>
+                    <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Teléfono</th>
+                    <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Correo</th>
+                    <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant text-right">Acciones</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-stone-100">
+                <tbody className="divide-y divide-outline-variant/10">
                   {users.map((user) => {
                     const roleClass = roleColors[user.rol] || 'bg-stone-100 text-stone-800';
                     return (
-                      <tr key={user.ficha} className="hover:bg-stone-50/50 transition-colors group">
+                      <tr key={user.ficha} className="hover:bg-surface-container/30 transition-colors group">
                         <td className="px-6 py-4">
                           <span className="font-label font-bold text-primary">#{user.ficha}</span>
                         </td>
                         <td className="px-6 py-4">
-                          <span className="font-headline font-bold text-on-surface uppercase text-sm">{user.nombre}</span>
+                          <span className="font-headline font-bold text-on-surface-variant uppercase text-sm">{user.nombre}</span>
                         </td>
                         <td className="px-6 py-4">
                           <span className={`px-2 py-1 rounded text-[10px] font-label font-black uppercase tracking-tighter ${roleClass}`}>
@@ -114,10 +114,10 @@ const UsersContent = () => {
                           <span className="text-xs text-on-surface-variant font-body uppercase">{user.area || 'N/A'}</span>
                         </td>
                         <td className="px-6 py-4">
-                          <span className="text-xs text-stone-500 font-label">{user.numero || 'N/A'}</span>
+                          <span className="text-xs text-stone-500 dark:text-on-surface-variant font-label">{user.numero || 'N/A'}</span>
                         </td>
                         <td className="px-6 py-4">
-                          <span className="text-xs text-stone-500 font-label">{user.correo || 'N/A'}</span>
+                          <span className="text-xs text-stone-500 dark:text-on-surface-variant font-label">{user.correo || 'N/A'}</span>
                         </td>
                         <td className="px-6 py-4 text-right">
                           <button 
@@ -136,26 +136,26 @@ const UsersContent = () => {
             </div>
 
             {/* Card Layout for Mobile */}
-            <div className="md:hidden divide-y divide-stone-100">
+            <div className="md:hidden divide-y divide-outline-variant/10">
               {users.map((user) => {
                 const roleClass = roleColors[user.rol] || 'bg-stone-100 text-stone-800';
                 return (
-                  <div key={user.ficha} className="p-4 flex justify-between items-center bg-white" onClick={() => openDetailsModal(user)}>
+                  <div key={user.ficha} className="p-4 flex justify-between items-center bg-surface-container-lowest" onClick={() => openDetailsModal(user)}>
                     <div className="flex flex-col gap-1 flex-1">
                       <div className="flex items-center gap-2">
                         <span className="text-xs font-label font-bold text-primary">#{user.ficha}</span>
                         <span className={`px-2 py-0.5 rounded text-[8px] font-label font-black uppercase tracking-tighter ${roleClass}`}>
                           {user.rol}
                         </span>
-                        <span className="text-[8px] font-label text-stone-400 uppercase tracking-widest">• {user.area || 'Sin área'}</span>
+                        <span className="text-[8px] font-label text-stone-400 dark:text-on-surface-variant uppercase tracking-widest">• {user.area || 'Sin área'}</span>
                       </div>
-                      <h4 className="font-headline font-bold text-on-surface uppercase text-sm">{user.nombre}</h4>
+                      <h4 className="font-headline font-bold text-on-surface-variant uppercase text-sm">{user.nombre}</h4>
                       <div className="flex flex-col gap-0.5">
-                        <div className="flex items-center gap-1 text-stone-500">
+                        <div className="flex items-center gap-1 text-stone-500 dark:text-on-surface-variant">
                           <span className="material-symbols-outlined text-[12px]">call</span>
                           <span className="text-[10px] font-label">{user.numero || 'Sin teléfono'}</span>
                         </div>
-                        <div className="flex items-center gap-1 text-stone-500">
+                        <div className="flex items-center gap-1 text-stone-500 dark:text-on-surface-variant">
                           <span className="material-symbols-outlined text-[12px]">mail</span>
                           <span className="text-[10px] font-label truncate max-w-[180px]">{user.correo || 'Sin correo'}</span>
                         </div>

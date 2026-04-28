@@ -81,7 +81,7 @@ const MainContent = ({ activeView }) => {
       <section className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12">
           <div className="space-y-2">
-            <h1 className="text-3xl md:text-5xl font-headline font-black text-on-surface uppercase tracking-tighter leading-none">
+            <h1 className="text-3xl md:text-5xl font-headline font-black text-on-surface-variant uppercase tracking-tighter leading-none">
               {activeView === 'incidents' ? (
                 <>Historial de <span className="text-primary italic">Solicitudes</span></>
               ) : (
@@ -91,12 +91,12 @@ const MainContent = ({ activeView }) => {
           </div>
           <div className="flex items-center gap-2 md:gap-4 bg-surface-container-low p-2 rounded-lg scale-90 md:scale-100 origin-left">
             <div className="px-2 md:px-4 py-1 md:py-2 text-center">
-              <p className="text-[8px] md:text-[10px] font-label font-bold uppercase text-stone-400 tracking-widest">Total</p>
-              <p className="text-xl md:text-2xl font-headline font-bold text-on-surface">{incidents.length}</p>
+              <p className="text-[8px] md:text-[10px] font-label font-bold uppercase text-stone-400 dark:text-on-surface-variant tracking-widest">Total</p>
+              <p className="text-xl md:text-2xl font-headline font-bold text-on-surface-variant">{incidents.length}</p>
             </div>
-            <div className="w-[1px] h-8 md:h-10 bg-stone-200"></div>
+            <div className="w-[1px] h-8 md:h-10 bg-outline-variant/20"></div>
             <div className="px-2 md:px-4 py-1 md:py-2 text-center">
-              <p className="text-[8px] md:text-[10px] font-label font-bold uppercase text-stone-400 tracking-widest">Pendientes</p>
+              <p className="text-[8px] md:text-[10px] font-label font-bold uppercase text-stone-400 dark:text-on-surface-variant tracking-widest">Pendientes</p>
               <p className="text-xl md:text-2xl font-headline font-bold text-primary">
                 {incidents.filter(i => i.status === 'Pendiente' || i.status === 'En revisión').length}
               </p>
@@ -109,8 +109,8 @@ const MainContent = ({ activeView }) => {
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
           </div>
         ) : incidents.length === 0 ? (
-          <div className="text-center py-20 bg-surface-container-lowest rounded-xl border border-dashed border-stone-200">
-             <span className="material-symbols-outlined text-stone-300 text-6xl mb-4">folder_open</span>
+          <div className="text-center py-20 bg-surface-container-lowest rounded-xl border border-dashed border-outline-variant/20">
+             <span className="material-symbols-outlined text-outline-variant text-6xl mb-4">folder_open</span>
              <p className="text-on-surface-variant font-body">No se encontraron solicitudes registradas.</p>
           </div>
         ) : (
@@ -124,20 +124,20 @@ const MainContent = ({ activeView }) => {
               return (
                 <div 
                   key={incident.id} 
-                  className="bg-surface-container-lowest p-6 rounded-lg shadow-sm border border-outline-variant/10 group hover:bg-white transition-colors duration-300 cursor-pointer flex flex-col"
+                  className="bg-surface-container-lowest p-6 rounded-lg shadow-sm border border-outline-variant/10 group hover:bg-surface-container transition-colors duration-300 cursor-pointer flex flex-col"
                   onClick={() => openModal(incident)}
                 >
                   <div className="flex justify-between items-start mb-6">
                     <div className="flex flex-col gap-1">
-                      <span className="text-[10px] font-label font-bold text-stone-400">SOLICITUD #{incident.id}</span>
+                      <span className="text-[10px] font-label font-bold text-stone-400 dark:text-on-surface-variant">SOLICITUD #{incident.id}</span>
                       <span className={`${typeClass} text-[10px] font-label font-black px-2 py-1 rounded-sm uppercase tracking-tighter w-fit`}>
                         {incident.tipo}
                       </span>
                     </div>
-                    <span className="text-stone-400 text-xs font-label">{incident.date}</span>
+                    <span className="text-stone-400 dark:text-on-surface-variant text-xs font-label">{incident.date}</span>
                   </div>
                   
-                  <h3 className="text-xl font-headline font-bold text-on-surface mb-2 group-hover:text-primary transition-colors uppercase">
+                  <h3 className="text-xl font-headline font-bold text-on-surface-variant mb-2 group-hover:text-primary transition-colors uppercase">
                     {incident.tipo}
                   </h3>
                   
@@ -165,28 +165,28 @@ const MainContent = ({ activeView }) => {
           <div className="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/10 overflow-hidden">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-stone-50 border-b border-stone-100">
-                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">ID</th>
-                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Tipo de Incidente</th>
-                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Fecha</th>
-                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Estado</th>
-                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 text-right">Acciones</th>
+                <tr className="bg-surface-container border-b border-outline-variant/10">
+                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">ID</th>
+                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Tipo de Incidente</th>
+                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Fecha</th>
+                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Estado</th>
+                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant text-right">Acciones</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-stone-100">
+              <tbody className="divide-y divide-outline-variant/10">
                 {incidents.map((incident) => {
                   const statusStyle = statusIndicators[incident.status] || { color: 'bg-stone-500', text: 'text-stone-700', pulse: false };
                   
                   return (
-                    <tr key={incident.id} className="hover:bg-stone-50/50 transition-colors group">
+                    <tr key={incident.id} className="hover:bg-surface-container/30 transition-colors group">
                       <td className="px-6 py-4">
                         <span className="font-label font-bold text-primary">#{incident.id}</span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="font-headline font-bold text-on-surface uppercase text-sm">{incident.tipo}</span>
+                        <span className="font-headline font-bold text-on-surface-variant uppercase text-sm">{incident.tipo}</span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="text-xs text-stone-500 font-label">{incident.date}</span>
+                        <span className="text-xs text-stone-500 dark:text-on-surface-variant font-label">{incident.date}</span>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">

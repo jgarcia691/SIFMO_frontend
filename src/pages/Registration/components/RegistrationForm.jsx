@@ -70,9 +70,9 @@ const RegistrationForm = () => {
     };
 
     return (
-        <div className="col-span-1 lg:col-span-5 p-8 lg:p-16 flex flex-col justify-center bg-surface">
+        <div className="col-span-1 lg:col-span-5 p-8 lg:p-12 flex flex-col justify-center bg-transparent overflow-y-auto">
             <div className="mb-10">
-                <h2 className="font-headline text-3xl font-bold text-on-surface mb-2">Crear Cuenta</h2>
+                <h2 className="font-headline text-2xl font-bold text-on-surface-variant mb-1">Crear Cuenta</h2>
                 <p className="text-on-surface-variant font-body">Registre sus credenciales para acceder</p>
             </div>
             
@@ -83,7 +83,7 @@ const RegistrationForm = () => {
                 </div>
             )}
             
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-4">
                 {/* Full Name Input Field */}
                 <div className="space-y-2">
                     <label className="font-label text-xs font-semibold uppercase tracking-widest text-on-surface-variant flex justify-between" htmlFor="nombre">
@@ -93,7 +93,7 @@ const RegistrationForm = () => {
                     <div className="relative">
                         <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline" data-icon="person">person</span>
                         <input 
-                            className="w-full bg-surface-container-low border-none h-14 pl-12 pr-4 text-lg font-headline font-semibold text-on-surface focus:ring-0 focus:bg-surface-container-high transition-all border-b-2 border-transparent focus:border-primary" 
+                            className="w-full bg-surface-container-low border-none h-14 pl-12 pr-4 text-lg font-headline font-semibold text-on-surface-variant focus:ring-0 focus:bg-surface-container-high transition-all border-b-2 border-transparent focus:border-primary" 
                             id="nombre" 
                             name="nombre"
                             value={formData.nombre}
@@ -114,7 +114,7 @@ const RegistrationForm = () => {
                         <div className="relative">
                             <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-xl" data-icon="badge">badge</span>
                             <input 
-                                className="w-full bg-surface-container-low border-none h-14 pl-10 pr-2 text-base font-headline font-semibold text-on-surface focus:ring-0 focus:bg-surface-container-high transition-all border-b-2 border-transparent focus:border-primary" 
+                                className="w-full bg-surface-container-low border-none h-14 pl-10 pr-2 text-base font-headline font-semibold text-on-surface-variant focus:ring-0 focus:bg-surface-container-high transition-all border-b-2 border-transparent focus:border-primary" 
                                 id="ficha" 
                                 name="ficha"
                                 value={formData.ficha}
@@ -134,7 +134,7 @@ const RegistrationForm = () => {
                         <div className="relative">
                             <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-xl" data-icon="call">call</span>
                             <input 
-                                className="w-full bg-surface-container-low border-none h-14 pl-10 pr-2 text-base font-headline font-semibold text-on-surface focus:ring-0 focus:bg-surface-container-high transition-all border-b-2 border-transparent focus:border-primary" 
+                                className="w-full bg-surface-container-low border-none h-14 pl-10 pr-2 text-base font-headline font-semibold text-on-surface-variant focus:ring-0 focus:bg-surface-container-high transition-all border-b-2 border-transparent focus:border-primary" 
                                 id="numero" 
                                 name="numero"
                                 value={formData.numero}
@@ -153,7 +153,7 @@ const RegistrationForm = () => {
                         <div className="relative">
                             <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-xl" data-icon="domain">domain</span>
                             <select 
-                                className="w-full bg-surface-container-low border-none h-14 pl-10 pr-8 text-sm font-headline font-semibold text-on-surface focus:ring-0 focus:bg-surface-container-high transition-all border-b-2 border-transparent focus:border-primary appearance-none" 
+                                className="w-full bg-surface-container-low border-none h-14 pl-10 pr-8 text-sm font-headline font-semibold text-on-surface-variant focus:ring-0 focus:bg-surface-container-high transition-all border-b-2 border-transparent focus:border-primary appearance-none" 
                                 id="id_area" 
                                 name="id_area"
                                 value={formData.id_area}
@@ -181,7 +181,7 @@ const RegistrationForm = () => {
                     <div className="relative">
                         <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline" data-icon="mail">mail</span>
                         <input 
-                            className="w-full bg-surface-container-low border-none h-14 pl-12 pr-4 text-lg font-headline font-semibold text-on-surface focus:ring-0 focus:bg-surface-container-high transition-all border-b-2 border-transparent focus:border-primary" 
+                            className="w-full bg-surface-container-low border-none h-14 pl-12 pr-4 text-lg font-headline font-semibold text-on-surface-variant focus:ring-0 focus:bg-surface-container-high transition-all border-b-2 border-transparent focus:border-primary" 
                             id="correo" 
                             name="correo"
                             value={formData.correo}
@@ -204,13 +204,13 @@ const RegistrationForm = () => {
             </form>
             
             {/* Secondary Links */}
-            <div className="mt-8 space-y-4 text-center">
+            <div className="mt-6 space-y-3 text-center">
                 <div className="relative">
                     <div className="absolute inset-0 flex items-center">
                         <div className="w-full border-t border-outline-variant/30"></div>
                     </div>
                     <div className="relative flex justify-center text-xs uppercase">
-                        <span className="bg-surface px-4 text-outline font-label"> </span>
+                        <span className="bg-transparent px-4 text-outline font-label"> </span>
                     </div>
                 </div>
                 <div className="flex flex-col gap-4">

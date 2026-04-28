@@ -91,14 +91,14 @@ const EquiposContent = () => {
       <section className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12">
           <div className="space-y-2">
-            <h1 className="text-5xl font-headline font-black text-on-surface uppercase tracking-tighter leading-none">
+            <h1 className="text-5xl font-headline font-black text-on-surface-variant uppercase tracking-tighter leading-none">
               Gestión de <span className="text-primary italic">Equipos</span>
             </h1>
           </div>
           
           <a 
             href="#modal-new-workstation"
-            className="flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg font-headline font-bold uppercase tracking-wider hover:brightness-110 transition-all shadow-lg shadow-primary/20"
+            className="flex items-center gap-2 bg-primary text-on-primary px-6 py-3 rounded-lg font-headline font-bold uppercase tracking-wider hover:brightness-110 transition-all shadow-lg shadow-primary/20"
           >
             <span className="material-symbols-outlined">add</span>
             Agregar Equipo
@@ -110,33 +110,33 @@ const EquiposContent = () => {
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
           </div>
         ) : equipos.length === 0 ? (
-          <div className="text-center py-20 bg-surface-container-lowest rounded-xl border border-dashed border-stone-200">
-             <span className="material-symbols-outlined text-stone-300 text-6xl mb-4">desktop_windows</span>
+          <div className="text-center py-20 bg-surface-container-lowest rounded-xl border border-dashed border-outline-variant/20">
+             <span className="material-symbols-outlined text-outline-variant text-6xl mb-4">desktop_windows</span>
              <p className="text-on-surface-variant font-body">No se encontraron equipos registrados.</p>
           </div>
         ) : (
           <div className="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/10 overflow-hidden">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-stone-50 border-b border-stone-100">
-                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">FMO</th>
-                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Tipo</th>
-                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Nombre / Identificador</th>
-                  {isAdmin && <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Propietario</th>}
-                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Área</th>
-                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Marca</th>
-                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Serial</th>
-                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 text-right">Acciones</th>
+                <tr className="bg-surface-container border-b border-outline-variant/10">
+                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">FMO</th>
+                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Tipo</th>
+                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Nombre / Identificador</th>
+                  {isAdmin && <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Propietario</th>}
+                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Área</th>
+                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Marca</th>
+                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Serial</th>
+                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant text-right">Acciones</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-stone-100">
+              <tbody className="divide-y divide-outline-variant/10">
                 {equipos.map((equipo) => (
-                  <tr key={equipo.fmo} className="hover:bg-stone-50/50 transition-colors group">
+                  <tr key={equipo.fmo} className="hover:bg-surface-container/30 transition-colors group">
                     <td className="px-6 py-4">
                       <span className="font-label font-bold text-primary">#{equipo.fmo}</span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-[10px] font-label font-black uppercase bg-stone-100 text-stone-500 px-2 py-1 rounded tracking-tighter">
+                      <span className="text-[10px] font-label font-black uppercase bg-surface-container-high text-on-surface-variant px-2 py-1 rounded tracking-tighter">
                         {equipo.tipo || 'Desconocido'}
                       </span>
                     </td>
@@ -145,7 +145,7 @@ const EquiposContent = () => {
                         <span className="material-symbols-outlined text-stone-300 text-lg">
                           {equipo.tipo === 'estacion de trabajo' ? 'desktop_windows' : 'devices_other'}
                         </span>
-                        <span className="font-headline font-bold text-on-surface uppercase text-sm">{equipo.nombre}</span>
+                        <span className="font-headline font-bold text-on-surface-variant uppercase text-sm">{equipo.nombre}</span>
                       </div>
                     </td>
                     {isAdmin && (
@@ -159,24 +159,24 @@ const EquiposContent = () => {
                       <span className="text-sm text-on-surface-variant font-body">{equipo.area_nombre || 'Sin área'}</span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="px-2 py-1 bg-stone-100 text-stone-600 rounded text-[10px] font-label font-black uppercase tracking-tighter">
+                      <span className="px-2 py-1 bg-surface-container-high text-on-surface-variant rounded text-[10px] font-label font-black uppercase tracking-tighter">
                         {equipo.marca_nombre || 'Genérica'}
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-xs text-stone-400 font-label tracking-tight">{equipo.serial}</span>
+                      <span className="text-xs text-stone-400 dark:text-on-surface-variant font-label tracking-tight">{equipo.serial}</span>
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onClick={() => openHistory(equipo)} className="p-2 text-stone-400 hover:text-blue-500 transition-colors rounded-full hover:bg-stone-100" title="Ver Historial">
+                        <button onClick={() => openHistory(equipo)} className="p-2 text-stone-400 dark:text-on-surface-variant hover:text-blue-500 transition-colors rounded-full hover:bg-surface-container/50" title="Ver Historial">
                           <span className="material-symbols-outlined text-xl">history</span>
                         </button>
-                        <button className="p-2 text-stone-400 hover:text-primary transition-colors rounded-full hover:bg-stone-100">
+                        <button className="p-2 text-stone-400 dark:text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container/50">
                           <span className="material-symbols-outlined text-xl">edit</span>
                         </button>
                         <button 
                           onClick={() => handleDeleteEquipo(equipo.fmo)}
-                          className="p-2 text-stone-400 hover:text-error transition-colors rounded-full hover:bg-stone-100"
+                          className="p-2 text-stone-400 dark:text-on-surface-variant hover:text-error transition-colors rounded-full hover:bg-surface-container/50"
                           title="Eliminar Equipo"
                         >
                           <span className="material-symbols-outlined text-xl">delete</span>
@@ -197,8 +197,8 @@ const EquiposContent = () => {
           <div className="bg-surface w-full max-w-3xl rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[90vh]">
             <div className="flex items-center justify-between p-6 border-b border-outline-variant/20 bg-surface-container-lowest">
               <div>
-                <h2 className="text-2xl font-headline font-bold text-on-surface">Historial de Mantenimiento</h2>
-                <p className="text-sm font-label text-stone-500 mt-1">Equipo #{selectedEquipo?.fmo} - {selectedEquipo?.nombre}</p>
+                <h2 className="text-2xl font-headline font-bold text-on-surface-variant">Historial de Mantenimiento</h2>
+                <p className="text-sm font-label text-stone-500 dark:text-on-surface-variant mt-1">Equipo #{selectedEquipo?.fmo} - {selectedEquipo?.nombre}</p>
               </div>
               <button 
                 onClick={() => setHistoryModalOpen(false)}
@@ -213,8 +213,8 @@ const EquiposContent = () => {
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
                 </div>
               ) : historyData.length === 0 ? (
-                <div className="text-center py-10 bg-surface-container-lowest rounded-xl border border-dashed border-stone-200">
-                  <span className="material-symbols-outlined text-stone-300 text-4xl mb-2">history_toggle_off</span>
+                <div className="text-center py-10 bg-surface-container-lowest rounded-xl border border-dashed border-outline-variant/20">
+                  <span className="material-symbols-outlined text-outline-variant text-4xl mb-2">history_toggle_off</span>
                   <p className="text-on-surface-variant font-body">No hay registros de incidentes para este equipo.</p>
                 </div>
               ) : (
@@ -225,10 +225,10 @@ const EquiposContent = () => {
                         <span className="text-[10px] font-label font-bold text-primary uppercase tracking-widest">INCIDENTE #{inc.id}</span>
                         <span className="text-xs font-label text-stone-500">{new Date(inc.fecha).toLocaleDateString()}</span>
                       </div>
-                      <h3 className="text-sm font-headline font-bold text-on-surface uppercase mb-1">{inc.tipo}</h3>
+                      <h3 className="text-sm font-headline font-bold text-on-surface-variant uppercase mb-1">{inc.tipo}</h3>
                       <p className="text-sm text-on-surface-variant font-body">{inc.observacion || inc.tipo_falla || 'Sin detalles adicionales'}</p>
                       <div className="mt-3 flex gap-2">
-                        <span className="px-2 py-1 bg-stone-100 text-stone-600 rounded text-[10px] font-label font-black uppercase tracking-tighter">
+                        <span className="px-2 py-1 bg-surface-container text-on-surface-variant rounded text-[10px] font-label font-black uppercase tracking-tighter">
                           {inc.status}
                         </span>
                         {inc.solicitante && (

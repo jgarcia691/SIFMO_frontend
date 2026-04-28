@@ -10,7 +10,7 @@ const UserDetailsModal = ({ user, isOpen, onClose }) => {
         <div className="flex items-center justify-between p-6 border-b border-outline-variant/20 bg-surface-container-lowest">
           <div>
             <h2 className="text-2xl font-headline font-bold text-on-surface">Detalles del Usuario</h2>
-            <p className="text-sm font-label text-stone-500 mt-1">Ficha #{user.ficha}</p>
+            <p className="text-sm font-label text-stone-500 dark:text-on-surface-variant mt-1">Ficha #{user.ficha}</p>
           </div>
           <button 
             onClick={onClose}
@@ -28,7 +28,7 @@ const UserDetailsModal = ({ user, isOpen, onClose }) => {
              </div>
              <div>
                 <h3 className="text-xl font-headline font-bold text-on-surface uppercase">{user.nombre}</h3>
-                <span className="px-2 py-1 bg-stone-100 text-stone-600 rounded text-[10px] font-label font-black uppercase tracking-tighter mt-1 inline-block">
+                <span className="px-2 py-1 bg-surface-container text-on-surface-variant rounded text-[10px] font-label font-black uppercase tracking-tighter mt-1 inline-block">
                   {user.rol}
                 </span>
              </div>
@@ -36,21 +36,21 @@ const UserDetailsModal = ({ user, isOpen, onClose }) => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/10">
-               <h3 className="text-xs font-label font-bold text-stone-500 uppercase tracking-wider mb-1 flex items-center gap-1">
+               <h3 className="text-xs font-label font-bold text-stone-500 dark:text-on-surface-variant uppercase tracking-wider mb-1 flex items-center gap-1">
                  <span className="material-symbols-outlined text-[14px]">mail</span> Correo
                </h3>
                <p className="font-body text-sm text-on-surface truncate" title={user.correo}>{user.correo || 'No registrado'}</p>
             </div>
             
             <div className="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/10">
-               <h3 className="text-xs font-label font-bold text-stone-500 uppercase tracking-wider mb-1 flex items-center gap-1">
+               <h3 className="text-xs font-label font-bold text-stone-500 dark:text-on-surface-variant uppercase tracking-wider mb-1 flex items-center gap-1">
                  <span className="material-symbols-outlined text-[14px]">call</span> Teléfono
                </h3>
                <p className="font-body text-sm text-on-surface">{user.numero || 'No registrado'}</p>
             </div>
 
             <div className="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/10 sm:col-span-2">
-               <h3 className="text-xs font-label font-bold text-stone-500 uppercase tracking-wider mb-1 flex items-center gap-1">
+               <h3 className="text-xs font-label font-bold text-stone-500 dark:text-on-surface-variant uppercase tracking-wider mb-1 flex items-center gap-1">
                  <span className="material-symbols-outlined text-[14px]">domain</span> Departamento
                </h3>
                <p className="font-body text-sm text-on-surface uppercase">{user.area || 'No especificado'}</p>

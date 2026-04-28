@@ -79,13 +79,13 @@ const NewWorkstationModal = () => {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-stone-900/60 backdrop-blur-sm p-4 opacity-0 pointer-events-none transition-opacity duration-300 target:opacity-100 target:pointer-events-auto" id="modal-new-workstation">
-      <div className="bg-white w-full max-w-lg rounded-xl shadow-2xl overflow-hidden relative max-h-[90vh] flex flex-col">
-        <div className="bg-stone-50 px-8 py-6 border-b border-stone-100 flex justify-between items-center shrink-0">
+      <div className="bg-surface w-full max-w-lg rounded-xl shadow-2xl overflow-hidden relative max-h-[90vh] flex flex-col">
+        <div className="bg-surface-container px-8 py-6 border-b border-outline-variant/10 flex justify-between items-center shrink-0">
           <div>
             <h2 className="text-2xl font-headline font-bold text-on-surface tracking-tight uppercase">
               Registrar Nuevo Equipo
             </h2>
-            <p className="text-xs font-label text-stone-500 tracking-widest uppercase">
+            <p className="text-xs font-label text-stone-500 dark:text-on-surface-variant tracking-widest uppercase">
               Ingresa las especificaciones del hardware
             </p>
           </div>
@@ -149,10 +149,10 @@ const NewWorkstationModal = () => {
             </div>
 
             <div className="pt-4 flex gap-4 shrink-0">
-              <a className="flex-1 flex items-center justify-center py-4 text-stone-500 font-headline font-bold text-sm uppercase tracking-wider rounded-md bg-stone-100 hover:bg-stone-200 transition-colors" href="#equipos">
+              <a className="flex-1 flex items-center justify-center py-4 text-on-surface-variant font-headline font-bold text-sm uppercase tracking-wider rounded-md bg-surface-container hover:bg-surface-container-high transition-colors" href="#equipos">
                 Cancelar
               </a>
-              <button disabled={isSubmitting} className="flex-[2] py-4 bg-gradient-to-br from-primary to-primary-container text-white font-headline font-bold text-sm uppercase tracking-wider rounded-md transition-transform active:scale-95 shadow-lg shadow-primary/20 disabled:opacity-50 disabled:scale-100" type="submit">
+              <button disabled={isSubmitting} className="flex-[2] py-4 bg-gradient-to-br from-primary to-primary-container text-on-primary font-headline font-bold text-sm uppercase tracking-wider rounded-md transition-transform active:scale-95 shadow-lg shadow-primary/20 disabled:opacity-50 disabled:scale-100" type="submit">
                 {isSubmitting ? 'Registrando...' : 'Registrar Equipo'}
               </button>
             </div>
