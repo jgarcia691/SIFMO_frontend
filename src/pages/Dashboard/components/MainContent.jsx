@@ -63,9 +63,9 @@ const MainContent = ({ activeView }) => {
   };
 
   const typeColors = {
-    'reparacion de estacion de trabajo': 'bg-red-100 text-red-800',
-    'reparacion de periferico': 'bg-stone-100 text-stone-600',
-    'solicitud': 'bg-blue-100 text-blue-800'
+    'reparacion de estacion de trabajo': 'bg-red-50 dark:bg-red-900/30 text-stone-950 dark:text-red-400 border-2 border-stone-900 dark:border-none font-bold',
+    'reparacion de periferico': 'bg-purple-50 dark:bg-purple-900/30 text-stone-950 dark:text-purple-400 border-2 border-stone-900 dark:border-none font-bold',
+    'solicitud': 'bg-blue-50 dark:bg-blue-900/30 text-stone-950 dark:text-blue-400 border-2 border-stone-900 dark:border-none font-bold'
   };
 
   const statusIndicators = {

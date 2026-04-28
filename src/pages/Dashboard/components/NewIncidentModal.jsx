@@ -47,9 +47,12 @@ const NewIncidentModal = () => {
   useEffect(() => {
     const fetchEquipos = async () => {
       try {
-        const response = await fetch(`${API_URL}/equipos/`);
+        const storedUser = localStorage.getItem('user');
+        const user = storedUser ? JSON.parse(storedUser) : null;
+        const response = await fetch(`${API_URL}/equipos/?ficha=${user?.ficha}&rol=${user?.rol}`);
         if (response.ok) {
           const data = await response.json();
+          console.log('Equipos recibidos para el modal:', data);
           setEquipos(data);
         }
       } catch (error) {
@@ -253,9 +256,15 @@ const NewIncidentModal = () => {
                       <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">Seleccionar Equipo (FMO)</label>
                       <select name="cpu_fmo" value={formData.cpu_fmo} onChange={handleChange} className="w-full bg-surface-container-low border-0 border-b-2 border-outline-variant/20 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" required>
                         <option value="">Seleccione un equipo</option>
-                        {equipos.map(equipo => (
+                        {equipos
+                          .filter(e => {
+                            const tipo = (e.tipo || '').toLowerCase().trim();
+                            // Buscamos coincidencia parcial para evitar problemas con acentos o espacios
+                            return tipo.includes('estacion') || tipo.includes('trabajo') || tipo === '';
+                          })
+                          .map(equipo => (
                           <option key={equipo.fmo} value={equipo.fmo}>
-                            {equipo.fmo} - {equipo.nombre}
+                            {equipo.fmo} - {equipo.nombre} {equipo.tipo ? `(${equipo.tipo})` : ''}
                           </option>
                         ))}
                       </select>

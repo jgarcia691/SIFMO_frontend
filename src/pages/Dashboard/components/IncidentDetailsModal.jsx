@@ -264,7 +264,7 @@ const IncidentDetailsModal = ({ incident, isOpen, onClose }) => {
                 {/* Seccion de Periferico - Se muestra si hay datos de periferico */}
                 {(incident.periferico_fmo !== undefined && incident.periferico_fmo !== null) && (
                   <div className="space-y-4 text-base">
-                    <div className="bg-stone-50 p-4 rounded-xl border border-stone-100">
+                    <div className="bg-surface-container-low p-4 rounded-xl border border-outline-variant/10">
                       <div className="flex items-center gap-3 mb-4">
                         <div className="bg-primary text-white p-2 rounded-lg">
                           <span className="material-symbols-outlined text-xl">devices</span>
@@ -295,7 +295,7 @@ const IncidentDetailsModal = ({ incident, isOpen, onClose }) => {
                       </div>
                     </div>
 
-                    <div className="p-4 bg-red-50/30 rounded-xl border border-red-100">
+                    <div className="p-4 bg-red-500/5 dark:bg-red-500/10 rounded-xl border border-red-500/10">
                       <p className="text-[10px] font-label font-bold text-red-600 uppercase tracking-widest mb-1 flex items-center gap-1">
                         <span className="material-symbols-outlined text-sm">report_problem</span>
                         Falla Reportada
