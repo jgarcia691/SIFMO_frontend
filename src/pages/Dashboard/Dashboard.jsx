@@ -9,6 +9,8 @@ import NewWorkstationModal from './components/NewWorkstationModal';
 import MobileNav from './components/MobileNav';
 import FloatingActionButton from './components/FloatingActionButton';
 import UsersContent from './components/UsersContent';
+import AnalystContent from './components/AnalystContent';
+import ProfileContent from './components/ProfileContent';
 
 const Dashboard = () => {
   const [currentView, setCurrentView] = useState('dashboard');
@@ -29,6 +31,8 @@ const Dashboard = () => {
         setCurrentView('incidents');
       } else if (hash === '#users') {
         setCurrentView('users');
+      } else if (hash === '#profile') {
+        setCurrentView('profile');
       } else {
         setCurrentView('dashboard');
       }
@@ -37,7 +41,20 @@ const Dashboard = () => {
     window.addEventListener('hashchange', handleHashChange);
     handleHashChange(); // Initial check
 
-    return () => window.removeEventListener('hashchange', handleHashChange);
+    // Listener para actualización de datos de usuario (desde ProfileContent)
+    const handleUserUpdate = () => {
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        const user = JSON.parse(storedUser);
+        setUserRole(user.rol);
+      }
+    };
+    window.addEventListener('user-updated', handleUserUpdate);
+
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+      window.removeEventListener('user-updated', handleUserUpdate);
+    };
   }, []);
 
   return (
@@ -45,10 +62,14 @@ const Dashboard = () => {
       <TopNav />
       <Sidebar activeView={currentView} />
       {(() => {
+        if (currentView === 'profile') return <ProfileContent />;
         if (currentView === 'equipos') return <EquiposContent />;
-        if (userRole === 'Administrador' && currentView === 'users') return <UsersContent />;
-        if (userRole === 'Administrador' && (currentView === 'dashboard' || currentView === 'incidents')) {
+        if (userRole?.toLowerCase() === 'administrador' && currentView === 'users') return <UsersContent />;
+        if (userRole?.toLowerCase() === 'administrador' && (currentView === 'dashboard' || currentView === 'incidents')) {
            return <AdminContent activeView={currentView} />;
+        }
+        if (userRole?.toLowerCase() === 'analista' && (currentView === 'dashboard' || currentView === 'incidents')) {
+           return <AnalystContent activeView={currentView} />;
         }
         return <MainContent activeView={currentView} />;
       })()}

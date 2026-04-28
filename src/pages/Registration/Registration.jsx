@@ -1,10 +1,14 @@
 import React from 'react';
 import AuthHero from '../../components/AuthHero';
 import RegistrationForm from './components/RegistrationForm';
+import ThemeToggle from '../../components/ThemeToggle';
 
 const Registration = () => {
     return (
-        <div className="bg-surface font-body text-on-surface min-h-screen flex items-center justify-center p-4">
+        <div className="bg-surface font-body text-on-surface min-h-screen flex items-center justify-center p-4 relative">
+            <div className="absolute top-8 right-8 z-10">
+                <ThemeToggle />
+            </div>
             {/* Suppressing Navigation Shell for Transactional Registration Page */}
             <main className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-12 overflow-hidden bg-surface-container-lowest rounded-xl shadow-2xl">
                 <AuthHero />

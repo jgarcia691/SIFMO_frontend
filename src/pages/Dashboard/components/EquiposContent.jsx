@@ -33,7 +33,8 @@ const EquiposContent = () => {
   useEffect(() => {
     const fetchEquipos = async () => {
       try {
-        const response = await fetch(`${API_URL}/equipos/`);
+        const user = JSON.parse(localStorage.getItem('user'));
+        const response = await fetch(`${API_URL}/equipos/?ficha=${user?.ficha}&rol=${user?.rol}`);
         if (response.ok) {
           const data = await response.json();
           setEquipos(data);
@@ -57,6 +58,27 @@ const EquiposContent = () => {
     window.addEventListener('workstation-created', handleRefresh);
     return () => window.removeEventListener('workstation-created', handleRefresh);
   }, []);
+
+  const handleDeleteEquipo = async (fmo) => {
+    if (!window.confirm(`¿Está seguro de que desea eliminar el equipo #${fmo}? Esta acción no se puede deshacer.`)) return;
+    
+    try {
+      const response = await fetch(`${API_URL}/equipos/${fmo}`, {
+        method: 'DELETE'
+      });
+      if (response.ok) {
+        alert('Equipo eliminado con éxito');
+        setEquipos(prev => prev.filter(e => e.fmo !== fmo));
+      } else {
+        alert('Error al eliminar el equipo');
+      }
+    } catch (error) {
+      console.error("Error deleting equipo:", error);
+    }
+  };
+
+  const currentUser = JSON.parse(localStorage.getItem('user'));
+  const isAdmin = currentUser?.rol?.toLowerCase() === 'administrador';
 
   const statusColors = {
     'Operativo': 'bg-green-100 text-green-800',
@@ -98,7 +120,9 @@ const EquiposContent = () => {
               <thead>
                 <tr className="bg-stone-50 border-b border-stone-100">
                   <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">FMO</th>
+                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Tipo</th>
                   <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Nombre / Identificador</th>
+                  {isAdmin && <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Propietario</th>}
                   <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Área</th>
                   <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Marca</th>
                   <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Serial</th>
@@ -112,11 +136,25 @@ const EquiposContent = () => {
                       <span className="font-label font-bold text-primary">#{equipo.fmo}</span>
                     </td>
                     <td className="px-6 py-4">
+                      <span className="text-[10px] font-label font-black uppercase bg-stone-100 text-stone-500 px-2 py-1 rounded tracking-tighter">
+                        {equipo.tipo || 'Desconocido'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <span className="material-symbols-outlined text-stone-300 text-lg">computer</span>
+                        <span className="material-symbols-outlined text-stone-300 text-lg">
+                          {equipo.tipo === 'estacion de trabajo' ? 'desktop_windows' : 'devices_other'}
+                        </span>
                         <span className="font-headline font-bold text-on-surface uppercase text-sm">{equipo.nombre}</span>
                       </div>
                     </td>
+                    {isAdmin && (
+                      <td className="px-6 py-4">
+                        <span className="text-xs text-primary font-bold uppercase tracking-tighter">
+                          {equipo.propietario_nombre || 'Sin asignar'}
+                        </span>
+                      </td>
+                    )}
                     <td className="px-6 py-4">
                       <span className="text-sm text-on-surface-variant font-body">{equipo.area_nombre || 'Sin área'}</span>
                     </td>
@@ -136,7 +174,11 @@ const EquiposContent = () => {
                         <button className="p-2 text-stone-400 hover:text-primary transition-colors rounded-full hover:bg-stone-100">
                           <span className="material-symbols-outlined text-xl">edit</span>
                         </button>
-                        <button className="p-2 text-stone-400 hover:text-error transition-colors rounded-full hover:bg-stone-100">
+                        <button 
+                          onClick={() => handleDeleteEquipo(equipo.fmo)}
+                          className="p-2 text-stone-400 hover:text-error transition-colors rounded-full hover:bg-stone-100"
+                          title="Eliminar Equipo"
+                        >
                           <span className="material-symbols-outlined text-xl">delete</span>
                         </button>
                       </div>

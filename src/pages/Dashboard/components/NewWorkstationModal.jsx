@@ -8,6 +8,7 @@ const NewWorkstationModal = () => {
   const [formData, setFormData] = useState({
     fmo: '',
     area_fk: '',
+    tipo: '',
     nombre: '',
     serial: '',
     marca_fk: ''
@@ -39,12 +40,18 @@ const NewWorkstationModal = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
+    // Obtener el usuario actual
+    const storedUser = localStorage.getItem('user');
+    const user = storedUser ? JSON.parse(storedUser) : null;
+
     const payload = {
       fmo: parseInt(formData.fmo),
       area_fk: parseInt(formData.area_fk),
+      tipo: formData.tipo,
       nombre: formData.nombre,
       serial: formData.serial,
-      marca_fk: parseInt(formData.marca_fk)
+      marca_fk: parseInt(formData.marca_fk),
+      propietario_ficha: user?.ficha || null
     };
 
     try {
@@ -93,14 +100,31 @@ const NewWorkstationModal = () => {
                 <input name="fmo" value={formData.fmo} onChange={handleChange} type="number" className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" placeholder="Ej: 10245" required />
               </div>
               <div>
-                <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">Área / Departamento</label>
-                <select name="area_fk" value={formData.area_fk} onChange={handleChange} className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" required>
-                  <option value="">Seleccione un área</option>
-                  {areas.map(area => (
-                    <option key={area.id} value={area.id}>{area.nombre}</option>
-                  ))}
+                <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">Tipo de Equipo</label>
+                <select name="tipo" value={formData.tipo} onChange={handleChange} className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" required>
+                  <option value="">Seleccione tipo</option>
+                  <option value="estacion de trabajo">Estación de Trabajo</option>
+                  <option value="monitor">Monitor</option>
+                  <option value="teclado">Teclado</option>
+                  <option value="scaner">Scanner</option>
+                  <option value="pendrive">Pendrive</option>
+                  <option value="regulador">Regulador</option>
+                  <option value="impresora">Impresora</option>
+                  <option value="mouse">Mouse</option>
+                  <option value="toner">Toner</option>
+                  <option value="otros">Otros</option>
                 </select>
               </div>
+            </div>
+
+            <div>
+              <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">Área / Departamento</label>
+              <select name="area_fk" value={formData.area_fk} onChange={handleChange} className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" required>
+                <option value="">Seleccione un área</option>
+                {areas.map(area => (
+                  <option key={area.id} value={area.id}>{area.nombre}</option>
+                ))}
+              </select>
             </div>
 
             <div>

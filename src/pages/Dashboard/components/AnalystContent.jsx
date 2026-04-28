@@ -1,23 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import IncidentDetailsModal from './IncidentDetailsModal';
 import { API_URL } from '../../../config/api';
+import IncidentDetailsModal from './IncidentDetailsModal';
 
-const AdminContent = ({ activeView }) => {
+const AnalystContent = ({ activeView }) => {
+  const [incidents, setIncidents] = useState([]);
+  const [selectedIncident, setSelectedIncident] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
     total: 0,
     pending: 0,
-    resolved: 0,
-    mttr: '4.2h'
+    resolved: 0
   });
-  const [incidents, setIncidents] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedIncident, setSelectedIncident] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchIncidents = async () => {
       try {
-        const response = await fetch(`${API_URL}/incidentes/listar/`);
+        const storedUser = localStorage.getItem('user');
+        const user = storedUser ? JSON.parse(storedUser) : null;
+        
+        if (!user) {
+          setLoading(false);
+          return;
+        }
+
+        const response = await fetch(`${API_URL}/incidentes/listar/analista/${user.ficha}`);
         if (response.ok) {
           const data = await response.json();
           // Formatear fechas
@@ -35,22 +42,23 @@ const AdminContent = ({ activeView }) => {
           }));
           setIncidents(formattedData);
           
-          // Calcular estadísticas reales
-          const total = data.length;
-          const pending = data.filter(i => i.status === 'Pendiente' || i.status === 'En revisión').length;
-          const resolved = data.filter(i => i.status === 'Listo' || i.status === 'Entregado').length;
+          // Calcular estadísticas
+          const total = formattedData.length;
+          const pending = formattedData.filter(i => i.status === 'Pendiente' || i.status === 'En revisión').length;
+          const resolved = formattedData.filter(i => i.status === 'Listo' || i.status === 'Entregado').length;
           
-          setStats(prev => ({ ...prev, total, pending, resolved }));
+          setStats({ total, pending, resolved });
         }
       } catch (error) {
-        console.error('Error fetching admin data:', error);
+        console.error('Error al cargar incidentes del analista:', error);
       } finally {
         setLoading(false);
       }
     };
-    fetchData();
 
-    const handleRefresh = () => fetchData();
+    fetchIncidents();
+    
+    const handleRefresh = () => fetchIncidents();
     window.addEventListener('incident-created', handleRefresh);
     return () => window.removeEventListener('incident-created', handleRefresh);
   }, []);
@@ -85,19 +93,19 @@ const AdminContent = ({ activeView }) => {
         <header className="mb-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
           <div className="space-y-2">
             <h1 className="text-3xl md:text-5xl font-headline font-black text-on-surface uppercase tracking-tighter leading-none mb-2">
-              Panel de <span className="text-primary italic">Control</span>
+              Panel de <span className="text-primary italic">Analista</span>
             </h1>
-            <p className="text-stone-500 font-label uppercase tracking-widest text-xs">Administración Global SIFMO</p>
+            <p className="text-stone-500 font-label uppercase tracking-widest text-xs">Gestión de Incidencias Asignadas</p>
           </div>
 
           <div className="flex items-center gap-2 md:gap-4 bg-surface-container-low p-2 md:p-3 rounded-2xl border border-outline-variant/10 scale-90 md:scale-100 origin-left">
             <div className="px-3 md:px-4 text-center">
-              <p className="text-[8px] md:text-[10px] font-label font-bold text-stone-400 uppercase tracking-widest">Total</p>
+              <p className="text-[8px] md:text-[10px] font-label font-bold text-stone-400 uppercase tracking-widest">Asignados</p>
               <p className="text-xl md:text-2xl font-headline font-bold text-on-surface">{stats.total}</p>
             </div>
             <div className="w-[1px] h-8 md:h-10 bg-stone-200"></div>
             <div className="px-3 md:px-4 text-center">
-              <p className="text-[8px] md:text-[10px] font-label font-bold text-amber-500 uppercase tracking-widest">Espera</p>
+              <p className="text-[8px] md:text-[10px] font-label font-bold text-amber-500 uppercase tracking-widest">Pendientes</p>
               <p className="text-xl md:text-2xl font-headline font-bold text-on-surface">{stats.pending}</p>
             </div>
             <div className="w-[1px] h-8 md:h-10 bg-stone-200"></div>
@@ -111,19 +119,24 @@ const AdminContent = ({ activeView }) => {
         <div className="mb-8">
           <h2 className="text-2xl font-headline font-bold text-on-surface uppercase tracking-tight">
             {activeView === 'incidents' ? (
-              <>Historial de <span className="text-primary">Incidencias</span></>
+              <>Historial de <span className="text-primary">Reparaciones</span></>
             ) : (
-              <>Incidencias <span className="text-primary">Pendientes</span></>
+              <>Incidencias <span className="text-primary">Asignadas</span></>
             )}
           </h2>
           <p className="text-xs text-stone-500 font-label uppercase tracking-widest">
-            {activeView === 'incidents' ? 'Todos los registros' : 'Todos los departamentos'}
+            {activeView === 'incidents' ? 'Todos tus trabajos completados' : 'Tareas por atender'}
           </p>
         </div>
 
         {loading ? (
           <div className="flex justify-center py-20">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          </div>
+        ) : incidents.length === 0 ? (
+          <div className="text-center py-20 bg-surface-container-lowest rounded-xl border border-dashed border-stone-200">
+             <span className="material-symbols-outlined text-stone-300 text-6xl mb-4">task</span>
+             <p className="text-on-surface-variant font-body uppercase tracking-widest text-sm">No tienes incidencias asignadas actualmente.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -136,7 +149,7 @@ const AdminContent = ({ activeView }) => {
               const statusStyle = statusIndicators[incident.status] || { color: 'bg-stone-500', text: 'text-stone-700', pulse: false };
               const typeClass = typeColors[incident.tipo] || 'bg-stone-100 text-stone-800';
 
-              if (activeView === 'incidents') return null; // We render the table below for this view
+              if (activeView === 'incidents') return null;
 
               return (
                 <div 
@@ -146,16 +159,14 @@ const AdminContent = ({ activeView }) => {
                 >
                   <div className="flex justify-between items-start mb-6">
                     <div className="flex flex-col gap-1">
-                      <span className="text-[10px] font-label font-bold text-stone-400"># {incident.id} • SOLICITANTE: {incident.solicitante || incident.cliente}</span>
+                      <span className="text-[10px] font-label font-bold text-stone-400"># {incident.id} • CLIENTE: {incident.solicitante}</span>
                       <div className="flex items-center gap-2">
                         <span className={`${typeClass} text-[10px] font-label font-black px-2 py-1 rounded-sm uppercase tracking-tighter w-fit`}>
                           {incident.tipo}
                         </span>
-                        {incident.encargado_nombre && (
-                          <span className="text-[10px] font-label font-bold text-primary bg-primary/5 px-2 py-1 rounded-sm border border-primary/10 uppercase tracking-tighter">
-                            Asignado: {incident.encargado_nombre}
-                          </span>
-                        )}
+                        <span className="text-[10px] font-label font-bold text-primary bg-primary/5 px-2 py-1 rounded-sm border border-primary/10 uppercase tracking-tighter">
+                          Asignado a ti
+                        </span>
                       </div>
                     </div>
                     <span className="text-stone-400 text-xs font-label">{incident.date}</span>
@@ -166,7 +177,7 @@ const AdminContent = ({ activeView }) => {
                   </h3>
                   
                   <p className="text-sm text-on-surface-variant font-body mb-6 line-clamp-2">
-                    {incident.observacion || 'Sin observaciones registradas.'}
+                    {incident.observacion || 'Sin comentarios del analista.'}
                   </p>
                   
                   <div className="flex items-center justify-between mt-auto">
@@ -174,9 +185,12 @@ const AdminContent = ({ activeView }) => {
                       <span className={`w-2 h-2 rounded-full ${statusStyle.color} ${statusStyle.pulse ? 'animate-pulse' : ''}`}></span>
                       <span className={`text-[10px] font-label font-bold uppercase ${statusStyle.text}`}>{incident.status}</span>
                     </div>
-                    <button className="text-primary material-symbols-outlined hover:bg-primary-fixed p-1 rounded-full transition-colors group-hover:bg-primary-fixed">
-                      open_in_new
-                    </button>
+                    <div className="flex items-center gap-4">
+                        <span className="text-[10px] font-label font-bold text-stone-400 uppercase">{incident.area}</span>
+                        <button className="text-primary material-symbols-outlined hover:bg-primary-fixed p-1 rounded-full transition-colors group-hover:bg-primary-fixed">
+                        open_in_new
+                        </button>
+                    </div>
                   </div>
                 </div>
               );
@@ -191,7 +205,7 @@ const AdminContent = ({ activeView }) => {
               <thead>
                 <tr className="bg-stone-50 border-b border-stone-100">
                   <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">ID</th>
-                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Tipo / Solicitante</th>
+                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Tipo / Cliente</th>
                   <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Departamento</th>
                   <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Fecha</th>
                   <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400">Estado</th>
@@ -201,7 +215,6 @@ const AdminContent = ({ activeView }) => {
               <tbody className="divide-y divide-stone-100">
                 {incidents.map((incident) => {
                   const statusStyle = statusIndicators[incident.status] || { color: 'bg-stone-500', text: 'text-stone-700', pulse: false };
-                  const typeClass = typeColors[incident.tipo] || 'bg-stone-100 text-stone-800';
                   
                   return (
                     <tr key={incident.id} className="hover:bg-stone-50/50 transition-colors group">
@@ -211,7 +224,7 @@ const AdminContent = ({ activeView }) => {
                       <td className="px-6 py-4">
                         <div className="flex flex-col">
                           <span className="font-headline font-bold text-on-surface uppercase text-sm">{incident.tipo}</span>
-                          <span className="text-[10px] font-label text-stone-400 uppercase">{incident.solicitante} ({incident.cliente})</span>
+                          <span className="text-[10px] font-label text-stone-400 uppercase">{incident.solicitante}</span>
                         </div>
                       </td>
                       <td className="px-6 py-4">
@@ -252,4 +265,4 @@ const AdminContent = ({ activeView }) => {
   );
 };
 
-export default AdminContent;
+export default AnalystContent;

@@ -31,7 +31,8 @@ const NewIncidentModal = () => {
     area: '',
     // para periféricos y solicitudes
     tipo_solicitud: '',
-    falla: ''
+    falla: '',
+    fmo: ''
   });
 
   const handleChange = (e) => {
@@ -84,7 +85,8 @@ const NewIncidentModal = () => {
             urgencia: 'Baja',
             area: '',
             tipo_solicitud: '',
-            falla: ''
+            falla: '',
+            fmo: ''
           });
         }, 300); // Wait for transition
       }
@@ -143,12 +145,13 @@ const NewIncidentModal = () => {
         password: formData.password
       } : null,
       peripheralData: incidentType === 'Reparación de periférico' ? {
-        tipo_solicitud: formData.tipo_solicitud,
+        fmo: parseInt(formData.fmo) || 0,
         falla: formData.falla
       } : null,
       solicitudData: incidentType === 'Solicitud' ? {
         tipo_solicitud: formData.tipo_solicitud,
-        descripcion: formData.descripcion
+        descripcion: formData.descripcion,
+        area_id: user.id_area // Usamos el área del usuario solicitante
       } : null
     };
 
@@ -314,19 +317,69 @@ const NewIncidentModal = () => {
               ) : incidentType === 'Reparación de periférico' ? (
                 <div className="space-y-6">
                   <div>
-                    <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">Tipo de Periférico</label>
-                    <select name="tipo_solicitud" value={formData.tipo_solicitud} onChange={handleChange} title="Tipo de Periférico" className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" required>
-                      <option value="">Seleccione un periférico</option>
-                      <option value="Monitor">Monitor</option>
-                      <option value="Teclado">Teclado</option>
-                      <option value="Mouse">Mouse</option>
-                      <option value="Impresora">Impresora</option>
-                      <option value="Otro">Otro</option>
+                    <label className="block text-xs font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2 flex items-center gap-2">
+                      <span className="material-symbols-outlined text-sm text-primary">devices_other</span>
+                      Seleccionar Periférico (FMO)
+                    </label>
+                    <select 
+                      name="fmo" 
+                      value={formData.fmo} 
+                      onChange={handleChange} 
+                      className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" 
+                      required
+                    >
+                      <option value="">-- Busque o seleccione el equipo --</option>
+                      {equipos
+                        .filter(e => e.tipo !== 'estacion de trabajo')
+                        .map(equipo => (
+                        <option key={equipo.fmo} value={equipo.fmo}>
+                          #{equipo.fmo} - {equipo.nombre} ({equipo.tipo})
+                        </option>
+                      ))}
                     </select>
                   </div>
+
+                  {formData.fmo && (() => {
+                    const selected = equipos.find(e => e.fmo.toString() === formData.fmo.toString());
+                    return selected ? (
+                      <div className="bg-primary/5 p-4 rounded-xl border border-primary/10 animate-in fade-in slide-in-from-top-1">
+                        <p className="text-[10px] font-label font-bold text-primary uppercase tracking-widest mb-2">Información del Equipo Seleccionado</p>
+                        <div className="grid grid-cols-2 gap-4 text-xs">
+                          <div>
+                            <p className="text-stone-400 uppercase text-[9px] mb-0.5">Nombre</p>
+                            <p className="font-bold text-on-surface">{selected.nombre}</p>
+                          </div>
+                          <div>
+                            <p className="text-stone-400 uppercase text-[9px] mb-0.5">Marca</p>
+                            <p className="font-bold text-on-surface">{selected.marca_nombre || 'Genérica'}</p>
+                          </div>
+                          <div>
+                            <p className="text-stone-400 uppercase text-[9px] mb-0.5">Área Original</p>
+                            <p className="font-bold text-on-surface">{selected.area_nombre || 'N/A'}</p>
+                          </div>
+                          <div>
+                            <p className="text-stone-400 uppercase text-[9px] mb-0.5">Serial</p>
+                            <p className="font-bold text-on-surface">{selected.serial || 'N/A'}</p>
+                          </div>
+                        </div>
+                      </div>
+                    ) : null;
+                  })()}
+
                   <div>
-                    <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">Falla Reportada</label>
-                    <textarea name="falla" value={formData.falla} onChange={handleChange} title="Falla Reportada" className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" placeholder="Describa el problema del periférico..." rows="4" required></textarea>
+                    <label className="block text-xs font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2 flex items-center gap-2">
+                      <span className="material-symbols-outlined text-sm text-primary">report_problem</span>
+                      Falla Reportada
+                    </label>
+                    <textarea 
+                      name="falla" 
+                      value={formData.falla} 
+                      onChange={handleChange} 
+                      title="Falla Reportada" 
+                      className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-base rounded-t-md transition-all min-h-[120px]" 
+                      placeholder="Describa detalladamente el problema que presenta el equipo..." 
+                      required
+                    ></textarea>
                   </div>
                 </div>
               ) : (

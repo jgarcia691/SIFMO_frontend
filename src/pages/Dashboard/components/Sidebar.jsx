@@ -3,12 +3,14 @@ import { Link } from 'react-router-dom';
 
 const Sidebar = ({ activeView }) => {
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isAnalyst, setIsAnalyst] = useState(false);
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       const user = JSON.parse(storedUser);
-      setIsAdmin(user.rol === 'Administrador');
+      setIsAdmin(user.rol?.toLowerCase() === 'administrador');
+      setIsAnalyst(user.rol?.toLowerCase() === 'analista');
     }
   }, []);
 
@@ -33,7 +35,9 @@ const Sidebar = ({ activeView }) => {
       <nav className="flex-1 space-y-1">
         <a className={getLinkClasses('dashboard')} href="#dashboard">
           <span className="material-symbols-outlined text-xl shrink-0">dashboard</span>
-          <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">{isAdmin ? 'Panel de Control' : 'Dashboard'}</span>
+          <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            {isAdmin ? 'Panel de Control' : (isAnalyst ? 'Asignaciones' : 'Dashboard')}
+          </span>
         </a>
         <a className={getLinkClasses('incidents')} href="#incidents">
           <span className="material-symbols-outlined text-xl shrink-0">report_problem</span>
