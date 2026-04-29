@@ -33,9 +33,10 @@ const Dashboard = () => {
         setCurrentView('users');
       } else if (hash === '#profile') {
         setCurrentView('profile');
-      } else {
+      } else if (hash === '#dashboard' || hash === '' || hash === '#') {
         setCurrentView('dashboard');
       }
+      // Si el hash es un modal (ej: #modal-new-workstation), no cambiamos la vista actual
     };
 
     window.addEventListener('hashchange', handleHashChange);

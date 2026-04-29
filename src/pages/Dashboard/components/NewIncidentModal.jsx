@@ -60,7 +60,11 @@ const NewIncidentModal = () => {
       }
     };
     fetchEquipos();
-
+    
+    const handleRefresh = () => fetchEquipos();
+    window.addEventListener('incident-created', handleRefresh);
+    window.addEventListener('workstation-created', handleRefresh);
+    
     const handleHashChange = () => {
       if (window.location.hash !== '#modal-new-incident') {
         setTimeout(() => {
@@ -95,7 +99,11 @@ const NewIncidentModal = () => {
       }
     };
     window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
+    return () => {
+      window.removeEventListener('incident-created', handleRefresh);
+      window.removeEventListener('workstation-created', handleRefresh);
+      window.removeEventListener('hashchange', handleHashChange);
+    };
   }, []);
 
   const handleSelectType = (type) => {

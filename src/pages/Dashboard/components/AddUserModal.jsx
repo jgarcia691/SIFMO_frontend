@@ -111,7 +111,7 @@ const AddUserModal = ({ isOpen, onClose }) => {
                     Nombre Completo
                 </label>
                 <input 
-                    className="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg h-12 px-4 text-sm font-headline font-semibold text-on-surface focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all" 
+                    className="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg h-12 px-4 text-sm font-headline font-semibold focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all" 
                     id="nombre" 
                     name="nombre"
                     value={formData.nombre}
@@ -128,7 +128,7 @@ const AddUserModal = ({ isOpen, onClose }) => {
                         Número de Ficha
                     </label>
                     <input 
-                        className="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg h-12 px-4 text-sm font-headline font-semibold text-on-surface focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all" 
+                        className="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg h-12 px-4 text-sm font-headline font-semibold focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all" 
                         id="ficha" 
                         name="ficha"
                         value={formData.ficha}
@@ -144,7 +144,7 @@ const AddUserModal = ({ isOpen, onClose }) => {
                         Departamento
                     </label>
                     <select 
-                        className="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg h-12 px-4 text-sm font-headline font-semibold text-on-surface focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all" 
+                        className="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg h-12 px-4 text-sm font-headline font-semibold focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all" 
                         id="id_area" 
                         name="id_area"
                         value={formData.id_area}
@@ -163,7 +163,7 @@ const AddUserModal = ({ isOpen, onClose }) => {
                         Rol de Sistema
                     </label>
                     <select 
-                        className="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg h-12 px-4 text-sm font-headline font-semibold text-on-surface focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all" 
+                        className="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg h-12 px-4 text-sm font-headline font-semibold focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all" 
                         id="rol" 
                         name="rol"
                         value={formData.rol}
@@ -180,7 +180,7 @@ const AddUserModal = ({ isOpen, onClose }) => {
                         Teléfono (Opcional)
                     </label>
                     <input 
-                        className="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg h-12 px-4 text-sm font-headline font-semibold text-on-surface focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all" 
+                        className="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg h-12 px-4 text-sm font-headline font-semibold focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all" 
                         id="numero" 
                         name="numero"
                         value={formData.numero}
@@ -196,7 +196,7 @@ const AddUserModal = ({ isOpen, onClose }) => {
                     Correo Electrónico (Opcional)
                 </label>
                 <input 
-                    className="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg h-12 px-4 text-sm font-headline font-semibold text-on-surface focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all" 
+                    className="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg h-12 px-4 text-sm font-headline font-semibold focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all" 
                     id="correo" 
                     name="correo"
                     value={formData.correo}

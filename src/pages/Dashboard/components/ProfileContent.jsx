@@ -27,7 +27,7 @@ const ProfileContent = () => {
 
     const fetchAreas = async () => {
       try {
-        const response = await fetch(`${API_URL}/areas`);
+        const response = await fetch(`${API_URL}/areas/listar/`);
         if (response.ok) {
           const data = await response.json();
           setAreas(data);
