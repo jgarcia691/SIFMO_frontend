@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { API_URL } from '../../../config/api';
+import { useAuth } from '../../../context/AuthContext';
 
 const LoginForm = () => {
     const navigate = useNavigate();
+    const { login } = useAuth();
     const [ficha, setFicha] = useState('');
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -28,9 +30,9 @@ const LoginForm = () => {
                 throw new Error(data.error || 'Error al iniciar sesión');
             }
 
-            // Opcional: guardar el usuario en localStorage para persistencia
+            // Usar el contexto para guardar el usuario
             if (data.user) {
-                localStorage.setItem('user', JSON.stringify(data.user));
+                login(data.user);
             }
 
             navigate('/dashboard');

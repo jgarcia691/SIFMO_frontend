@@ -1,18 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useAuth } from '../../../context/AuthContext';
 
 const Sidebar = ({ activeView }) => {
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [isAnalyst, setIsAnalyst] = useState(false);
-
-  useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      const user = JSON.parse(storedUser);
-      setIsAdmin(user.rol?.toLowerCase() === 'administrador');
-      setIsAnalyst(user.rol?.toLowerCase() === 'analista');
-    }
-  }, []);
+  const { user, logout } = useAuth();
+  const isAdmin = user?.rol?.toLowerCase() === 'administrador';
+  const isAnalyst = user?.rol?.toLowerCase() === 'analista';
 
   const getLinkClasses = (view) => {
     const base = "flex items-center gap-3 px-3 py-3 font-headline text-sm uppercase font-semibold transition-transform active:scale-90 border-l-4";
@@ -61,10 +52,13 @@ const Sidebar = ({ activeView }) => {
         )}
       </nav>
       <div className="mt-auto pt-6 border-t border-outline-variant/10 space-y-4">
-        <Link className="flex items-center gap-3 px-3 py-2 text-stone-600 dark:text-on-surface-variant hover:text-primary font-headline text-sm uppercase font-semibold border-l-4 border-transparent" to="/login">
+        <button 
+          onClick={logout}
+          className="flex items-center gap-3 px-3 py-2 text-stone-600 dark:text-on-surface-variant hover:text-red-600 font-headline text-sm uppercase font-semibold border-l-4 border-transparent transition-colors w-full"
+        >
           <span className="material-symbols-outlined text-xl shrink-0">logout</span>
           <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">Cerrar Sesión</span>
-        </Link>
+        </button>
       </div>
     </aside>
   );
