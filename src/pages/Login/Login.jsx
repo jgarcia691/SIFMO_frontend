@@ -6,7 +6,7 @@ import ThemeToggle from '../../components/common/ThemeToggle';
 const Login = () => {
     return (
         <div className="bg-surface font-body text-on-surface min-h-screen flex items-center justify-center p-4 relative">
-            <div className="absolute top-8 right-8 z-10">
+            <div className="absolute top-4 right-4 md:top-8 md:right-8 z-10">
                 <ThemeToggle />
             </div>
             {/* Suppressing Navigation Shell for Transactional Login Page */}
