@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import TopNav from './components/TopNav';
-import Sidebar from './components/Sidebar';
-import MainContent from './components/MainContent';
-import EquiposContent from './components/EquiposContent';
-import AdminContent from './components/AdminContent';
-import NewIncidentModal from './components/NewIncidentModal';
-import NewWorkstationModal from './components/NewWorkstationModal';
-import MobileNav from './components/MobileNav';
-import FloatingActionButton from './components/FloatingActionButton';
-import UsersContent from './components/UsersContent';
-import AnalystContent from './components/AnalystContent';
-import ProfileContent from './components/ProfileContent';
+// Layout
+import TopNav from '../../components/layout/TopNav';
+import Sidebar from '../../components/layout/Sidebar';
+import MobileNav from '../../components/layout/MobileNav';
+import FloatingActionButton from '../../components/layout/FloatingActionButton';
+// Views
+import MainContent from './views/MainContent';
+import EquiposContent from './views/EquiposContent';
+import AdminContent from './views/AdminContent';
+import UsersContent from './views/UsersContent';
+import AnalystContent from './views/AnalystContent';
+import ProfileContent from './views/ProfileContent';
+// Modals
+import NewIncidentModal from './modals/NewIncidentModal';
+import NewWorkstationModal from './modals/NewWorkstationModal';
 
 const Dashboard = () => {
   const [currentView, setCurrentView] = useState('dashboard');
@@ -36,13 +39,11 @@ const Dashboard = () => {
       } else if (hash === '#dashboard' || hash === '' || hash === '#') {
         setCurrentView('dashboard');
       }
-      // Si el hash es un modal (ej: #modal-new-workstation), no cambiamos la vista actual
     };
 
     window.addEventListener('hashchange', handleHashChange);
     handleHashChange(); // Initial check
 
-    // Listener para actualización de datos de usuario (desde ProfileContent)
     const handleUserUpdate = () => {
       const storedUser = localStorage.getItem('user');
       if (storedUser) {
@@ -77,7 +78,7 @@ const Dashboard = () => {
       <NewIncidentModal />
       <NewWorkstationModal />
       <MobileNav activeView={currentView} />
-      <FloatingActionButton />
+      {currentView === 'dashboard' && <FloatingActionButton />}
     </div>
   );
 };

@@ -2,6 +2,8 @@
 @plugin "@tailwindcss/forms";
 @plugin "@tailwindcss/container-queries";
 
+@variant dark (&:where(.dark, .dark *));
+
 :root {
   --color-primary: #6f0001;
   --color-on-primary: #ffffff;

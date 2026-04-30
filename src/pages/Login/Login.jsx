@@ -1,7 +1,7 @@
 import React from 'react';
 import AuthHero from '../../components/AuthHero';
 import LoginForm from './components/LoginForm';
-import ThemeToggle from '../../components/ThemeToggle';
+import ThemeToggle from '../../components/common/ThemeToggle';
 
 const Login = () => {
     return (

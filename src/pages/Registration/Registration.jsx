@@ -1,7 +1,7 @@
 import React from 'react';
 import AuthHero from '../../components/AuthHero';
 import RegistrationForm from './components/RegistrationForm';
-import ThemeToggle from '../../components/ThemeToggle';
+import ThemeToggle from '../../components/common/ThemeToggle';
 
 const Registration = () => {
     return (

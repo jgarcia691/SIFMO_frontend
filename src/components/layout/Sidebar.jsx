@@ -1,4 +1,5 @@
-import { useAuth } from '../../../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
+import logo from '../../assets/logo.png';
 
 const Sidebar = ({ activeView }) => {
   const { user, logout } = useAuth();
@@ -17,8 +18,8 @@ const Sidebar = ({ activeView }) => {
     <aside className="group flex flex-col fixed left-0 top-0 pt-20 pb-8 px-4 h-screen w-20 hover:w-64 transition-[width] duration-300 ease-in-out border-r border-stone-300 dark:border-outline-variant/10 bg-stone-200 dark:bg-surface-container z-40 hidden md:flex overflow-hidden whitespace-nowrap">
       <div className="mb-8 px-2">
         <div className="flex items-center gap-3 mb-2">
-          <div className="w-8 h-8 shrink-0 bg-primary rounded flex items-center justify-center">
-            <span className="material-symbols-outlined text-on-primary text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>precision_manufacturing</span>
+          <div className="w-8 h-8 shrink-0 flex items-center justify-center overflow-hidden">
+            <img src={logo} alt="Logo SIFMO" className="w-full h-full object-contain" />
           </div>
           <h2 className="font-headline text-lg font-black text-stone-600 dark:text-on-surface-variant uppercase tracking-tight opacity-0 group-hover:opacity-100 transition-opacity duration-300">SIFMO</h2>
         </div>

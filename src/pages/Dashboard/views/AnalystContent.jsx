@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { API_URL } from '../../../config/api';
-import IncidentDetailsModal from './IncidentDetailsModal';
+import IncidentDetailsModal from '../modals/IncidentDetailsModal';
 
 const AnalystContent = ({ activeView }) => {
   const [incidents, setIncidents] = useState([]);

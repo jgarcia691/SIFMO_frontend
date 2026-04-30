@@ -1,5 +1,5 @@
-import ThemeToggle from '../../../components/ThemeToggle';
-import { useAuth } from '../../../context/AuthContext';
+import ThemeToggle from '../common/ThemeToggle';
+import { useAuth } from '../../context/AuthContext';
 
 const TopNav = () => {
   const { user, logout } = useAuth();
