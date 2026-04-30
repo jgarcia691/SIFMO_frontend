@@ -1,17 +1,27 @@
 import ThemeToggle from '../common/ThemeToggle';
 import { useAuth } from '../../context/AuthContext';
+import logo from '../../assets/logo.png';
 
 const TopNav = () => {
   const { user, logout } = useAuth();
   
   return (
-    <header className="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-stone-100/90 dark:bg-surface-container-lowest/80 backdrop-blur-xl border-b-0 shadow-sm">
+    <header className="fixed top-0 w-full z-50 flex justify-between items-center px-4 md:px-6 h-16 bg-stone-100/90 dark:bg-surface-container-lowest/80 backdrop-blur-xl border-b-0 shadow-sm">
       <div className="flex items-center gap-4">
-        <span className="text-xl font-bold uppercase tracking-tighter text-primary font-headline">Servicio Técnico de Ferrominera</span>
+        {/* Logo para Móvil */}
+        <div className="w-10 h-10 md:hidden flex items-center justify-center overflow-hidden">
+          <img src={logo} alt="Logo SIFMO" className="w-full h-full object-contain" />
+        </div>
+        
+        {/* Texto para Desktop */}
+        <span className="hidden md:block text-xl font-bold uppercase tracking-tighter text-primary font-headline">
+          Servicio Técnico de Ferrominera
+        </span>
       </div>
-      <div className="flex items-center gap-6">
+
+      <div className="flex items-center gap-2 md:gap-6">
         <ThemeToggle />
-        <div className="flex items-center gap-3 ml-4">
+        <div className="flex items-center gap-3 ml-2 md:ml-4">
           <div className="text-right hidden md:block">
             <p className="text-xs font-bold text-on-surface-variant uppercase tracking-tighter leading-none">{user?.nombre || 'Usuario'}</p>
             <p className="text-[10px] text-stone-400 dark:text-on-surface-variant font-label uppercase tracking-widest">{user?.rol || 'Invitado'}</p>

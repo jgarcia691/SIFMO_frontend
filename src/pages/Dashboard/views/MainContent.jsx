@@ -22,7 +22,6 @@ const MainContent = ({ activeView }) => {
         const response = await fetch(`${API_URL}/incidentes/listar/cliente/${user.ficha}`);
         if (response.ok) {
           const data = await response.json();
-          // Formatear fechas para que se vean bien
           const formattedData = data.map(inc => ({
             ...inc,
             date: (() => {
@@ -45,8 +44,6 @@ const MainContent = ({ activeView }) => {
     };
 
     fetchIncidents();
-    
-    // Opcional: Escuchar eventos de creación para recargar (por ahora recarga al montar)
     const handleRefresh = () => fetchIncidents();
     window.addEventListener('incident-created', handleRefresh);
     return () => window.removeEventListener('incident-created', handleRefresh);
@@ -59,7 +56,7 @@ const MainContent = ({ activeView }) => {
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setTimeout(() => setSelectedIncident(null), 200); // clear after animation
+    setTimeout(() => setSelectedIncident(null), 200);
   };
 
   const typeColors = {
@@ -160,53 +157,85 @@ const MainContent = ({ activeView }) => {
           </div>
         )}
 
-        {/* List View for History */}
+        {/* Responsive History View */}
         {!loading && activeView === 'incidents' && incidents.length > 0 && (
           <div className="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/10 overflow-hidden">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-surface-container border-b border-outline-variant/10">
-                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">ID</th>
-                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Tipo de Incidente</th>
-                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Fecha</th>
-                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Estado</th>
-                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant text-right">Acciones</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-outline-variant/10">
-                {incidents.map((incident) => {
-                  const statusStyle = statusIndicators[incident.status] || { color: 'bg-stone-500', text: 'text-stone-700', pulse: false };
-                  
-                  return (
-                    <tr key={incident.id} className="hover:bg-surface-container/30 transition-colors group">
-                      <td className="px-6 py-4">
-                        <span className="font-label font-bold text-primary">#{incident.id}</span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="font-headline font-bold text-on-surface-variant uppercase text-sm">{incident.tipo}</span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="text-xs text-stone-500 dark:text-on-surface-variant font-label">{incident.date}</span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2">
-                          <span className={`w-2 h-2 rounded-full ${statusStyle.color}`}></span>
-                          <span className={`text-[10px] font-label font-bold uppercase ${statusStyle.text}`}>{incident.status}</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <button 
-                          onClick={() => openModal(incident)}
-                          className="p-2 text-primary hover:bg-primary/10 rounded-full transition-colors material-symbols-outlined"
-                        >
-                          visibility
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+            {/* Desktop Table */}
+            <div className="hidden md:block">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-surface-container border-b border-outline-variant/10">
+                    <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">ID</th>
+                    <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Tipo de Incidente</th>
+                    <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Fecha</th>
+                    <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Estado</th>
+                    <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant text-right">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-outline-variant/10">
+                  {incidents.map((incident) => {
+                    const statusStyle = statusIndicators[incident.status] || { color: 'bg-stone-500', text: 'text-stone-700', pulse: false };
+                    return (
+                      <tr key={incident.id} className="hover:bg-surface-container/30 transition-colors group">
+                        <td className="px-6 py-4">
+                          <span className="font-label font-bold text-primary">#{incident.id}</span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className="font-headline font-bold text-on-surface-variant uppercase text-sm">{incident.tipo}</span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className="text-xs text-stone-500 dark:text-on-surface-variant font-label">{incident.date}</span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-2">
+                            <span className={`w-2 h-2 rounded-full ${statusStyle.color}`}></span>
+                            <span className={`text-[10px] font-label font-bold uppercase ${statusStyle.text}`}>{incident.status}</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                          <button 
+                            onClick={() => openModal(incident)}
+                            className="p-2 text-primary hover:bg-primary/10 rounded-full transition-colors material-symbols-outlined"
+                          >
+                            visibility
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Card List */}
+            <div className="md:hidden divide-y divide-outline-variant/10">
+              {incidents.map((incident) => {
+                const statusStyle = statusIndicators[incident.status] || { color: 'bg-stone-500', text: 'text-stone-700', pulse: false };
+                return (
+                  <div 
+                    key={incident.id} 
+                    className="p-4 flex justify-between items-center bg-surface-container-lowest active:bg-surface-container transition-colors"
+                    onClick={() => openModal(incident)}
+                  >
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-label font-bold text-primary">#{incident.id}</span>
+                        <span className="text-[10px] text-stone-400 dark:text-on-surface-variant font-label">{incident.date}</span>
+                      </div>
+                      <h4 className="font-headline font-bold text-on-surface-variant uppercase text-sm leading-tight">{incident.tipo}</h4>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className={`w-1.5 h-1.5 rounded-full ${statusStyle.color}`}></span>
+                        <span className={`text-[9px] font-label font-black uppercase ${statusStyle.text}`}>{incident.status}</span>
+                        <span className="text-[9px] text-stone-400 dark:text-on-surface-variant font-label uppercase tracking-widest ml-1">• {incident.solicitante || 'Yo'}</span>
+                      </div>
+                    </div>
+                    <button className="p-2 text-primary material-symbols-outlined">
+                      chevron_right
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
       </section>

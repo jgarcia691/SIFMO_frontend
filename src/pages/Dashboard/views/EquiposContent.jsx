@@ -30,30 +30,25 @@ const EquiposContent = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchEquipos = async () => {
-      try {
-        const user = JSON.parse(localStorage.getItem('user'));
-        const response = await fetch(`${API_URL}/equipos/?ficha=${user?.ficha}&rol=${user?.rol}`);
-        if (response.ok) {
-          const data = await response.json();
-          setEquipos(data);
-        } else {
-          setEquipos([
-            { fmo: 10245, nombre: 'PC-ADMIN-01', serial: 'SN-123', status: 'Operativo', area: 'Administración' },
-            { fmo: 10289, nombre: 'PC-PLANTA-02', serial: 'SN-456', status: 'En mantenimiento', area: 'Fundición' }
-          ]);
-        }
-      } catch (error) {
-        console.error('Error al cargar equipos:', error);
-        setEquipos([]);
-      } finally {
-        setLoading(false);
+  const fetchEquipos = async () => {
+    setLoading(true);
+    try {
+      const user = JSON.parse(localStorage.getItem('user'));
+      const response = await fetch(`${API_URL}/equipos/?ficha=${user?.ficha}&rol=${user?.rol}`);
+      if (response.ok) {
+        const data = await response.json();
+        setEquipos(data);
       }
-    };
+    } catch (error) {
+      console.error('Error al cargar equipos:', error);
+      setEquipos([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchEquipos();
-    
     const handleRefresh = () => fetchEquipos();
     window.addEventListener('workstation-created', handleRefresh);
     return () => window.removeEventListener('workstation-created', handleRefresh);
@@ -67,10 +62,7 @@ const EquiposContent = () => {
         method: 'DELETE'
       });
       if (response.ok) {
-        alert('Equipo eliminado con éxito');
         setEquipos(prev => prev.filter(e => e.fmo !== fmo));
-      } else {
-        alert('Error al eliminar el equipo');
       }
     } catch (error) {
       console.error("Error deleting equipo:", error);
@@ -80,25 +72,19 @@ const EquiposContent = () => {
   const currentUser = JSON.parse(localStorage.getItem('user'));
   const isAdmin = currentUser?.rol?.toLowerCase() === 'administrador';
 
-  const statusColors = {
-    'Operativo': 'bg-green-100 text-green-800',
-    'En mantenimiento': 'bg-amber-100 text-amber-800',
-    'Fuera de servicio': 'bg-red-100 text-red-800'
-  };
-
   return (
-    <main className="md:ml-20 pt-24 px-6 md:px-10 pb-12 bg-surface min-h-screen">
+    <main className="md:ml-20 pt-16 md:pt-24 px-4 md:px-10 pb-20 md:pb-12 bg-surface min-h-screen">
       <section className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12">
           <div className="space-y-2">
-            <h1 className="text-5xl font-headline font-black text-on-surface-variant uppercase tracking-tighter leading-none">
+            <h1 className="text-3xl md:text-5xl font-headline font-black text-on-surface-variant uppercase tracking-tighter leading-none">
               Gestión de <span className="text-primary italic">Equipos</span>
             </h1>
           </div>
           
           <a 
             href="#modal-new-workstation"
-            className="flex items-center gap-2 bg-primary text-on-primary px-6 py-3 rounded-lg font-headline font-bold uppercase tracking-wider hover:brightness-110 transition-all shadow-lg shadow-primary/20"
+            className="flex items-center gap-2 bg-primary text-on-primary px-4 md:px-6 py-2.5 md:py-3 rounded-lg font-headline font-bold uppercase tracking-wider hover:brightness-110 transition-all shadow-lg shadow-primary/20 text-xs md:text-base"
           >
             <span className="material-symbols-outlined">add</span>
             Agregar Equipo
@@ -112,81 +98,125 @@ const EquiposContent = () => {
         ) : equipos.length === 0 ? (
           <div className="text-center py-20 bg-surface-container-lowest rounded-xl border border-dashed border-outline-variant/20">
              <span className="material-symbols-outlined text-outline-variant text-6xl mb-4">desktop_windows</span>
-             <p className="text-on-surface-variant font-body">No se encontraron equipos registrados.</p>
+             <p className="text-on-surface-variant font-body uppercase tracking-widest text-sm">No se encontraron equipos registrados.</p>
           </div>
         ) : (
           <div className="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/10 overflow-hidden">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-surface-container border-b border-outline-variant/10">
-                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">FMO</th>
-                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Tipo</th>
-                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Nombre / Identificador</th>
-                  {isAdmin && <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Propietario</th>}
-                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Área</th>
-                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Marca</th>
-                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Serial</th>
-                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant text-right">Acciones</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-outline-variant/10">
-                {equipos.map((equipo) => (
-                  <tr key={equipo.fmo} className="hover:bg-surface-container/30 transition-colors group">
-                    <td className="px-6 py-4">
-                      <span className="font-label font-bold text-primary">#{equipo.fmo}</span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="text-[10px] font-label font-black uppercase bg-surface-container-high text-on-surface-variant px-2 py-1 rounded tracking-tighter">
-                        {equipo.tipo || 'Desconocido'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <span className="material-symbols-outlined text-stone-300 text-lg">
-                          {equipo.tipo === 'estacion de trabajo' ? 'desktop_windows' : 'devices_other'}
-                        </span>
-                        <span className="font-headline font-bold text-on-surface-variant uppercase text-sm">{equipo.nombre}</span>
-                      </div>
-                    </td>
-                    {isAdmin && (
+            {/* Desktop Table View */}
+            <div className="hidden md:block">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-surface-container border-b border-outline-variant/10">
+                    <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">FMO</th>
+                    <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Tipo</th>
+                    <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Nombre / Identificador</th>
+                    {isAdmin && <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Propietario</th>}
+                    <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Área</th>
+                    <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Marca</th>
+                    <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Serial</th>
+                    <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant text-right">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-outline-variant/10">
+                  {equipos.map((equipo) => (
+                    <tr key={equipo.fmo} className="hover:bg-surface-container/30 transition-colors group">
                       <td className="px-6 py-4">
-                        <span className="text-xs text-primary font-bold uppercase tracking-tighter">
-                          {equipo.propietario_nombre || 'Sin asignar'}
+                        <span className="font-label font-bold text-primary">#{equipo.fmo}</span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-[10px] font-label font-black uppercase bg-surface-container-high text-on-surface-variant px-2 py-1 rounded tracking-tighter">
+                          {equipo.tipo || 'Desconocido'}
                         </span>
                       </td>
-                    )}
-                    <td className="px-6 py-4">
-                      <span className="text-sm text-on-surface-variant font-body">{equipo.area_nombre || 'Sin área'}</span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="px-2 py-1 bg-surface-container-high text-on-surface-variant rounded text-[10px] font-label font-black uppercase tracking-tighter">
-                        {equipo.marca_nombre || 'Genérica'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="text-xs text-stone-400 dark:text-on-surface-variant font-label tracking-tight">{equipo.serial}</span>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onClick={() => openHistory(equipo)} className="p-2 text-stone-400 dark:text-on-surface-variant hover:text-blue-500 transition-colors rounded-full hover:bg-surface-container/50" title="Ver Historial">
-                          <span className="material-symbols-outlined text-xl">history</span>
-                        </button>
-                        <button className="p-2 text-stone-400 dark:text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container/50">
-                          <span className="material-symbols-outlined text-xl">edit</span>
-                        </button>
-                        <button 
-                          onClick={() => handleDeleteEquipo(equipo.fmo)}
-                          className="p-2 text-stone-400 dark:text-on-surface-variant hover:text-error transition-colors rounded-full hover:bg-surface-container/50"
-                          title="Eliminar Equipo"
-                        >
-                          <span className="material-symbols-outlined text-xl">delete</span>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <span className="material-symbols-outlined text-stone-300 text-lg">
+                            {equipo.tipo === 'estacion de trabajo' ? 'desktop_windows' : 'devices_other'}
+                          </span>
+                          <span className="font-headline font-bold text-on-surface-variant uppercase text-sm">{equipo.nombre}</span>
+                        </div>
+                      </td>
+                      {isAdmin && (
+                        <td className="px-6 py-4">
+                          <span className="text-xs text-primary font-bold uppercase tracking-tighter">
+                            {equipo.propietario_nombre || 'Sin asignar'}
+                          </span>
+                        </td>
+                      )}
+                      <td className="px-6 py-4">
+                        <span className="text-sm text-on-surface-variant font-body uppercase">{equipo.area_nombre || 'Sin área'}</span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="px-2 py-1 bg-surface-container-high text-on-surface-variant rounded text-[10px] font-label font-black uppercase tracking-tighter">
+                          {equipo.marca_nombre || 'Genérica'}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-xs text-stone-400 dark:text-on-surface-variant font-label tracking-tight">{equipo.serial}</span>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button onClick={() => openHistory(equipo)} className="p-2 text-stone-400 dark:text-on-surface-variant hover:text-blue-500 transition-colors rounded-full hover:bg-surface-container/50" title="Ver Historial">
+                            <span className="material-symbols-outlined text-xl">history</span>
+                          </button>
+                          <button className="p-2 text-stone-400 dark:text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container/50">
+                            <span className="material-symbols-outlined text-xl">edit</span>
+                          </button>
+                          <button 
+                            onClick={() => handleDeleteEquipo(equipo.fmo)}
+                            className="p-2 text-stone-400 dark:text-on-surface-variant hover:text-error transition-colors rounded-full hover:bg-surface-container/50"
+                            title="Eliminar Equipo"
+                          >
+                            <span className="material-symbols-outlined text-xl">delete</span>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Card List View */}
+            <div className="md:hidden divide-y divide-outline-variant/10">
+              {equipos.map((equipo) => (
+                <div key={equipo.fmo} className="p-4 bg-surface-container-lowest">
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="flex flex-col gap-1">
+                      <span className="text-xs font-label font-bold text-primary">#{equipo.fmo}</span>
+                      <h4 className="font-headline font-bold text-on-surface-variant uppercase text-sm leading-tight">{equipo.nombre}</h4>
+                    </div>
+                    <span className="text-[9px] font-label font-black uppercase bg-surface-container text-stone-400 dark:text-on-surface-variant px-2 py-1 rounded">
+                      {equipo.tipo}
+                    </span>
+                  </div>
+                  
+                  <div className="flex flex-col gap-1 mb-4">
+                    <div className="flex items-center gap-2">
+                      <span className="material-symbols-outlined text-stone-400 text-sm">location_on</span>
+                      <span className="text-[10px] font-label text-stone-500 dark:text-on-surface-variant uppercase tracking-widest">{equipo.area_nombre || 'Sin área'}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="material-symbols-outlined text-stone-400 text-sm">branding_watermark</span>
+                      <span className="text-[10px] font-label text-stone-500 dark:text-on-surface-variant uppercase tracking-widest">{equipo.marca_nombre || 'Genérica'}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between pt-3 border-t border-outline-variant/5">
+                    <div className="flex gap-1">
+                       <button onClick={() => openHistory(equipo)} className="flex items-center gap-1 px-3 py-1.5 bg-blue-50 dark:bg-blue-900/20 text-blue-600 rounded-md">
+                          <span className="material-symbols-outlined text-sm">history</span>
+                          <span className="text-[9px] font-black uppercase">Historial</span>
+                       </button>
+                    </div>
+                    <div className="flex gap-2">
+                      <button className="p-2 text-stone-400 dark:text-on-surface-variant material-symbols-outlined">edit</button>
+                      <button onClick={() => handleDeleteEquipo(equipo.fmo)} className="p-2 text-red-400 material-symbols-outlined">delete</button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </section>
@@ -207,7 +237,7 @@ const EquiposContent = () => {
                 close
               </button>
             </div>
-            <div className="p-6 overflow-y-auto flex-1">
+            <div className="p-6 overflow-y-auto flex-1 text-on-surface-variant">
               {loadingHistory ? (
                 <div className="flex justify-center py-10">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -231,11 +261,6 @@ const EquiposContent = () => {
                         <span className="px-2 py-1 bg-surface-container text-on-surface-variant rounded text-[10px] font-label font-black uppercase tracking-tighter">
                           {inc.status}
                         </span>
-                        {inc.solicitante && (
-                          <span className="px-2 py-1 bg-blue-50 text-blue-700 rounded text-[10px] font-label font-black uppercase tracking-tighter">
-                            Usuario: {inc.solicitante}
-                          </span>
-                        )}
                       </div>
                     </div>
                   ))}
