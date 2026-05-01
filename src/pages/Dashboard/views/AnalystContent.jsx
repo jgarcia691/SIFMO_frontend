@@ -12,6 +12,12 @@ const AnalystContent = ({ activeView }) => {
     pending: 0,
     resolved: 0
   });
+  const [filters, setFilters] = useState({
+    search: '',
+    status: '',
+    startDate: '',
+    endDate: ''
+  });
 
   useEffect(() => {
     const fetchIncidents = async () => {
@@ -38,7 +44,8 @@ const AnalystContent = ({ activeView }) => {
                 month: 'short',
                 year: 'numeric'
               }).toUpperCase();
-            })()
+            })(),
+            rawDate: inc.fecha ? new Date(inc.fecha).toISOString().split('T')[0] : ''
           }));
           setIncidents(formattedData);
           
@@ -117,16 +124,69 @@ const AnalystContent = ({ activeView }) => {
         </header>
 
         <div className="mb-8">
-          <h2 className="text-2xl font-headline font-bold text-on-surface-variant uppercase tracking-tight">
-            {activeView === 'incidents' ? (
-              <>Historial de <span className="text-primary">Reparaciones</span></>
-            ) : (
-              <>Incidencias <span className="text-primary">Asignadas</span></>
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-6">
+            <div>
+              <h2 className="text-2xl font-headline font-bold text-on-surface-variant uppercase tracking-tight">
+                {activeView === 'incidents' ? (
+                  <>Historial de <span className="text-primary">Reparaciones</span></>
+                ) : (
+                  <>Incidencias <span className="text-primary">Asignadas</span></>
+                )}
+              </h2>
+              <p className="text-xs text-stone-500 font-label uppercase tracking-widest">
+                {activeView === 'incidents' ? 'Todos tus trabajos completados' : 'Tareas por atender'}
+              </p>
+            </div>
+
+            {activeView === 'incidents' && (
+              <div className="flex flex-wrap gap-3 items-center">
+                <div className="relative flex-1 min-w-[180px]">
+                  <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 text-sm">search</span>
+                  <input 
+                    type="text" 
+                    placeholder="Buscar por ID, Tipo, Cliente..." 
+                    className="w-full pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-lg text-xs font-body focus:ring-1 focus:ring-primary/30"
+                    value={filters.search}
+                    onChange={(e) => setFilters({...filters, search: e.target.value})}
+                  />
+                </div>
+                
+                <select 
+                  className="bg-surface-container-low border-none rounded-lg text-[10px] font-label px-3 py-2 focus:ring-1 focus:ring-primary/30 outline-none"
+                  value={filters.status}
+                  onChange={(e) => setFilters({...filters, status: e.target.value})}
+                >
+                  <option value="">Todos los Estados</option>
+                  {Object.keys(statusIndicators).map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+
+                <div className="flex items-center gap-1 bg-surface-container-low p-1 rounded-lg">
+                  <input 
+                    type="date" 
+                    className="bg-transparent border-none text-[9px] font-label px-1 py-1 focus:ring-0"
+                    value={filters.startDate}
+                    onChange={(e) => setFilters({...filters, startDate: e.target.value})}
+                  />
+                  <span className="text-stone-400 text-[8px]">/</span>
+                  <input 
+                    type="date" 
+                    className="bg-transparent border-none text-[9px] font-label px-1 py-1 focus:ring-0"
+                    value={filters.endDate}
+                    onChange={(e) => setFilters({...filters, endDate: e.target.value})}
+                  />
+                </div>
+                
+                {(filters.search || filters.status || filters.startDate || filters.endDate) && (
+                  <button 
+                    onClick={() => setFilters({ search: '', status: '', startDate: '', endDate: '' })}
+                    className="text-primary material-symbols-outlined hover:bg-primary/10 p-1.5 rounded-full transition-colors text-lg"
+                  >
+                    filter_list_off
+                  </button>
+                )}
+              </div>
             )}
-          </h2>
-          <p className="text-xs text-stone-500 font-label uppercase tracking-widest">
-            {activeView === 'incidents' ? 'Todos tus trabajos completados' : 'Tareas por atender'}
-          </p>
+          </div>
         </div>
 
         {loading ? (
@@ -199,7 +259,7 @@ const AnalystContent = ({ activeView }) => {
         )}
 
         {/* List View for History */}
-        {!loading && activeView === 'incidents' && incidents.length > 0 && (
+        {!loading && activeView === 'incidents' && (
           <div className="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/10 overflow-hidden">
             <table className="w-full text-left border-collapse">
               <thead>
@@ -213,43 +273,81 @@ const AnalystContent = ({ activeView }) => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-outline-variant/10">
-                {incidents.map((incident) => {
-                  const statusStyle = statusIndicators[incident.status] || { color: 'bg-stone-500', text: 'text-stone-700', pulse: false };
-                  
-                  return (
-                    <tr key={incident.id} className="hover:bg-surface-container/30 transition-colors group">
-                      <td className="px-6 py-4">
-                        <span className="font-label font-bold text-primary">#{incident.id}</span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex flex-col">
-                          <span className="font-headline font-bold text-on-surface uppercase text-sm">{incident.tipo}</span>
-                          <span className="text-[10px] font-label text-stone-400 uppercase">{incident.solicitante}</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="text-xs text-on-surface-variant font-body uppercase">{incident.area || 'N/A'}</span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="text-xs text-stone-500 font-label">{incident.date}</span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2">
-                          <span className={`w-2 h-2 rounded-full ${statusStyle.color}`}></span>
-                          <span className={`text-[10px] font-label font-bold uppercase ${statusStyle.text}`}>{incident.status}</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <button 
-                          onClick={() => openModal(incident)}
-                          className="p-2 text-primary hover:bg-primary/10 rounded-full transition-colors material-symbols-outlined"
-                        >
-                          visibility
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
+                {(() => {
+                  const filtered = incidents.filter(i => {
+                    const term = filters.search.toLowerCase();
+                    const matchesSearch = !term || 
+                      i.id.toString().includes(term) ||
+                      i.tipo.toLowerCase().includes(term) ||
+                      i.solicitante?.toLowerCase().includes(term) ||
+                      i.ficha?.toString().includes(term);
+                    
+                    const matchesStatus = !filters.status || i.status === filters.status;
+                    
+                    const incidentDate = new Date(i.fecha);
+                    const matchesStartDate = !filters.startDate || incidentDate >= new Date(filters.startDate);
+                    const matchesEndDate = !filters.endDate || incidentDate <= new Date(filters.endDate);
+                    
+                    return matchesSearch && matchesStatus && matchesStartDate && matchesEndDate;
+                  });
+
+                  if (filtered.length === 0) {
+                    return (
+                      <tr>
+                        <td colSpan="6" className="py-20 text-center">
+                          <p className="text-on-surface-variant font-body italic text-sm">No se encontraron reparaciones que coincidan.</p>
+                        </td>
+                      </tr>
+                    );
+                  }
+
+                  return filtered.map((incident) => {
+                    const statusStyle = statusIndicators[incident.status] || { color: 'bg-stone-500', text: 'text-stone-700', pulse: false };
+                    
+                    return (
+                      <tr key={incident.id} className="hover:bg-surface-container/30 transition-colors group">
+                        <td className="px-6 py-4">
+                          <span className="font-label font-bold text-primary">#{incident.id}</span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex flex-col">
+                            <span className="font-headline font-bold text-on-surface uppercase text-sm">{incident.tipo}</span>
+                            <span className="text-[10px] font-label text-stone-400 uppercase">{incident.solicitante}</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className="text-xs text-on-surface-variant font-body uppercase">{incident.area || 'N/A'}</span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <button 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setFilters({...filters, startDate: incident.rawDate, endDate: incident.rawDate});
+                            }}
+                            className="text-xs text-stone-500 font-label hover:text-primary hover:bg-primary/5 px-2 py-1 rounded transition-colors"
+                            title="Filtrar por esta fecha"
+                          >
+                            {incident.date}
+                          </button>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-2">
+                            <span className={`w-2 h-2 rounded-full ${statusStyle.color}`}></span>
+                            <span className={`text-[10px] font-label font-bold uppercase ${statusStyle.text}`}>{incident.status}</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                          <button 
+                            onClick={() => openModal(incident)}
+                            className="p-2 text-primary hover:bg-primary/10 rounded-full transition-colors material-symbols-outlined"
+                          >
+                            visibility
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  });
+                })()}
               </tbody>
             </table>
           </div>

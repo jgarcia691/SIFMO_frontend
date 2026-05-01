@@ -144,6 +144,7 @@ const UsersContent = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -177,8 +178,18 @@ const UsersContent = () => {
     setTimeout(() => setSelectedUser(null), 200);
   };
 
+  const filteredUsers = users.filter(user => {
+    const term = searchTerm.toLowerCase();
+    return (
+      user.nombre?.toLowerCase().includes(term) ||
+      user.ficha?.toString().includes(term) ||
+      user.area?.toLowerCase().includes(term) ||
+      user.rol?.toLowerCase().includes(term)
+    );
+  });
+
   const groupedUsers = ROLE_ORDER.reduce((acc, role) => {
-    const group = users.filter(u => u.rol === role);
+    const group = filteredUsers.filter(u => u.rol === role);
     if (group.length > 0) acc[role] = group;
     return acc;
   }, {});
@@ -186,19 +197,35 @@ const UsersContent = () => {
   return (
     <main className="md:ml-20 pt-16 md:pt-24 px-4 md:px-10 pb-20 md:pb-12 bg-surface min-h-screen">
       <section className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-10">
+        <div className="flex flex-col lg:flex-row justify-between lg:items-center gap-6 mb-10">
           <div className="space-y-1">
             <h1 className="text-3xl md:text-5xl font-headline font-black text-on-surface-variant uppercase tracking-tighter leading-none">
               Gestión de <span className="text-primary italic">Usuarios</span>
             </h1>
+            <p className="text-xs text-stone-500 font-label uppercase tracking-widest">Control de accesos y personal</p>
           </div>
-          <button
-            onClick={() => setIsAddUserModalOpen(true)}
-            className="flex items-center gap-2 bg-primary text-on-primary px-4 md:px-6 py-2.5 md:py-3 rounded-lg font-headline font-bold uppercase tracking-wider hover:brightness-110 transition-all shadow-lg shadow-primary/20 text-xs md:text-base"
-          >
-            <span className="material-symbols-outlined">person_add</span>
-            Agregar Usuario
-          </button>
+
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+            <div className="relative">
+              <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-stone-400">search</span>
+              <input 
+                type="text" 
+                placeholder="Buscar usuario..." 
+                className="pl-10 pr-4 py-2.5 bg-surface-container-low border-none rounded-lg text-sm font-body focus:ring-2 focus:ring-primary/20 w-full sm:w-64"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            
+            <button
+              onClick={() => setIsAddUserModalOpen(true)}
+              className="flex items-center justify-center gap-2 bg-primary text-on-primary px-6 py-2.5 rounded-lg font-headline font-bold uppercase tracking-wider hover:brightness-110 transition-all shadow-lg shadow-primary/20 text-sm"
+            >
+              <span className="material-symbols-outlined">person_add</span>
+              <span className="hidden sm:inline">Agregar Usuario</span>
+              <span className="sm:hidden">Nuevo</span>
+            </button>
+          </div>
         </div>
 
         {loading ? (
@@ -207,14 +234,27 @@ const UsersContent = () => {
           </div>
         ) : (
           <div className="space-y-6">
-            {Object.entries(groupedUsers).map(([role, roleUsers]) => (
-              <RoleGroup
-                key={role}
-                role={role}
-                users={roleUsers}
-                onSelectUser={openDetailsModal}
-              />
-            ))}
+            {Object.keys(groupedUsers).length > 0 ? (
+              Object.entries(groupedUsers).map(([role, roleUsers]) => (
+                <RoleGroup
+                  key={role}
+                  role={role}
+                  users={roleUsers}
+                  onSelectUser={openDetailsModal}
+                />
+              ))
+            ) : (
+              <div className="text-center py-20 bg-surface-container-lowest rounded-xl border border-dashed border-outline-variant/20">
+                <span className="material-symbols-outlined text-outline-variant text-6xl mb-4">person_search</span>
+                <p className="text-on-surface-variant font-body italic">No se encontraron usuarios que coincidan con "{searchTerm}"</p>
+                <button 
+                  onClick={() => setSearchTerm('')}
+                  className="mt-4 text-primary font-label font-bold uppercase text-xs hover:underline"
+                >
+                  Limpiar búsqueda
+                </button>
+              </div>
+            )}
           </div>
         )}
       </section>

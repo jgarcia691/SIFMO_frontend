@@ -120,7 +120,9 @@ const RegistrationForm = () => {
                                 value={formData.ficha}
                                 onChange={handleChange}
                                 placeholder="12345" 
-                                type="number" 
+                                type="text" 
+                                inputMode="numeric"
+                                pattern="[0-9]*"
                                 required
                             />
                         </div>

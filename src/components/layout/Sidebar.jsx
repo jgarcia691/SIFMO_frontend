@@ -19,9 +19,9 @@ const Sidebar = ({ activeView }) => {
       <div className="mb-8 px-2">
         <div className="flex items-center gap-3 mb-2">
           <div className="w-8 h-8 shrink-0 flex items-center justify-center overflow-hidden">
-            <img src={logo} alt="Logo SIFMO" className="w-full h-full object-contain" />
+            <img src={logo} alt="Logo SGI-FMO" className="w-full h-full object-contain" />
           </div>
-          <h2 className="font-headline text-lg font-black text-stone-600 dark:text-on-surface-variant uppercase tracking-tight opacity-0 group-hover:opacity-100 transition-opacity duration-300">SIFMO</h2>
+          <h2 className="font-headline text-lg font-black text-stone-600 dark:text-on-surface-variant uppercase tracking-tight opacity-0 group-hover:opacity-100 transition-opacity duration-300">SGI-FMO</h2>
         </div>
       </div>
       <nav className="flex-1 space-y-1">

@@ -10,7 +10,7 @@ const TopNav = () => {
       <div className="flex items-center gap-4">
         {/* Logo para Móvil */}
         <div className="w-10 h-10 md:hidden flex items-center justify-center overflow-hidden">
-          <img src={logo} alt="Logo SIFMO" className="w-full h-full object-contain" />
+          <img src={logo} alt="Logo SGI-FMO" className="w-full h-full object-contain" />
         </div>
         
         {/* Texto para Desktop */}

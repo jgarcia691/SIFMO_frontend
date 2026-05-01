@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import logo from '../assets/logo.png';
 
 const AuthHero = () => {
     const [serverStatus, setServerStatus] = useState('VERIFICANDO...');
@@ -44,8 +45,8 @@ const AuthHero = () => {
             
             <div className="relative z-10">
                 <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 molten-gradient rounded-lg flex items-center justify-center">
-                        <span className="material-symbols-outlined text-white" data-icon="factory">factory</span>
+                    <div className="w-12 h-12 molten-gradient rounded-lg flex items-center justify-center p-2">
+                        <img src={logo} alt="Logo FMO" className="w-full h-full object-contain brightness-0 invert" />
                     </div>
                     <div className="font-headline font-black text-2xl uppercase tracking-tighter text-surface-bright">
                         Soporte Técnico de Ferrominera

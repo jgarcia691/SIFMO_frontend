@@ -62,7 +62,7 @@ const LoginForm = () => {
             <div className="fixed inset-0 z-[100] bg-stone-900 flex flex-col items-center justify-center p-6 animate-in fade-in duration-500">
                 <div className="relative mb-12">
                     <div className="w-24 h-24 md:w-32 md:h-32 relative z-10 animate-pulse">
-                        <img src={logo} alt="SIFMO" className="w-full h-full object-contain brightness-0 invert" />
+                        <img src={logo} alt="SGI-FMO" className="w-full h-full object-contain brightness-0 invert" />
                     </div>
                     <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full animate-pulse"></div>
                 </div>
@@ -91,7 +91,7 @@ const LoginForm = () => {
         <div className="col-span-1 lg:col-span-5 p-8 lg:p-16 flex flex-col justify-center bg-transparent">
             <div className="mb-12">
                 <h2 className="font-headline text-3xl font-bold text-on-surface-variant mb-2 uppercase tracking-tighter">Acceso <span className="text-primary italic">Restringido</span></h2>
-                <p className="text-on-surface-variant font-body text-sm">Terminal de Autenticación SIFMO</p>
+                <p className="text-on-surface-variant font-body text-sm">Terminal de Autenticación SGI-FMO</p>
             </div>
             
             {error && (
@@ -116,7 +116,9 @@ const LoginForm = () => {
                             value={ficha}
                             onChange={(e) => setFicha(e.target.value)}
                             placeholder="Ej. 12345" 
-                            type="number" 
+                            type="text" 
+                            inputMode="numeric"
+                            pattern="[0-9]*"
                             required
                         />
                     </div>
