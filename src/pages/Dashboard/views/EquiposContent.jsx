@@ -250,17 +250,49 @@ const EquiposContent = () => {
               ) : (
                 <div className="space-y-4">
                   {historyData.map(inc => (
-                    <div key={inc.id} className="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/10 hover:border-primary/20 transition-colors">
-                      <div className="flex justify-between items-start mb-2">
-                        <span className="text-[10px] font-label font-bold text-primary uppercase tracking-widest">INCIDENTE #{inc.id}</span>
-                        <span className="text-xs font-label text-stone-500">{new Date(inc.fecha).toLocaleDateString()}</span>
-                      </div>
-                      <h3 className="text-sm font-headline font-bold text-on-surface-variant uppercase mb-1">{inc.tipo}</h3>
-                      <p className="text-sm text-on-surface-variant font-body">{inc.observacion || inc.tipo_falla || 'Sin detalles adicionales'}</p>
-                      <div className="mt-3 flex gap-2">
-                        <span className="px-2 py-1 bg-surface-container text-on-surface-variant rounded text-[10px] font-label font-black uppercase tracking-tighter">
+                    <div key={inc.id} className="bg-surface-container-lowest p-5 rounded-2xl border border-outline-variant/10 hover:border-primary/30 transition-all shadow-sm">
+                      <div className="flex justify-between items-start mb-3">
+                        <div className="flex flex-col gap-1">
+                          <span className="text-[10px] font-label font-black text-primary uppercase tracking-widest">INCIDENTE #{inc.id}</span>
+                          <span className="text-xs font-label text-stone-500 font-bold">{new Date(inc.fecha).toLocaleDateString()}</span>
+                        </div>
+                        <span className={`px-2 py-1 rounded text-[9px] font-label font-black uppercase tracking-tighter ${
+                          inc.status === 'Completado' ? 'bg-green-100 text-green-700' : 
+                          inc.status === 'En Proceso' ? 'bg-blue-100 text-blue-700' : 'bg-orange-100 text-orange-700'
+                        }`}>
                           {inc.status}
                         </span>
+                      </div>
+                      
+                      <h3 className="text-sm font-headline font-black text-on-surface-variant uppercase mb-2 leading-tight">{inc.tipo}</h3>
+                      
+                      <div className="space-y-3">
+                        <div>
+                          <p className="text-[10px] font-label font-bold text-stone-400 uppercase tracking-widest mb-1">Descripción / Falla</p>
+                          <p className="text-sm text-on-surface-variant font-body leading-relaxed">
+                            {inc.workstation_falla || inc.periferico_falla || 'Sin descripción de falla'}
+                          </p>
+                        </div>
+                        
+                        {inc.observacion && (
+                          <div>
+                            <p className="text-[10px] font-label font-bold text-stone-400 uppercase tracking-widest mb-1">Resolución / Notas</p>
+                            <p className="text-sm text-on-surface-variant font-body italic border-l-2 border-primary/20 pl-3 py-1 bg-surface-container/30 rounded-r-lg">
+                              {inc.observacion}
+                            </p>
+                          </div>
+                        )}
+
+                        <div className="flex flex-wrap gap-4 pt-2 border-t border-outline-variant/5">
+                          <div>
+                            <p className="text-[9px] font-label font-bold text-stone-400 uppercase tracking-widest">Solicitante</p>
+                            <p className="text-[11px] font-headline font-bold text-on-surface-variant uppercase">{inc.solicitante || 'Desconocido'}</p>
+                          </div>
+                          <div>
+                            <p className="text-[9px] font-label font-bold text-stone-400 uppercase tracking-widest">Técnico</p>
+                            <p className="text-[11px] font-headline font-bold text-primary uppercase">{inc.encargado_nombre || 'Sin asignar'}</p>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   ))}
