@@ -11,6 +11,7 @@ import AdminContent from './views/AdminContent';
 import UsersContent from './views/UsersContent';
 import AnalystContent from './views/AnalystContent';
 import ProfileContent from './views/ProfileContent';
+import ReportsContent from './views/ReportsContent';
 // Modals
 import NewIncidentModal from './modals/NewIncidentModal';
 import NewWorkstationModal from './modals/NewWorkstationModal';
@@ -36,6 +37,8 @@ const Dashboard = () => {
         setCurrentView('users');
       } else if (hash === '#profile') {
         setCurrentView('profile');
+      } else if (hash === '#reports') {
+        setCurrentView('reports');
       } else if (hash === '#dashboard' || hash === '' || hash === '#') {
         setCurrentView('dashboard');
       }
@@ -67,6 +70,7 @@ const Dashboard = () => {
         if (currentView === 'profile') return <ProfileContent />;
         if (currentView === 'equipos') return <EquiposContent />;
         if (userRole?.toLowerCase() === 'administrador' && currentView === 'users') return <UsersContent />;
+        if (userRole?.toLowerCase() === 'administrador' && currentView === 'reports') return <ReportsContent />;
         if (userRole?.toLowerCase() === 'administrador' && (currentView === 'dashboard' || currentView === 'incidents')) {
            return <AdminContent activeView={currentView} />;
         }

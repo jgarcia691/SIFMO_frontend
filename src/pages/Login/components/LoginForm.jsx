@@ -136,7 +136,7 @@ const LoginForm = () => {
                         </div>
                     ) : (
                         <>
-                            <span className="tracking-widest">ENTRAR AL SISTEMA</span>
+                            <span className="tracking-widest">ENTRAR</span>
                             <span className="material-symbols-outlined">login</span>
                         </>
                     )}
