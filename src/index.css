@@ -95,7 +95,8 @@
   --color-primary-fixed-dim: var(--color-primary-fixed-dim);
   --color-surface-container-highest: var(--color-surface-container-highest);
   --color-surface-container-high: var(--color-surface-container-high);
-  --color-surface-variant: var(--color-surface-container-high);
+  --color-on-surface: var(--color-on-surface);
+  --color-on-surface-variant: var(--color-on-surface-variant);
   --color-on-background: var(--color-on-surface);
 
   --font-headline: "Space Grotesk Variable", sans-serif;

@@ -93,17 +93,17 @@ const AdminContent = ({ activeView }) => {
           <div className="flex items-center gap-2 md:gap-4 bg-surface-container-low p-2 md:p-3 rounded-2xl border border-outline-variant/10 scale-90 md:scale-100 origin-left">
             <div className="px-3 md:px-4 text-center">
               <p className="text-[8px] md:text-[10px] font-label font-bold text-stone-400 dark:text-on-surface-variant uppercase tracking-widest">Total</p>
-              <p className="text-xl md:text-2xl font-headline font-bold text-on-surface">{stats.total}</p>
+              <p className="text-xl md:text-2xl font-headline font-bold text-on-surface-variant">{stats.total}</p>
             </div>
             <div className="w-[1px] h-8 md:h-10 bg-outline-variant/20"></div>
             <div className="px-3 md:px-4 text-center">
               <p className="text-[8px] md:text-[10px] font-label font-bold text-amber-500 uppercase tracking-widest">Espera</p>
-              <p className="text-xl md:text-2xl font-headline font-bold text-on-surface">{stats.pending}</p>
+              <p className="text-xl md:text-2xl font-headline font-bold text-on-surface-variant">{stats.pending}</p>
             </div>
             <div className="w-[1px] h-8 md:h-10 bg-outline-variant/20"></div>
             <div className="px-3 md:px-4 text-center">
               <p className="text-[8px] md:text-[10px] font-label font-bold text-green-600 uppercase tracking-widest">Listos</p>
-              <p className="text-xl md:text-2xl font-headline font-bold text-on-surface">{stats.resolved}</p>
+              <p className="text-xl md:text-2xl font-headline font-bold text-on-surface-variant">{stats.resolved}</p>
             </div>
           </div>
         </header>
