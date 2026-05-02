@@ -149,8 +149,9 @@ const IncidentDetailsModal = ({ incident, isOpen, onClose }) => {
               <div>
                 <h3 className="text-xs font-label font-bold text-stone-400 dark:text-on-surface-variant uppercase tracking-widest mb-1">Estado Actual</h3>
                 {canEditStatus ? (
+                <div className="relative">
                   <select 
-                    className="px-3 py-1.5 rounded-lg text-sm font-label font-bold uppercase tracking-wider bg-surface-container-high text-on-surface border border-outline-variant/20 outline-none focus:ring-2 focus:ring-primary cursor-pointer"
+                    className="pl-3 pr-10 py-1.5 rounded-lg text-sm font-label font-bold uppercase tracking-wider bg-surface-container-high text-on-surface border border-outline-variant/20 outline-none focus:ring-2 focus:ring-primary cursor-pointer appearance-none w-full"
                     value={newStatus}
                     onChange={(e) => setNewStatus(e.target.value)}
                   >
@@ -158,6 +159,8 @@ const IncidentDetailsModal = ({ incident, isOpen, onClose }) => {
                       <option key={s} value={s}>{s}</option>
                     ))}
                   </select>
+                  <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-stone-400">expand_more</span>
+                </div>
                 ) : (
                   <span className={`px-4 py-1.5 rounded-full text-xs font-label font-bold uppercase tracking-wider ${statusColors[incident.status] || 'bg-stone-100 text-stone-800'}`}>
                     {incident.status}
@@ -380,20 +383,23 @@ const IncidentDetailsModal = ({ incident, isOpen, onClose }) => {
             {isAdmin && (
               <div className="bg-surface-container-lowest p-4 rounded-xl border border-primary/20 bg-primary/5 mt-4">
                 <h3 className="text-sm font-label font-bold text-primary uppercase tracking-wider mb-2">Asignar Encargado (Analista/Admin)</h3>
-                <select 
-                  className="w-full px-4 py-2 rounded-lg bg-surface border border-outline-variant/20 text-on-surface-variant focus:border-primary focus:ring-1 focus:ring-primary outline-none"
-                  value={newEncargado}
-                  onChange={(e) => setNewEncargado(e.target.value)}
-                >
-                  <option value="">-- Sin asignar --</option>
-                  {users
-                    .filter(u => u.rol === 'Administrador' || u.rol === 'Analista')
-                    .map(u => (
-                    <option key={u.ficha} value={u.ficha}>
-                      {u.nombre} ({u.rol})
-                    </option>
-                  ))}
-                </select>
+                <div className="relative">
+                  <select 
+                    className="w-full px-4 py-2 pr-10 rounded-lg bg-surface border border-outline-variant/20 text-on-surface-variant focus:border-primary focus:ring-1 focus:ring-primary outline-none appearance-none"
+                    value={newEncargado}
+                    onChange={(e) => setNewEncargado(e.target.value)}
+                  >
+                    <option value="">-- Sin asignar --</option>
+                    {users
+                      .filter(u => u.rol === 'Administrador' || u.rol === 'Analista')
+                      .map(u => (
+                      <option key={u.ficha} value={u.ficha}>
+                        {u.nombre} ({u.rol})
+                      </option>
+                    ))}
+                  </select>
+                  <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-stone-400">expand_more</span>
+                </div>
               </div>
             )}
           </div>
