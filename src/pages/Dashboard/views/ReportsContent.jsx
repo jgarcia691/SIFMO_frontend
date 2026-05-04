@@ -3,7 +3,8 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   PieChart, Pie, Cell
 } from 'recharts';
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
 import { API_URL } from '../../../config/api';
 
 const ReportsContent = () => {
@@ -73,29 +74,118 @@ const ReportsContent = () => {
 
   const COLORS = ['#f97316', '#3b82f6', '#10b981', '#6366f1', '#a855f7', '#ef4444'];
 
-  const exportToExcel = () => {
+  const exportToExcel = async () => {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Incidentes');
+
     const filtered = incidents.filter(inc => {
       if (!inc.fecha) return false;
       const d = new Date(inc.fecha);
       return d >= new Date(dateRange.start) && d <= new Date(dateRange.end);
     });
 
-    const worksheetData = filtered.map(inc => ({
-      'ID': inc.id,
-      'Fecha': inc.fecha ? new Date(inc.fecha).toLocaleDateString() : 'N/A',
-      'Tipo': inc.tipo,
-      'Solicitante': inc.solicitante,
-      'Ficha': inc.cliente,
-      'Departamento': inc.area,
-      'Estado': inc.status,
-      'Encargado': inc.encargado_nombre || 'No asignado',
-      'Observaciones': inc.observacion || ''
-    }));
+    // Logo y Encabezado
+    try {
+      // Intentar cargar el logo (debe estar en /public)
+      const response = await fetch('/CVG_FERROMINERA.png');
+      if (response.ok) {
+        const buffer = await response.arrayBuffer();
+        const logoId = workbook.addImage({
+          buffer: buffer,
+          extension: 'png',
+        });
+        worksheet.addImage(logoId, {
+          tl: { col: 0.2, row: 0.2 },
+          ext: { width: 120, height: 60 }
+        });
+      }
+    } catch (e) {
+      console.error('Error al cargar el logo:', e);
+    }
 
-    const ws = XLSX.utils.json_to_sheet(worksheetData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Incidentes");
-    XLSX.writeFile(wb, `SGI_FMO_Reporte_${dateRange.start}_a_${dateRange.end}.xlsx`);
+    // Título principal
+    worksheet.mergeCells('C2:H2');
+    const titleCell = worksheet.getCell('C2');
+    titleCell.value = 'REPORTE DE SERVICIO TÉCNICO - SIFMO';
+    titleCell.font = { name: 'Arial', size: 16, bold: true, color: { argb: 'FF000000' } }; // Negro
+    titleCell.alignment = { vertical: 'middle', horizontal: 'center' };
+
+    // Subtítulo (Fecha)
+    worksheet.mergeCells('C3:H3');
+    const subtitleCell = worksheet.getCell('C3');
+    subtitleCell.value = `Periodo: ${dateRange.start} hasta ${dateRange.end}`;
+    subtitleCell.font = { name: 'Arial', size: 10, italic: true, color: { argb: 'FF4B5563' } }; // Gris oscuro
+    subtitleCell.alignment = { vertical: 'middle', horizontal: 'center' };
+
+    // Espacio antes de la tabla
+    worksheet.addRow([]);
+    worksheet.addRow([]);
+
+    // Cabeceras de la tabla
+    const headers = ['ID', 'FECHA', 'TIPO', 'SOLICITANTE', 'FICHA', 'DEPARTAMENTO', 'EXTENSIÓN', 'ESTADO', 'ENCARGADO', 'OBSERVACIONES'];
+    const headerRow = worksheet.addRow(headers);
+    
+    headerRow.eachCell((cell) => {
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FF000000' } // Negro
+      };
+      cell.font = { name: 'Arial', size: 9, bold: true, color: { argb: 'FFFFFFFF' } };
+      cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+      cell.border = {
+        top: { style: 'thin' },
+        left: { style: 'thin' },
+        bottom: { style: 'thin' },
+        right: { style: 'thin' }
+      };
+    });
+
+    // Agregar datos
+    filtered.forEach(inc => {
+      const rowData = [
+        inc.id,
+        inc.fecha ? new Date(inc.fecha).toLocaleDateString() : 'N/A',
+        inc.tipo.toUpperCase(),
+        inc.solicitante,
+        inc.cliente,
+        inc.area,
+        inc.extension || '',
+        inc.status,
+        inc.encargado_nombre || 'Sin asignar',
+        inc.observacion || ''
+      ];
+      const row = worksheet.addRow(rowData);
+      
+      row.eachCell((cell) => {
+        cell.font = { name: 'Arial', size: 8 };
+        cell.alignment = { vertical: 'middle', horizontal: 'left', wrapText: true };
+        cell.border = {
+          top: { style: 'thin' },
+          left: { style: 'thin' },
+          bottom: { style: 'thin' },
+          right: { style: 'thin' }
+        };
+      });
+    });
+
+    // Auto-ajustar ancho de columnas con límites
+    worksheet.columns.forEach((column, i) => {
+      let maxLength = 0;
+      column.eachCell({ includeEmpty: true }, (cell) => {
+        const columnLength = cell.value ? cell.value.toString().length : 8;
+        if (columnLength > maxLength) {
+          maxLength = columnLength;
+        }
+      });
+      // Limitar el ancho máximo para forzar el ajuste de texto y que las celdas sean más pequeñas
+      const calculatedWidth = maxLength + 2;
+      column.width = calculatedWidth > 30 ? 30 : (calculatedWidth < 8 ? 8 : calculatedWidth);
+    });
+
+    // Generar y descargar el archivo
+    const buffer = await workbook.xlsx.writeBuffer();
+    saveAs(new Blob([buffer]), `SGI_FMO_Reporte_${dateRange.start}_a_${dateRange.end}.xlsx`);
   };
 
   const monthlyData = processMonthlyData();
