@@ -51,7 +51,7 @@ const AnalystContent = ({ activeView }) => {
           
           // Calcular estadísticas
           const total = formattedData.length;
-          const pending = formattedData.filter(i => i.status === 'Pendiente' || i.status === 'En revisión').length;
+          const pending = formattedData.filter(i => i.status === 'Pendiente' || i.status === 'En revisión' || i.status === 'En espera').length;
           const resolved = formattedData.filter(i => i.status === 'Listo' || i.status === 'Entregado').length;
           
           setStats({ total, pending, resolved });
@@ -203,7 +203,7 @@ const AnalystContent = ({ activeView }) => {
             {incidents
               .filter(i => {
                 if (activeView === 'incidents') return true;
-                return i.status === 'Pendiente' || i.status === 'En revisión';
+                return i.status === 'Pendiente' || i.status === 'En revisión' || i.status === 'En espera';
               })
               .map((incident) => {
                const statusStyle = statusIndicators[incident.status] || { color: 'bg-outline-variant/20', text: 'text-on-surface-variant', pulse: false };
