@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { API_URL } from '../../../config/api';
+import EditWorkstationModal from '../modals/EditWorkstationModal';
 
 const EquiposContent = () => {
   const [equipos, setEquipos] = useState([]);
@@ -10,6 +11,8 @@ const EquiposContent = () => {
   const [selectedEquipo, setSelectedEquipo] = useState(null);
   const [historyData, setHistoryData] = useState([]);
   const [loadingHistory, setLoadingHistory] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [equipoToEdit, setEquipoToEdit] = useState(null);
 
   const openHistory = async (equipo) => {
     setSelectedEquipo(equipo);
@@ -29,6 +32,11 @@ const EquiposContent = () => {
     } finally {
       setLoadingHistory(false);
     }
+  };
+
+  const openEdit = (equipo) => {
+    setEquipoToEdit(equipo);
+    setEditModalOpen(true);
   };
 
   const fetchEquipos = async () => {
@@ -194,7 +202,11 @@ const EquiposContent = () => {
                             <button onClick={() => openHistory(equipo)} className="p-2 text-stone-400 dark:text-on-surface-variant hover:text-blue-500 transition-colors rounded-full hover:bg-surface-container/50" title="Ver Historial">
                               <span className="material-symbols-outlined text-xl">history</span>
                             </button>
-                            <button className="p-2 text-stone-400 dark:text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container/50">
+                            <button 
+                              onClick={() => openEdit(equipo)}
+                              className="p-2 text-stone-400 dark:text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container/50"
+                              title="Editar Equipo"
+                            >
                               <span className="material-symbols-outlined text-xl">edit</span>
                             </button>
                             <button 
@@ -249,6 +261,14 @@ const EquiposContent = () => {
                     </div>
                     
                     <div className="flex flex-col gap-1 mb-4">
+                      {isAdmin && (
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="material-symbols-outlined text-primary text-sm">person</span>
+                          <span className="text-[10px] font-label font-bold text-primary uppercase tracking-widest">
+                            {equipo.propietario_nombre || 'Sin asignar'}
+                          </span>
+                        </div>
+                      )}
                       <div className="flex items-center gap-2">
                         <span className="material-symbols-outlined text-stone-400 text-sm">location_on</span>
                         <span className="text-[10px] font-label text-stone-500 dark:text-on-surface-variant uppercase tracking-widest">{equipo.area_nombre || 'Sin área'}</span>
@@ -267,7 +287,7 @@ const EquiposContent = () => {
                         </button>
                       </div>
                       <div className="flex gap-2">
-                        <button className="p-2 text-stone-400 dark:text-on-surface-variant material-symbols-outlined">edit</button>
+                        <button onClick={() => openEdit(equipo)} className="p-2 text-stone-400 dark:text-on-surface-variant material-symbols-outlined">edit</button>
                         <button onClick={() => handleDeleteEquipo(equipo.fmo)} className="p-2 text-red-400 material-symbols-outlined">delete</button>
                       </div>
                     </div>
@@ -279,10 +299,9 @@ const EquiposContent = () => {
         )}
       </section>
 
-      {/* Equipment History Modal */}
       {historyModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-surface w-full max-w-3xl rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[90vh]">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-surface w-full max-w-3xl rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[85vh] md:max-h-[90vh]">
             <div className="flex items-center justify-between p-6 border-b border-outline-variant/20 bg-surface-container-lowest">
               <div>
                 <h2 className="text-2xl font-headline font-bold text-on-surface-variant">Historial de Mantenimiento</h2>
@@ -295,7 +314,7 @@ const EquiposContent = () => {
                 close
               </button>
             </div>
-            <div className="p-6 overflow-y-auto flex-1 text-on-surface-variant">
+            <div className="p-6 pb-32 md:pb-6 overflow-y-auto flex-1 text-on-surface-variant">
               {loadingHistory ? (
                 <div className="flex justify-center py-10">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -360,6 +379,13 @@ const EquiposContent = () => {
           </div>
         </div>
       )}
+
+      {/* Edit Equipment Modal */}
+      <EditWorkstationModal 
+        isOpen={editModalOpen} 
+        onClose={() => setEditModalOpen(false)} 
+        equipo={equipoToEdit} 
+      />
     </main>
   );
 };

@@ -9,6 +9,14 @@ const IncidentDetailsModal = ({ incident, isOpen, onClose }) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isContactExpanded, setIsContactExpanded] = useState(false);
   const [isClientContactExpanded, setIsClientContactExpanded] = useState(false);
+  
+  const getEmailLink = (email) => {
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (isMobile) {
+      return `mailto:${email}`;
+    }
+    return `https://mail.google.com/mail/?view=cm&fs=1&to=${email}`;
+  };
   const [observacion, setObservacion] = useState('');
 
   // Get current user to check role
@@ -110,8 +118,8 @@ const IncidentDetailsModal = ({ incident, isOpen, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start md:items-center justify-center p-2 md:p-4 bg-black/50 backdrop-blur-sm overflow-y-auto pt-10 md:pt-4">
-      <div className="flex flex-col md:flex-row items-center md:items-stretch gap-0 md:gap-4 max-w-[95vw] w-full md:w-auto pb-10 md:pb-0">
+    <div className="fixed inset-0 z-[100] flex items-start md:items-center justify-center p-2 md:p-4 bg-black/50 backdrop-blur-sm overflow-y-auto pt-16 md:pt-4">
+      <div className="flex flex-col md:flex-row items-center md:items-stretch gap-0 md:gap-4 max-w-[95vw] w-full md:w-auto pb-32 md:pb-0">
         
         {/* Main Modal Panel */}
         <div className="bg-surface w-full md:w-[600px] rounded-2xl shadow-xl overflow-hidden flex flex-col shrink-0 max-h-[85vh] md:max-h-[90vh]">
@@ -463,21 +471,16 @@ const IncidentDetailsModal = ({ incident, isOpen, onClose }) => {
               </div>
               
               <div className="p-6 flex flex-col gap-6 overflow-y-auto">
-                {incident.encargado_numero && (
+
+                {incident.encargado_extension !== null && (
                   <div className="flex flex-col gap-2">
-                    <div className="flex items-center gap-2 text-stone-600">
-                      <span className="material-symbols-outlined text-sm">call</span>
-                      <span className="text-sm font-body">{incident.encargado_numero}</span>
+                    <div className="p-4 bg-stone-50 dark:bg-stone-900/30 rounded-xl border border-stone-200/50">
+                      <p className="text-[10px] font-label font-bold text-stone-400 uppercase tracking-widest mb-1 flex items-center gap-1">
+                        <span className="material-symbols-outlined text-[14px]">phone_callback</span>
+                        Extensión del Área
+                      </p>
+                      <p className="text-base font-body font-bold text-stone-700 dark:text-on-surface-variant">{incident.encargado_extension}</p>
                     </div>
-                    <a 
-                      href={`https://wa.me/${incident.encargado_numero.replace(/\D/g, '')}`} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 px-4 py-3 bg-green-50 text-green-700 hover:bg-green-100 rounded-xl text-sm font-bold uppercase transition-colors w-full"
-                    >
-                      <span className="material-symbols-outlined">chat</span>
-                      WhatsApp
-                    </a>
                   </div>
                 )}
 
@@ -488,7 +491,9 @@ const IncidentDetailsModal = ({ incident, isOpen, onClose }) => {
                       <span className="text-sm font-body truncate" title={incident.encargado_correo}>{incident.encargado_correo}</span>
                     </div>
                     <a 
-                      href={`mailto:${incident.encargado_correo}`}
+                      href={getEmailLink(incident.encargado_correo)}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="flex items-center justify-center gap-2 px-4 py-3 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-xl text-sm font-bold uppercase transition-colors w-full"
                     >
                       <span className="material-symbols-outlined">send</span>
@@ -516,21 +521,16 @@ const IncidentDetailsModal = ({ incident, isOpen, onClose }) => {
               </div>
               
               <div className="p-6 flex flex-col gap-6 overflow-y-auto">
-                {incident.solicitante_numero && (
+
+                {incident.solicitante_extension !== null && (
                   <div className="flex flex-col gap-2">
-                    <div className="flex items-center gap-2 text-stone-600">
-                      <span className="material-symbols-outlined text-sm">call</span>
-                      <span className="text-sm font-body">{incident.solicitante_numero}</span>
+                    <div className="p-4 bg-stone-50 dark:bg-stone-900/30 rounded-xl border border-stone-200/50">
+                      <p className="text-[10px] font-label font-bold text-stone-400 uppercase tracking-widest mb-1 flex items-center gap-1">
+                        <span className="material-symbols-outlined text-[14px]">phone_callback</span>
+                        Extensión del Área
+                      </p>
+                      <p className="text-base font-body font-bold text-stone-700 dark:text-on-surface-variant">{incident.solicitante_extension}</p>
                     </div>
-                    <a 
-                      href={`https://wa.me/${incident.solicitante_numero.replace(/\D/g, '')}`} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 px-4 py-3 bg-green-50 text-green-700 hover:bg-green-100 rounded-xl text-sm font-bold uppercase transition-colors w-full"
-                    >
-                      <span className="material-symbols-outlined">chat</span>
-                      Contactar por WhatsApp
-                    </a>
                   </div>
                 )}
 
@@ -541,7 +541,9 @@ const IncidentDetailsModal = ({ incident, isOpen, onClose }) => {
                       <span className="text-sm font-body truncate" title={incident.solicitante_correo}>{incident.solicitante_correo}</span>
                     </div>
                     <a 
-                      href={`mailto:${incident.solicitante_correo}`}
+                      href={getEmailLink(incident.solicitante_correo)}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="flex items-center justify-center gap-2 px-4 py-3 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-xl text-sm font-bold uppercase transition-colors w-full"
                     >
                       <span className="material-symbols-outlined">send</span>

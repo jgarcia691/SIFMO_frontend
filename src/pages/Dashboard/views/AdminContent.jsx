@@ -88,7 +88,7 @@ const AdminContent = ({ activeView }) => {
   };
 
   return (
-    <main className="md:ml-20 pt-16 md:pt-24 px-4 md:px-10 pb-20 md:pb-12 bg-surface min-h-screen">
+    <main className="md:ml-20 pt-16 md:pt-24 px-4 md:px-10 pb-32 md:pb-12 bg-surface min-h-screen">
       <section className="max-w-7xl mx-auto">
         <header className="mb-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
           <div className="space-y-2">
@@ -246,98 +246,158 @@ const AdminContent = ({ activeView }) => {
           </div>
         )}
 
-        {/* List View for History */}
-        {!loading && activeView === 'incidents' && (
+        {/* Responsive History View */}
+        {!loading && activeView === 'incidents' && incidents.length > 0 && (
           <div className="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/10 overflow-hidden">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-surface-container border-b border-outline-variant/10">
-                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">ID</th>
-                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Tipo / Solicitante</th>
-                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Departamento</th>
-                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Fecha</th>
-                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Estado</th>
-                  <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant text-right">Acciones</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-outline-variant/10">
-                {(() => {
-                  const filtered = incidents.filter(i => {
-                    const term = filters.search.toLowerCase();
-                    const matchesSearch = !term || 
-                      i.id.toString().includes(term) ||
-                      i.tipo.toLowerCase().includes(term) ||
-                      i.solicitante?.toLowerCase().includes(term) ||
-                      i.cliente?.toString().includes(term);
-                    
-                    const matchesStatus = !filters.status || i.status === filters.status;
-                    
-                    const incidentDate = new Date(i.fecha);
-                    const matchesStartDate = !filters.startDate || incidentDate >= new Date(filters.startDate);
-                    const matchesEndDate = !filters.endDate || incidentDate <= new Date(filters.endDate);
-                    
-                    return matchesSearch && matchesStatus && matchesStartDate && matchesEndDate;
-                  });
+            {/* Desktop Table */}
+            <div className="hidden md:block">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-surface-container border-b border-outline-variant/10">
+                    <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">ID</th>
+                    <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Tipo / Solicitante</th>
+                    <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Departamento</th>
+                    <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Fecha</th>
+                    <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant">Estado</th>
+                    <th className="px-6 py-4 text-[10px] font-label font-bold uppercase tracking-widest text-stone-400 dark:text-on-surface-variant text-right">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-outline-variant/10">
+                  {(() => {
+                    const filtered = incidents.filter(i => {
+                      const term = filters.search.toLowerCase();
+                      const matchesSearch = !term || 
+                        i.id.toString().includes(term) ||
+                        i.tipo.toLowerCase().includes(term) ||
+                        i.solicitante?.toLowerCase().includes(term) ||
+                        i.cliente?.toString().includes(term);
+                      
+                      const matchesStatus = !filters.status || i.status === filters.status;
+                      
+                      const incidentDate = new Date(i.fecha);
+                      const matchesStartDate = !filters.startDate || incidentDate >= new Date(filters.startDate);
+                      const matchesEndDate = !filters.endDate || incidentDate <= new Date(filters.endDate);
+                      
+                      return matchesSearch && matchesStatus && matchesStartDate && matchesEndDate;
+                    });
 
-                  if (filtered.length === 0) {
-                    return (
-                      <tr>
-                        <td colSpan="6" className="py-20 text-center">
-                          <p className="text-on-surface-variant font-body italic">No se encontraron incidentes que coincidan con los filtros.</p>
-                        </td>
-                      </tr>
-                    );
-                  }
+                    if (filtered.length === 0) {
+                      return (
+                        <tr>
+                          <td colSpan="6" className="py-20 text-center">
+                            <p className="text-on-surface-variant font-body italic text-sm">No se encontraron incidentes que coincidan con los filtros.</p>
+                          </td>
+                        </tr>
+                      );
+                    }
 
-                  return filtered.map((incident) => {
-                    const statusStyle = statusIndicators[incident.status] || { color: 'bg-stone-500', text: 'text-stone-700', pulse: false };
-                    
-                    return (
-                      <tr key={incident.id} className="hover:bg-surface-container/30 transition-colors group">
-                        <td className="px-6 py-4">
-                          <span className="font-label font-bold text-primary">#{incident.id}</span>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="flex flex-col">
-                            <span className="font-headline font-bold text-on-surface uppercase text-sm">{incident.tipo}</span>
-                            <span className="text-[10px] font-label text-stone-400 dark:text-on-surface-variant uppercase">{incident.solicitante} ({incident.cliente})</span>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <span className="text-xs text-on-surface-variant font-body uppercase">{incident.area || 'N/A'}</span>
-                        </td>
-                        <td className="px-6 py-4">
-                          <button 
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setFilters({...filters, startDate: incident.rawDate, endDate: incident.rawDate});
-                            }}
-                            className="text-xs text-stone-500 dark:text-on-surface-variant font-label hover:text-primary hover:bg-primary/5 px-2 py-1 rounded transition-colors"
-                            title="Filtrar por esta fecha"
-                          >
-                            {incident.date}
-                          </button>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-2">
-                            <span className={`w-2 h-2 rounded-full ${statusStyle.color}`}></span>
-                            <span className={`text-[10px] font-label font-bold uppercase ${statusStyle.text}`}>{incident.status}</span>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 text-right">
-                          <button 
-                            onClick={() => openModal(incident)}
-                            className="p-2 text-primary hover:bg-primary/10 rounded-full transition-colors material-symbols-outlined"
-                          >
-                            visibility
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  });
-                })()}
-              </tbody>
-            </table>
+                    return filtered.map((incident) => {
+                      const statusStyle = statusIndicators[incident.status] || { color: 'bg-stone-500', text: 'text-stone-700', pulse: false };
+                      
+                      return (
+                        <tr key={incident.id} className="hover:bg-surface-container/30 transition-colors group">
+                          <td className="px-6 py-4">
+                            <span className="font-label font-bold text-primary">#{incident.id}</span>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex flex-col">
+                              <span className="font-headline font-bold text-on-surface-variant uppercase text-sm">{incident.tipo}</span>
+                              <span className="text-[10px] font-label text-stone-400 dark:text-on-surface-variant uppercase">{incident.solicitante} ({incident.cliente})</span>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className="text-xs text-on-surface-variant font-body uppercase">{incident.area || 'N/A'}</span>
+                          </td>
+                          <td className="px-6 py-4">
+                            <button 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setFilters({...filters, startDate: incident.rawDate, endDate: incident.rawDate});
+                              }}
+                              className="text-xs text-stone-500 dark:text-on-surface-variant font-label hover:text-primary hover:bg-primary/5 px-2 py-1 rounded transition-colors"
+                              title="Filtrar por esta fecha"
+                            >
+                              {incident.date}
+                            </button>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-2">
+                              <span className={`w-2 h-2 rounded-full ${statusStyle.color}`}></span>
+                              <span className={`text-[10px] font-label font-bold uppercase ${statusStyle.text}`}>{incident.status}</span>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 text-right">
+                            <button 
+                              onClick={() => openModal(incident)}
+                              className="p-2 text-primary hover:bg-primary/10 rounded-full transition-colors material-symbols-outlined"
+                            >
+                              visibility
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    });
+                  })()}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Card List */}
+            <div className="md:hidden divide-y divide-outline-variant/10">
+              {(() => {
+                const filtered = incidents.filter(i => {
+                  const term = filters.search.toLowerCase();
+                  const matchesSearch = !term || 
+                    i.id.toString().includes(term) ||
+                    i.tipo.toLowerCase().includes(term) ||
+                    i.solicitante?.toLowerCase().includes(term);
+                  
+                  const matchesStatus = !filters.status || i.status === filters.status;
+                  
+                  const incidentDate = new Date(i.fecha);
+                  const matchesStartDate = !filters.startDate || incidentDate >= new Date(filters.startDate);
+                  const matchesEndDate = !filters.endDate || incidentDate <= new Date(filters.endDate);
+                  
+                  return matchesSearch && matchesStatus && matchesStartDate && matchesEndDate;
+                });
+
+                if (filtered.length === 0) {
+                  return (
+                    <div className="p-10 text-center bg-surface-container-lowest">
+                      <p className="text-on-surface-variant font-body italic text-sm">No hay resultados.</p>
+                    </div>
+                  );
+                }
+
+                return filtered.map((incident) => {
+                  const statusStyle = statusIndicators[incident.status] || { color: 'bg-stone-500', text: 'text-stone-700', pulse: false };
+                  return (
+                    <div 
+                      key={incident.id} 
+                      className="p-4 flex justify-between items-center bg-surface-container-lowest active:bg-surface-container transition-colors"
+                      onClick={() => openModal(incident)}
+                    >
+                      <div className="flex flex-col gap-1 pr-4 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-label font-bold text-primary">#{incident.id}</span>
+                          <span className="text-[10px] text-stone-400 font-label">{incident.date}</span>
+                        </div>
+                        <h4 className="font-headline font-bold text-on-surface-variant uppercase text-sm leading-tight truncate">{incident.tipo}</h4>
+                        <p className="text-[11px] text-stone-500 font-body truncate">{incident.solicitante}</p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className={`w-1.5 h-1.5 rounded-full ${statusStyle.color}`}></span>
+                          <span className={`text-[9px] font-label font-black uppercase ${statusStyle.text}`}>{incident.status}</span>
+                          <span className="text-[9px] text-stone-400 font-label uppercase tracking-widest ml-1">• {incident.area || 'N/A'}</span>
+                        </div>
+                      </div>
+                      <button className="p-2 text-primary material-symbols-outlined flex-shrink-0">
+                        chevron_right
+                      </button>
+                    </div>
+                  );
+                });
+              })()}
+            </div>
           </div>
         )}
       </section>

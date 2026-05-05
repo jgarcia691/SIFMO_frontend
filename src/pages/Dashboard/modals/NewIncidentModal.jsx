@@ -212,7 +212,7 @@ const NewIncidentModal = () => {
         
         <div className="overflow-y-auto">
           {step === 'selection' && (
-            <div className="p-8 space-y-4">
+            <div className="p-8 pb-32 md:pb-8 space-y-4">
               <button onClick={() => handleSelectType('Reparación de estaciones de trabajo')} className="w-full text-left p-6 rounded-xl border border-outline-variant/10 hover:border-primary hover:bg-surface-container-lowest transition-all group">
                 <div className="flex items-center gap-4">
                   <div className="bg-primary-fixed p-3 rounded-full text-primary group-hover:scale-110 transition-transform">
@@ -250,7 +250,7 @@ const NewIncidentModal = () => {
           )}
 
           {step === 'form' && (
-            <form className="p-8 space-y-8" onSubmit={handleSubmit}>
+            <form className="p-8 pb-32 md:pb-8 space-y-8" onSubmit={handleSubmit}>
               <div className="flex items-center gap-2 mb-4 -mt-2">
                 <button type="button" onClick={() => setStep('selection')} className="text-xs font-label text-primary hover:underline flex items-center gap-1">
                   <span className="material-symbols-outlined text-[14px]">arrow_back</span> Volver a selección

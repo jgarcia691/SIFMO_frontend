@@ -1,35 +1,55 @@
 import React, { useState, useEffect } from 'react';
 import { API_URL } from '../../../config/api';
 
-const NewWorkstationModal = () => {
+const EditWorkstationModal = ({ equipo, isOpen, onClose }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [areas, setAreas] = useState([]);
   const [marcas, setMarcas] = useState([]);
+  const [users, setUsers] = useState([]);
   const [formData, setFormData] = useState({
     fmo: '',
     area_fk: '',
     tipo: '',
     nombre: '',
     serial: '',
-    marca_fk: ''
+    marca_fk: '',
+    propietario_ficha: ''
   });
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [areasRes, marcasRes] = await Promise.all([
-          fetch(`${API_URL}/areas/listar/`),
-          fetch(`${API_URL}/marcas/`)
-        ]);
-        
-        if (areasRes.ok) setAreas(await areasRes.json());
-        if (marcasRes.ok) setMarcas(await marcasRes.json());
-      } catch (error) {
-        console.error('Error fetching areas or brands:', error);
-      }
-    };
-    fetchData();
-  }, []);
+    if (equipo) {
+      setFormData({
+        fmo: equipo.fmo || '',
+        area_fk: equipo.area_fk || '',
+        tipo: equipo.tipo || '',
+        nombre: equipo.nombre || '',
+        serial: equipo.serial || '',
+        marca_fk: equipo.marca_fk || '',
+        propietario_ficha: equipo.propietario_ficha || ''
+      });
+    }
+  }, [equipo]);
+
+  useEffect(() => {
+    if (isOpen) {
+      const fetchData = async () => {
+        try {
+          const [areasRes, marcasRes, usersRes] = await Promise.all([
+            fetch(`${API_URL}/areas/listar/`),
+            fetch(`${API_URL}/marcas/`),
+            fetch(`${API_URL}/users`)
+          ]);
+          
+          if (areasRes.ok) setAreas(await areasRes.json());
+          if (marcasRes.ok) setMarcas(await marcasRes.json());
+          if (usersRes.ok) setUsers(await usersRes.json());
+        } catch (error) {
+          console.error('Error fetching data for edit modal:', error);
+        }
+      };
+      fetchData();
+    }
+  }, [isOpen]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -40,34 +60,29 @@ const NewWorkstationModal = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Obtener el usuario actual
-    const storedUser = localStorage.getItem('user');
-    const user = storedUser ? JSON.parse(storedUser) : null;
-
     const payload = {
-      fmo: parseInt(formData.fmo),
       area_fk: parseInt(formData.area_fk),
       tipo: formData.tipo,
       nombre: formData.nombre,
       serial: formData.serial,
       marca_fk: parseInt(formData.marca_fk),
-      propietario_ficha: user?.ficha || null
+      propietario_ficha: formData.propietario_ficha ? parseInt(formData.propietario_ficha) : null
     };
 
     try {
-      const response = await fetch(`${API_URL}/equipos/`, {
-        method: 'POST',
+      const response = await fetch(`${API_URL}/equipos/${formData.fmo}`, {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
 
       if (response.ok) {
-        alert('Equipo registrado con éxito');
-        window.dispatchEvent(new Event('workstation-created'));
-        window.location.hash = '#equipos';
+        alert('Equipo actualizado con éxito');
+        window.dispatchEvent(new Event('workstation-created')); // Re-fetch list
+        onClose();
       } else {
         const errorData = await response.json();
-        alert('Error al registrar: ' + (errorData.message || 'Intente de nuevo'));
+        alert('Error al actualizar: ' + (errorData.message || 'Intente de nuevo'));
       }
     } catch (error) {
       console.error('Error:', error);
@@ -77,27 +92,26 @@ const NewWorkstationModal = () => {
     }
   };
 
+  if (!isOpen) return null;
+
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-stone-900/60 backdrop-blur-sm p-4 opacity-0 pointer-events-none transition-opacity duration-300 target:opacity-100 target:pointer-events-auto" id="modal-new-workstation">
-      <div className="bg-surface w-full max-w-lg rounded-xl shadow-2xl overflow-hidden relative max-h-[90vh] flex flex-col">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+      <div className="bg-surface w-full max-w-lg rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[85vh] md:max-h-[90vh]">
         <div className="bg-surface-container px-8 py-6 border-b border-outline-variant/10 flex justify-between items-center shrink-0">
           <div>
             <h2 className="text-2xl font-headline font-bold text-on-surface tracking-tight uppercase">
-              Registrar Nuevo Equipo
+              Editar Equipo <span className="text-primary">#{formData.fmo}</span>
             </h2>
-            <p className="text-xs font-label text-stone-500 dark:text-on-surface-variant tracking-widest uppercase">
-              Ingresa las especificaciones del hardware
-            </p>
           </div>
-          <a className="material-symbols-outlined text-stone-400 hover:text-primary transition-colors" href="#equipos">close</a>
+          <button onClick={onClose} className="material-symbols-outlined text-stone-400 hover:text-primary transition-colors">close</button>
         </div>
         
         <div className="overflow-y-auto">
           <form className="p-8 pb-32 md:pb-8 space-y-6" onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">FMO # (ID Único)</label>
-                <input name="fmo" value={formData.fmo} onChange={handleChange} type="number" className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" placeholder="Ej: 10245" required />
+                <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">Nombre del Equipo</label>
+                <input name="nombre" value={formData.nombre} onChange={handleChange} type="text" className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" required />
               </div>
               <div>
                 <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">Tipo de Equipo</label>
@@ -118,6 +132,16 @@ const NewWorkstationModal = () => {
             </div>
 
             <div>
+              <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">Asignar Propietario</label>
+              <select name="propietario_ficha" value={formData.propietario_ficha} onChange={handleChange} className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all">
+                <option value="">-- Sin asignar --</option>
+                {users.map(user => (
+                  <option key={user.ficha} value={user.ficha}>{user.nombre} ({user.rol})</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
               <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">Área / Departamento</label>
               <select name="area_fk" value={formData.area_fk} onChange={handleChange} className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" required>
                 <option value="">Seleccione un área</option>
@@ -127,15 +151,10 @@ const NewWorkstationModal = () => {
               </select>
             </div>
 
-            <div>
-              <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">Nombre del Equipo / Identificador</label>
-              <input name="nombre" value={formData.nombre} onChange={handleChange} type="text" className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" placeholder="Ej: Estación de Control B-1" required />
-            </div>
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">Número de Serial</label>
-                <input name="serial" value={formData.serial} onChange={handleChange} type="text" className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" placeholder="Ej: SN-987654321" required />
+                <input name="serial" value={formData.serial} onChange={handleChange} type="text" className="w-full bg-surface-container-low border-0 border-b-2 border-stone-200 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" placeholder="SN-..." required />
               </div>
               <div>
                 <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">Marca</label>
@@ -149,11 +168,11 @@ const NewWorkstationModal = () => {
             </div>
 
             <div className="pt-4 flex gap-4 shrink-0">
-              <a className="flex-1 flex items-center justify-center py-4 text-on-surface-variant font-headline font-bold text-sm uppercase tracking-wider rounded-md bg-surface-container hover:bg-surface-container-high transition-colors" href="#equipos">
+              <button type="button" onClick={onClose} className="flex-1 flex items-center justify-center py-4 text-on-surface-variant font-headline font-bold text-sm uppercase tracking-wider rounded-md bg-surface-container hover:bg-surface-container-high transition-colors">
                 Cancelar
-              </a>
-              <button disabled={isSubmitting} className="flex-[2] py-4 bg-gradient-to-br from-primary to-primary-container text-on-primary font-headline font-bold text-sm uppercase tracking-wider rounded-md transition-transform active:scale-95 shadow-lg shadow-primary/20 disabled:opacity-50 disabled:scale-100" type="submit">
-                {isSubmitting ? 'Registrando...' : 'Registrar Equipo'}
+              </button>
+              <button disabled={isSubmitting} className="flex-[2] py-4 bg-primary text-on-primary font-headline font-bold text-sm uppercase tracking-wider rounded-md transition-transform active:scale-95 shadow-lg shadow-primary/20 disabled:opacity-50 disabled:scale-100" type="submit">
+                {isSubmitting ? 'Guardando...' : 'Guardar Cambios'}
               </button>
             </div>
           </form>
@@ -163,4 +182,4 @@ const NewWorkstationModal = () => {
   );
 };
 
-export default NewWorkstationModal;
+export default EditWorkstationModal;

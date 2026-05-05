@@ -81,7 +81,7 @@ const MainContent = ({ activeView }) => {
   };
 
   return (
-    <main className="md:ml-20 pt-16 md:pt-24 px-4 md:px-10 pb-20 md:pb-12 bg-surface min-h-screen">
+    <main className="md:ml-20 pt-16 md:pt-24 px-4 md:px-10 pb-32 md:pb-12 bg-surface min-h-screen">
       <section className="max-w-7xl mx-auto">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8">
           <div className="space-y-2">
@@ -151,57 +151,57 @@ const MainContent = ({ activeView }) => {
           <div className="flex justify-center py-20">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
           </div>
-        ) : incidents.length === 0 ? (
+        ) : (activeView !== 'incidents' && incidents.filter(i => i.status !== 'Listo' && i.status !== 'Entregado').length === 0) || (activeView === 'incidents' && incidents.length === 0) ? (
           <div className="text-center py-20 bg-surface-container-lowest rounded-xl border border-dashed border-outline-variant/20">
              <span className="material-symbols-outlined text-outline-variant text-6xl mb-4">folder_open</span>
              <p className="text-on-surface-variant font-body">No se encontraron solicitudes registradas.</p>
           </div>
-        ) : (
+        ) : activeView !== 'incidents' ? (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {incidents.map((incident) => {
-              const statusStyle = statusIndicators[incident.status] || { color: 'bg-stone-500', text: 'text-stone-700', pulse: false };
-              const typeClass = typeColors[incident.tipo] || 'bg-stone-100 text-stone-800';
+            {incidents
+              .filter(i => i.status !== 'Listo' && i.status !== 'Entregado')
+              .map((incident) => {
+                const statusStyle = statusIndicators[incident.status] || { color: 'bg-stone-500', text: 'text-stone-700', pulse: false };
+                const typeClass = typeColors[incident.tipo] || 'bg-stone-100 text-stone-800';
 
-              if (activeView === 'incidents') return null;
-
-              return (
-                <div 
-                  key={incident.id} 
-                  className="bg-surface-container-lowest p-6 rounded-lg shadow-sm border border-outline-variant/10 group hover:bg-surface-container transition-colors duration-300 cursor-pointer flex flex-col"
-                  onClick={() => openModal(incident)}
-                >
-                  <div className="flex justify-between items-start mb-6">
-                    <div className="flex flex-col gap-1">
-                      <span className="text-[10px] font-label font-bold text-stone-400 dark:text-on-surface-variant">SOLICITUD #{incident.id}</span>
-                      <span className={`${typeClass} text-[10px] font-label font-black px-2 py-1 rounded-sm uppercase tracking-tighter w-fit`}>
-                        {incident.tipo}
-                      </span>
+                return (
+                  <div 
+                    key={incident.id} 
+                    className="bg-surface-container-lowest p-6 rounded-lg shadow-sm border border-outline-variant/10 group hover:bg-surface-container transition-colors duration-300 cursor-pointer flex flex-col"
+                    onClick={() => openModal(incident)}
+                  >
+                    <div className="flex justify-between items-start mb-6">
+                      <div className="flex flex-col gap-1">
+                        <span className="text-[10px] font-label font-bold text-stone-400 dark:text-on-surface-variant">SOLICITUD #{incident.id}</span>
+                        <span className={`${typeClass} text-[10px] font-label font-black px-2 py-1 rounded-sm uppercase tracking-tighter w-fit`}>
+                          {incident.tipo}
+                        </span>
+                      </div>
+                      <span className="text-stone-400 dark:text-on-surface-variant text-xs font-label">{incident.date}</span>
                     </div>
-                    <span className="text-stone-400 dark:text-on-surface-variant text-xs font-label">{incident.date}</span>
-                  </div>
-                  
-                  <h3 className="text-xl font-headline font-bold text-on-surface-variant mb-2 group-hover:text-primary transition-colors uppercase">
-                    {incident.tipo}
-                  </h3>
-                  
-                  <p className="text-sm text-on-surface-variant font-body mb-6 line-clamp-2">
-                    {incident.observacion || 'Sin observaciones adicionales registradas en la vista previa.'}
-                  </p>
-                  
-                  <div className="flex items-center justify-between mt-auto">
-                    <div className="flex items-center gap-2">
-                      <span className={`w-2 h-2 rounded-full ${statusStyle.color} ${statusStyle.pulse ? 'animate-pulse' : ''}`}></span>
-                      <span className={`text-[10px] font-label font-bold uppercase ${statusStyle.text}`}>{incident.status}</span>
+                    
+                    <h3 className="text-xl font-headline font-bold text-on-surface-variant mb-2 group-hover:text-primary transition-colors uppercase">
+                      {incident.tipo}
+                    </h3>
+                    
+                    <p className="text-sm text-on-surface-variant font-body mb-6 line-clamp-2">
+                      {incident.observacion || 'Sin observaciones adicionales registradas en la vista previa.'}
+                    </p>
+                    
+                    <div className="flex items-center justify-between mt-auto">
+                      <div className="flex items-center gap-2">
+                        <span className={`w-2 h-2 rounded-full ${statusStyle.color} ${statusStyle.pulse ? 'animate-pulse' : ''}`}></span>
+                        <span className={`text-[10px] font-label font-bold uppercase ${statusStyle.text}`}>{incident.status}</span>
+                      </div>
+                      <button className="text-primary material-symbols-outlined hover:bg-primary-fixed p-1 rounded-full transition-colors group-hover:bg-primary-fixed">
+                        open_in_new
+                      </button>
                     </div>
-                    <button className="text-primary material-symbols-outlined hover:bg-primary-fixed p-1 rounded-full transition-colors group-hover:bg-primary-fixed">
-                      open_in_new
-                    </button>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
           </div>
-        )}
+        ) : null}
 
         {/* Responsive History View */}
         {!loading && activeView === 'incidents' && incidents.length > 0 && (
@@ -323,27 +323,22 @@ const MainContent = ({ activeView }) => {
                       className="p-4 flex justify-between items-center bg-surface-container-lowest active:bg-surface-container transition-colors"
                       onClick={() => openModal(incident)}
                     >
-                      <div className="flex flex-col gap-1">
+                      <div className="flex flex-col gap-1 pr-4 min-w-0">
                         <div className="flex items-center gap-2">
                           <span className="text-xs font-label font-bold text-primary">#{incident.id}</span>
-                          <button 
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setFilters({...filters, startDate: incident.rawDate, endDate: incident.rawDate});
-                            }}
-                            className="text-[10px] text-stone-400 dark:text-on-surface-variant font-label hover:text-primary px-1 transition-colors"
-                          >
-                            {incident.date}
-                          </button>
+                          <span className="text-[10px] text-stone-400 dark:text-on-surface-variant font-label">{incident.date}</span>
                         </div>
-                        <h4 className="font-headline font-bold text-on-surface-variant uppercase text-sm leading-tight">{incident.tipo}</h4>
+                        <h4 className="font-headline font-bold text-on-surface-variant uppercase text-sm leading-tight truncate">{incident.tipo}</h4>
+                        {incident.observacion && (
+                          <p className="text-[11px] text-stone-500 dark:text-stone-400 font-body line-clamp-1 italic">"{incident.observacion}"</p>
+                        )}
                         <div className="flex items-center gap-2 mt-1">
                           <span className={`w-1.5 h-1.5 rounded-full ${statusStyle.color}`}></span>
                           <span className={`text-[9px] font-label font-black uppercase ${statusStyle.text}`}>{incident.status}</span>
-                          <span className="text-[9px] text-stone-400 dark:text-on-surface-variant font-label uppercase tracking-widest ml-1">• {incident.solicitante || 'Yo'}</span>
+                          <span className="text-[9px] text-stone-400 dark:text-on-surface-variant font-label uppercase tracking-widest ml-1 truncate max-w-[100px]">• {incident.solicitante || 'Yo'}</span>
                         </div>
                       </div>
-                      <button className="p-2 text-primary material-symbols-outlined">
+                      <button className="p-2 text-primary material-symbols-outlined flex-shrink-0">
                         chevron_right
                       </button>
                     </div>

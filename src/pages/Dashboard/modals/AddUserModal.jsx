@@ -80,8 +80,8 @@ const AddUserModal = ({ isOpen, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="bg-surface w-full max-w-2xl rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+      <div className="bg-surface w-full max-w-2xl rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[85vh] md:max-h-[90vh]">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-outline-variant/20 bg-surface-container-lowest">
           <div>
@@ -97,7 +97,7 @@ const AddUserModal = ({ isOpen, onClose }) => {
         </div>
 
         {/* Content */}
-        <div className="p-6 overflow-y-auto">
+        <div className="p-6 pb-32 md:pb-6 overflow-y-auto">
           {error && (
             <div className="mb-6 p-4 bg-error-container text-on-error-container rounded-lg font-body text-sm flex items-center gap-2">
                 <span className="material-symbols-outlined">error</span>

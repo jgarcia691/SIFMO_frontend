@@ -102,8 +102,8 @@ const UserDetailsModal = ({ user, isOpen, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="bg-surface w-full max-w-lg rounded-2xl shadow-xl overflow-hidden flex flex-col">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+      <div className="bg-surface w-full max-w-lg rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[85vh] md:max-h-[90vh]">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-outline-variant/20 bg-surface-container-lowest">
           <div>
@@ -121,7 +121,7 @@ const UserDetailsModal = ({ user, isOpen, onClose }) => {
         </div>
 
         {/* Content */}
-        <div className="p-6 space-y-6">
+        <div className="p-6 pb-32 md:pb-6 space-y-6 overflow-y-auto">
           <div className="flex items-center gap-4 mb-2">
              <div className="w-16 h-16 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant">
                 <span className="material-symbols-outlined text-3xl">person</span>
