@@ -18,6 +18,7 @@ const AnalystContent = ({ activeView }) => {
     startDate: '',
     endDate: ''
   });
+  const [dashboardTab, setDashboardTab] = useState('pendientes');
 
   useEffect(() => {
     const fetchIncidents = async () => {
@@ -199,15 +200,39 @@ const AnalystContent = ({ activeView }) => {
              <p className="text-on-surface-variant font-body uppercase tracking-widest text-sm">No tienes incidencias asignadas actualmente.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {incidents
-              .filter(i => {
-                if (activeView === 'incidents') return true;
-                return i.status === 'Pendiente' || i.status === 'En revisión' || i.status === 'En espera';
-              })
-              .map((incident) => {
-               const statusStyle = statusIndicators[incident.status] || { color: 'bg-outline-variant/20', text: 'text-on-surface-variant', pulse: false };
-               const typeClass = typeColors[incident.tipo] || 'bg-surface-container text-on-surface-variant';
+          <>
+            {activeView !== 'incidents' && (
+              <div className="flex flex-wrap gap-3 mb-6">
+                <button 
+                  onClick={() => setDashboardTab('pendientes')}
+                  className={`px-5 py-2.5 text-[10px] font-label font-bold uppercase tracking-widest rounded-full transition-all duration-300 flex items-center gap-2 ${dashboardTab === 'pendientes' ? 'bg-primary text-on-primary shadow-md shadow-primary/20 scale-105' : 'bg-surface-container-low hover:bg-surface-container-high text-on-surface-variant'}`}
+                >
+                  <span className="material-symbols-outlined text-[14px]">pending_actions</span>
+                  Pendientes / En Revisión
+                </button>
+                <button 
+                  onClick={() => setDashboardTab('listos')}
+                  className={`px-5 py-2.5 text-[10px] font-label font-bold uppercase tracking-widest rounded-full transition-all duration-300 flex items-center gap-2 ${dashboardTab === 'listos' ? 'bg-green-600 text-white shadow-md shadow-green-600/20 scale-105' : 'bg-surface-container-low hover:bg-surface-container-high text-on-surface-variant'}`}
+                >
+                  <span className="material-symbols-outlined text-[14px]">check_circle</span>
+                  Listos
+                </button>
+              </div>
+            )}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {incidents
+                .filter(i => {
+                  if (activeView === 'incidents') return true;
+                  if (dashboardTab === 'pendientes') {
+                    return i.status === 'Pendiente' || i.status === 'En revisión' || i.status === 'En espera';
+                  } else if (dashboardTab === 'listos') {
+                    return i.status === 'Listo';
+                  }
+                  return false;
+                })
+                .map((incident) => {
+                 const statusStyle = statusIndicators[incident.status] || { color: 'bg-outline-variant/20', text: 'text-on-surface-variant', pulse: false };
+                 const typeClass = typeColors[incident.tipo] || 'bg-surface-container text-on-surface-variant';
 
               if (activeView === 'incidents') return null;
 
@@ -256,6 +281,7 @@ const AnalystContent = ({ activeView }) => {
               );
             })}
           </div>
+          </>
         )}
 
         {/* Responsive History View */}

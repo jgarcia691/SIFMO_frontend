@@ -13,6 +13,7 @@ const MainContent = ({ activeView }) => {
     startDate: '',
     endDate: ''
   });
+  const [dashboardTab, setDashboardTab] = useState('pendientes');
 
   useEffect(() => {
     const fetchIncidents = async () => {
@@ -151,15 +152,39 @@ const MainContent = ({ activeView }) => {
           <div className="flex justify-center py-20">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
           </div>
-        ) : (activeView !== 'incidents' && incidents.filter(i => i.status !== 'Listo' && i.status !== 'Entregado').length === 0) || (activeView === 'incidents' && incidents.length === 0) ? (
+        ) : (activeView !== 'incidents' && incidents.filter(i => i.status !== 'Entregado').length === 0) || (activeView === 'incidents' && incidents.length === 0) ? (
           <div className="text-center py-20 bg-surface-container-lowest rounded-xl border border-dashed border-outline-variant/20">
              <span className="material-symbols-outlined text-outline-variant text-6xl mb-4">folder_open</span>
              <p className="text-on-surface-variant font-body">No se encontraron solicitudes registradas.</p>
           </div>
         ) : activeView !== 'incidents' ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {incidents
-              .filter(i => i.status !== 'Listo' && i.status !== 'Entregado')
+          <>
+            <div className="flex flex-wrap gap-3 mb-6">
+              <button 
+                onClick={() => setDashboardTab('pendientes')}
+                className={`px-5 py-2.5 text-[10px] font-label font-bold uppercase tracking-widest rounded-full transition-all duration-300 flex items-center gap-2 ${dashboardTab === 'pendientes' ? 'bg-primary text-on-primary shadow-md shadow-primary/20 scale-105' : 'bg-surface-container-low hover:bg-surface-container-high text-on-surface-variant'}`}
+              >
+                <span className="material-symbols-outlined text-[14px]">pending_actions</span>
+                Pendientes / En Revisión
+              </button>
+              <button 
+                onClick={() => setDashboardTab('listos')}
+                className={`px-5 py-2.5 text-[10px] font-label font-bold uppercase tracking-widest rounded-full transition-all duration-300 flex items-center gap-2 ${dashboardTab === 'listos' ? 'bg-green-600 text-white shadow-md shadow-green-600/20 scale-105' : 'bg-surface-container-low hover:bg-surface-container-high text-on-surface-variant'}`}
+              >
+                <span className="material-symbols-outlined text-[14px]">check_circle</span>
+                Listos
+              </button>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {incidents
+                .filter(i => {
+                  if (dashboardTab === 'pendientes') {
+                    return i.status === 'Pendiente' || i.status === 'En revisión' || i.status === 'En espera';
+                  } else if (dashboardTab === 'listos') {
+                    return i.status === 'Listo';
+                  }
+                  return false;
+                })
               .map((incident) => {
                 const statusStyle = statusIndicators[incident.status] || { color: 'bg-stone-500', text: 'text-stone-700', pulse: false };
                 const typeClass = typeColors[incident.tipo] || 'bg-stone-100 text-stone-800';
@@ -200,7 +225,8 @@ const MainContent = ({ activeView }) => {
                   </div>
                 );
               })}
-          </div>
+            </div>
+          </>
         ) : null}
 
         {/* Responsive History View */}
