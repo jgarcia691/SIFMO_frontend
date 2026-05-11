@@ -6,6 +6,8 @@ const NewIncidentModal = () => {
   const [incidentType, setIncidentType] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [equipos, setEquipos] = useState([]);
+  const [isOsDropdownOpen, setIsOsDropdownOpen] = useState(false);
+  const [alertConfig, setAlertConfig] = useState({ show: false, message: '', redirectHash: '' });
   
   const [formData, setFormData] = useState({
     cpu_fmo: '',
@@ -64,6 +66,7 @@ const NewIncidentModal = () => {
     const handleRefresh = () => fetchEquipos();
     window.addEventListener('incident-created', handleRefresh);
     window.addEventListener('workstation-created', handleRefresh);
+    window.addEventListener('workstation-deleted', handleRefresh);
     
     const handleHashChange = () => {
       if (window.location.hash !== '#modal-new-incident') {
@@ -102,11 +105,40 @@ const NewIncidentModal = () => {
     return () => {
       window.removeEventListener('incident-created', handleRefresh);
       window.removeEventListener('workstation-created', handleRefresh);
+      window.removeEventListener('workstation-deleted', handleRefresh);
       window.removeEventListener('hashchange', handleHashChange);
     };
   }, []);
 
   const handleSelectType = (type) => {
+    if (type === 'Reparación de estaciones de trabajo') {
+      const hasWorkstation = equipos.some(e => {
+        const t = (e.tipo || '').toLowerCase().trim();
+        return t.includes('estacion') || t.includes('trabajo') || t === '';
+      });
+      if (!hasWorkstation) {
+        setAlertConfig({
+          show: true,
+          message: 'No tienes una estación de trabajo registrada. Te redirigiremos al formulario para que añadas una.',
+          redirectHash: '#modal-new-workstation'
+        });
+        return;
+      }
+    } else if (type === 'Reparación de periférico') {
+      const hasPeripheral = equipos.some(e => {
+        const t = (e.tipo || '').toLowerCase().trim();
+        return t !== 'estacion de trabajo';
+      });
+      if (!hasPeripheral) {
+        setAlertConfig({
+          show: true,
+          message: 'No tienes periféricos registrados. Te redirigiremos al formulario para que añadas uno.',
+          redirectHash: '#modal-new-workstation'
+        });
+        return;
+      }
+    }
+
     setIncidentType(type);
     setStep('form');
   };
@@ -195,8 +227,60 @@ const NewIncidentModal = () => {
     }
   };
 
+  const hardwareKeys = ['respaldo', 'ram', 'cpu', 'disco', 'tarj_video', 'pila', 'fuente', 'motherboard', 'tarj_red'];
+  const allHardwareSelected = hardwareKeys.every(key => formData[key]);
+
+  const handleToggleAllHardware = () => {
+    const newValue = !allHardwareSelected;
+    setFormData(prev => {
+      const updated = { ...prev };
+      hardwareKeys.forEach(key => {
+        updated[key] = newValue;
+      });
+      return updated;
+    });
+  };
+
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-stone-900/60 backdrop-blur-sm p-4 opacity-0 pointer-events-none transition-opacity duration-300 target:opacity-100 target:pointer-events-auto" id="modal-new-incident">
+      
+      {/* Alert Modal Overlay */}
+      {alertConfig.show && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-stone-900/80 backdrop-blur-md p-4 animate-in fade-in duration-200 pointer-events-auto">
+          <div className="bg-surface w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 border border-outline-variant/10">
+            <div className="p-6 text-center">
+              <div className="w-16 h-16 bg-amber-500/10 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-4 relative">
+                <span className="absolute inset-0 bg-amber-500/30 rounded-full animate-ping opacity-75"></span>
+                <span className="material-symbols-outlined text-3xl relative z-10 animate-pulse">warning</span>
+              </div>
+              <h3 className="text-xl font-headline font-bold text-on-surface mb-2 tracking-tight uppercase">Aviso Importante</h3>
+              <p className="text-sm font-body text-stone-500 dark:text-on-surface-variant mb-6">{alertConfig.message}</p>
+              
+              <div className="flex gap-3">
+                <button 
+                  type="button"
+                  onClick={() => setAlertConfig({ show: false, message: '', redirectHash: '' })}
+                  className="flex-1 py-3 text-on-surface-variant font-headline font-bold text-xs uppercase tracking-wider rounded-lg bg-surface-container hover:bg-surface-container-high transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button 
+                  type="button"
+                  onClick={() => {
+                    const hash = alertConfig.redirectHash;
+                    setAlertConfig({ show: false, message: '', redirectHash: '' });
+                    window.location.hash = hash;
+                  }}
+                  className="flex-1 py-3 bg-primary text-on-primary font-headline font-bold text-xs uppercase tracking-wider rounded-lg transition-transform active:scale-95 shadow-lg shadow-primary/20"
+                >
+                  Continuar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="bg-surface w-full max-w-lg rounded-xl shadow-2xl overflow-hidden relative max-h-[90vh] flex flex-col">
         <div className="bg-surface-container px-8 py-6 border-b border-outline-variant/10 flex justify-between items-center shrink-0">
           <div>
@@ -277,9 +361,46 @@ const NewIncidentModal = () => {
                         ))}
                       </select>
                     </div>
-                    <div>
+                    <div className="relative">
                       <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-2">Sistema Operativo</label>
-                      <input name="so" value={formData.so} onChange={handleChange} type="text" className="w-full bg-surface-container-low border-0 border-b-2 border-outline-variant/20 focus:ring-0 focus:border-primary px-4 py-3 font-body text-sm rounded-t-md transition-all" placeholder="Ej: Windows 10, Linux..." />
+                      <div 
+                        className={`w-full bg-surface-container-low border-0 border-b-2 ${isOsDropdownOpen ? 'border-primary' : 'border-outline-variant/20'} px-4 py-3 font-body text-sm rounded-t-md cursor-pointer flex justify-between items-center transition-colors`}
+                        onClick={() => setIsOsDropdownOpen(!isOsDropdownOpen)}
+                      >
+                        <span className={formData.so ? "text-on-surface" : "text-stone-400"}>
+                          {formData.so || "Seleccione el S.O."}
+                        </span>
+                        <span className="material-symbols-outlined text-stone-400">arrow_drop_down</span>
+                      </div>
+                      
+                      {isOsDropdownOpen && (
+                        <>
+                          <div className="fixed inset-0 z-40" onClick={() => setIsOsDropdownOpen(false)}></div>
+                          <div className="absolute z-50 left-0 right-0 mt-1 bg-surface-container-highest border border-outline-variant/10 rounded-md shadow-xl max-h-48 overflow-y-auto styled-scrollbar">
+                            {[
+                              { group: 'Windows', options: ['Windows 10 (64-bit)', 'Windows 10 (32-bit)', 'Windows 8 (64-bit)', 'Windows 8 (32-bit)', 'Windows 7 (64-bit)', 'Windows 7 (32-bit)', 'Windows XP (32-bit)', 'Windows XP (64-bit)'] },
+                              { group: 'Linux', options: ['Linux Mint (64-bit)', 'Linux Mint (32-bit)', 'Ubuntu (64-bit)', 'Ubuntu (32-bit)', 'Debian (64-bit)', 'Debian (32-bit)'] },
+                              { group: 'Otros', options: ['Otros'] }
+                            ].map((group, idx) => (
+                              <div key={idx}>
+                                <div className="px-3 py-1.5 text-[10px] font-bold text-primary uppercase tracking-widest bg-surface-container sticky top-0 border-b border-outline-variant/10 shadow-sm z-10">{group.group}</div>
+                                {group.options.map(opt => (
+                                  <div 
+                                    key={opt}
+                                    className={`px-4 py-2.5 text-sm font-body cursor-pointer transition-colors ${formData.so === opt ? 'bg-primary/10 text-primary font-bold' : 'text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface'}`}
+                                    onClick={() => {
+                                      setFormData(prev => ({ ...prev, so: opt }));
+                                      setIsOsDropdownOpen(false);
+                                    }}
+                                  >
+                                    {opt}
+                                  </div>
+                                ))}
+                              </div>
+                            ))}
+                          </div>
+                        </>
+                      )}
                     </div>
                   </div>
 
@@ -289,7 +410,16 @@ const NewIncidentModal = () => {
                   </div>
 
                   <div className="bg-surface-container p-4 rounded-lg border border-outline-variant/10">
-                    <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-4">Revisión de Hardware / Componentes</label>
+                    <div className="flex justify-between items-center mb-4">
+                      <label className="block text-[10px] font-label font-bold uppercase tracking-widest text-on-surface-variant mb-0">Revisión de Hardware / Componentes</label>
+                      <button 
+                        type="button" 
+                        onClick={handleToggleAllHardware}
+                        className="text-[9px] font-label font-bold text-primary bg-primary/10 hover:bg-primary/20 px-2 py-1 rounded uppercase tracking-widest transition-colors"
+                      >
+                        {allHardwareSelected ? 'Desmarcar Todo' : 'Marcar Todo'}
+                      </button>
+                    </div>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-y-4 gap-x-2">
                       {[
                         { id: 'respaldo', label: 'Respaldo' },

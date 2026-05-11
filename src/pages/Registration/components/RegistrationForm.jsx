@@ -10,7 +10,8 @@ const RegistrationForm = () => {
         id_area: '',
         numero: '',
         rol: 'Operador',
-        correo: ''
+        correo: '',
+        password: ''
     });
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -190,6 +191,27 @@ const RegistrationForm = () => {
                             onChange={handleChange}
                             placeholder="j.perez@ferrominera.com" 
                             type="email" 
+                        />
+                    </div>
+                </div>
+
+                {/* Password Input Field */}
+                <div className="space-y-2">
+                    <label className="font-label text-xs font-semibold uppercase tracking-widest text-on-surface-variant flex justify-between" htmlFor="password">
+                        Contraseña
+                        <span className="text-primary italic">Obligatorio</span>
+                    </label>
+                    <div className="relative">
+                        <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline" data-icon="lock">lock</span>
+                        <input 
+                            className="w-full bg-surface-container-low border-none h-14 pl-12 pr-4 text-lg font-headline font-semibold text-on-surface-variant focus:ring-0 focus:bg-surface-container-high transition-all border-b-2 border-transparent focus:border-primary" 
+                            id="password" 
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            placeholder="••••••••" 
+                            type="password" 
+                            required
                         />
                     </div>
                 </div>

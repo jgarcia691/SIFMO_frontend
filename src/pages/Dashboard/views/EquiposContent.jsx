@@ -72,6 +72,7 @@ const EquiposContent = () => {
       });
       if (response.ok) {
         setEquipos(prev => prev.filter(e => e.fmo !== fmo));
+        window.dispatchEvent(new Event('workstation-deleted'));
       }
     } catch (error) {
       console.error("Error deleting equipo:", error);

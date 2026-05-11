@@ -8,6 +8,7 @@ const LoginForm = () => {
     const navigate = useNavigate();
     const { login } = useAuth();
     const [ficha, setFicha] = useState('');
+    const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const [isAuthenticating, setIsAuthenticating] = useState(false);
@@ -26,7 +27,7 @@ const LoginForm = () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ ficha: parseInt(ficha, 10) })
+                body: JSON.stringify({ ficha: parseInt(ficha, 10), password })
             });
 
             const data = await response.json();
@@ -119,6 +120,26 @@ const LoginForm = () => {
                             type="text" 
                             inputMode="numeric"
                             pattern="[0-9]*"
+                            required
+                        />
+                    </div>
+                </div>
+
+                <div className="space-y-2">
+                    <label className="font-label text-[10px] font-black uppercase tracking-widest text-stone-400 dark:text-on-surface-variant flex justify-between" htmlFor="password">
+                        Contraseña
+                        <span className={`${error ? 'text-red-500' : 'text-primary'} italic`}>*</span>
+                    </label>
+                    <div className="relative">
+                        <span className={`material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 transition-colors ${error ? 'text-red-500' : 'text-outline'}`}>lock</span>
+                        <input 
+                            className={`w-full bg-surface-container-low border-none h-16 pl-12 pr-4 text-xl font-headline font-semibold text-on-surface-variant focus:ring-0 focus:bg-surface-container-high transition-all border-b-2 ${error ? 'border-red-500 bg-red-500/5' : 'border-transparent focus:border-primary'}`} 
+                            id="password" 
+                            name="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="••••••••" 
+                            type="password" 
                             required
                         />
                     </div>
