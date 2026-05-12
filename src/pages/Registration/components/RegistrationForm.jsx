@@ -244,11 +244,6 @@ const RegistrationForm = () => {
                     </Link>
                 </div>
             </div>
-            
-            {/* Technical Footer */}
-            <div className="mt-auto pt-6 flex justify-between items-center text-[10px] text-outline font-label uppercase tracking-widest">
-                <span>v0.0.1-ALPHA</span>
-            </div>
         </div>
     );
 };

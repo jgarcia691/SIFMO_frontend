@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { API_URL } from '../../../config/api';
+import CustomAlert from '../../../components/common/CustomAlert';
 
 const NewWorkstationModal = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [areas, setAreas] = useState([]);
   const [marcas, setMarcas] = useState([]);
+  const [alertConfig, setAlertConfig] = useState({ show: false, message: '' });
   const [formData, setFormData] = useState({
     fmo: '',
     area_fk: '',
@@ -62,16 +64,36 @@ const NewWorkstationModal = () => {
       });
 
       if (response.ok) {
-        alert('Equipo registrado con éxito');
-        window.dispatchEvent(new Event('workstation-created'));
-        window.location.hash = '#equipos';
+        setAlertConfig({
+          show: true,
+          type: 'success',
+          message: 'Equipo registrado con éxito',
+          showCancel: false,
+          confirmText: 'Aceptar',
+          onConfirm: () => {
+            window.dispatchEvent(new Event('workstation-created'));
+            window.location.hash = '#equipos';
+          }
+        });
       } else {
         const errorData = await response.json();
-        alert('Error al registrar: ' + (errorData.message || 'Intente de nuevo'));
+        setAlertConfig({
+          show: true,
+          type: 'error',
+          message: 'Error al registrar: ' + (errorData.message || 'Intente de nuevo'),
+          showCancel: false,
+          confirmText: 'Aceptar'
+        });
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('Error de conexión con el servidor');
+      setAlertConfig({
+        show: true,
+        type: 'error',
+        message: 'Error de conexión con el servidor',
+        showCancel: false,
+        confirmText: 'Aceptar'
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -79,6 +101,7 @@ const NewWorkstationModal = () => {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-stone-900/60 backdrop-blur-sm p-4 opacity-0 pointer-events-none transition-opacity duration-300 target:opacity-100 target:pointer-events-auto" id="modal-new-workstation">
+      <CustomAlert config={alertConfig} setConfig={setAlertConfig} />
       <div className="bg-surface w-full max-w-lg rounded-xl shadow-2xl overflow-hidden relative max-h-[90vh] flex flex-col">
         <div className="bg-surface-container px-8 py-6 border-b border-outline-variant/10 flex justify-between items-center shrink-0">
           <div>

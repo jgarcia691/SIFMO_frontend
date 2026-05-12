@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { API_URL } from '../../../config/api';
+import CustomAlert from '../../../components/common/CustomAlert';
 
 const UserDetailsModal = ({ user, isOpen, onClose }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -9,8 +10,10 @@ const UserDetailsModal = ({ user, isOpen, onClose }) => {
     nombre: '',
     id_area: '',
     numero: '',
-    correo: ''
+    correo: '',
+    password: ''
   });
+  const [alertConfig, setAlertConfig] = useState({ show: false, message: '' });
 
   useEffect(() => {
     if (user) {
@@ -18,7 +21,8 @@ const UserDetailsModal = ({ user, isOpen, onClose }) => {
         nombre: user.nombre || '',
         id_area: user.id_area || '',
         numero: user.numero || '',
-        correo: user.correo || ''
+        correo: user.correo || '',
+        password: ''
       });
     }
     if (isOpen) {
@@ -48,61 +52,113 @@ const UserDetailsModal = ({ user, isOpen, onClose }) => {
   const handleUpdate = async () => {
     setIsSubmitting(true);
     try {
+      const updateData = {
+        ...formData,
+        id_area: formData.id_area ? parseInt(formData.id_area, 10) : null
+      };
+      if (!updateData.password) {
+        delete updateData.password;
+      }
+
       const response = await fetch(`${API_URL}/users/${user.ficha}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          id_area: formData.id_area ? parseInt(formData.id_area, 10) : null
-        })
+        body: JSON.stringify(updateData)
       });
 
       if (response.ok) {
-        alert('Usuario actualizado con éxito');
-        window.dispatchEvent(new Event('user-created')); // Re-fetch users in list
-        setIsEditing(false);
-        onClose();
+        setAlertConfig({
+          show: true,
+          type: 'success',
+          message: 'Usuario actualizado con éxito',
+          showCancel: false,
+          confirmText: 'Aceptar',
+          onConfirm: () => {
+            window.dispatchEvent(new Event('user-created')); // Re-fetch users in list
+            setIsEditing(false);
+            onClose();
+          }
+        });
       } else {
         const data = await response.json();
-        alert('Error: ' + (data.error || 'No se pudo actualizar'));
+        setAlertConfig({
+          show: true,
+          type: 'error',
+          message: 'Error: ' + (data.error || 'No se pudo actualizar'),
+          showCancel: false,
+          confirmText: 'Aceptar'
+        });
       }
     } catch (err) {
       console.error(err);
-      alert('Error de conexión');
+      setAlertConfig({
+        show: true,
+        type: 'error',
+        message: 'Error de conexión',
+        showCancel: false,
+        confirmText: 'Aceptar'
+      });
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleDelete = async () => {
-    if (!window.confirm(`¿Estás seguro de que deseas eliminar al usuario ${user.nombre}? Esta acción no se puede deshacer.`)) {
-      return;
-    }
+  const handleDelete = () => {
+    setAlertConfig({
+      show: true,
+      type: 'warning',
+      message: `¿Estás seguro de que deseas eliminar al usuario ${user.nombre}? Esta acción no se puede deshacer.`,
+      showCancel: true,
+      confirmText: 'Eliminar',
+      cancelText: 'Cancelar',
+      onConfirm: async () => {
+        setIsSubmitting(true);
+        try {
+          const response = await fetch(`${API_URL}/users/${user.ficha}`, {
+            method: 'DELETE'
+          });
 
-    setIsSubmitting(true);
-    try {
-      const response = await fetch(`${API_URL}/users/${user.ficha}`, {
-        method: 'DELETE'
-      });
-
-      if (response.ok) {
-        alert('Usuario eliminado correctamente');
-        window.dispatchEvent(new Event('user-created'));
-        onClose();
-      } else {
-        const data = await response.json();
-        alert('Error: ' + (data.error || 'No se pudo eliminar'));
+          if (response.ok) {
+            setAlertConfig({
+              show: true,
+              type: 'success',
+              message: 'Usuario eliminado correctamente',
+              showCancel: false,
+              confirmText: 'Aceptar',
+              onConfirm: () => {
+                window.dispatchEvent(new Event('user-created'));
+                onClose();
+              }
+            });
+          } else {
+            const data = await response.json();
+            setAlertConfig({
+              show: true,
+              type: 'error',
+              message: 'Error: ' + (data.error || 'No se pudo eliminar'),
+              showCancel: false,
+              confirmText: 'Aceptar'
+            });
+          }
+        } catch (err) {
+          console.error(err);
+          setAlertConfig({
+            show: true,
+            type: 'error',
+            message: 'Error de conexión',
+            showCancel: false,
+            confirmText: 'Aceptar'
+          });
+        } finally {
+          setIsSubmitting(false);
+        }
       }
-    } catch (err) {
-      console.error(err);
-      alert('Error de conexión');
-    } finally {
-      setIsSubmitting(false);
-    }
+    });
   };
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+      <CustomAlert config={alertConfig} setConfig={setAlertConfig} />
       <div className="bg-surface w-full max-w-lg rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[85vh] md:max-h-[90vh]">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-outline-variant/20 bg-surface-container-lowest">
@@ -196,6 +252,22 @@ const UserDetailsModal = ({ user, isOpen, onClose }) => {
                  <p className="font-body text-sm text-on-surface uppercase">{user.area || 'No especificado'}</p>
                )}
             </div>
+            
+            {isEditing && (
+              <div className="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/10 sm:col-span-2">
+                 <h3 className="text-xs font-label font-bold text-stone-500 dark:text-on-surface-variant uppercase tracking-wider mb-1 flex items-center gap-1">
+                   <span className="material-symbols-outlined text-[14px]">lock</span> Nueva Contraseña
+                 </h3>
+                 <input 
+                   name="password"
+                   type="password"
+                   value={formData.password}
+                   onChange={handleChange}
+                   className="w-full bg-transparent border-b border-outline-variant focus:border-primary outline-none text-sm font-body py-1"
+                   placeholder="Dejar en blanco para no cambiar"
+                 />
+              </div>
+            )}
           </div>
         </div>
 

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { API_URL } from '../../../config/api';
+import CustomAlert from '../../../components/common/CustomAlert';
 
 const EditWorkstationModal = ({ equipo, isOpen, onClose }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [areas, setAreas] = useState([]);
   const [marcas, setMarcas] = useState([]);
   const [users, setUsers] = useState([]);
+  const [alertConfig, setAlertConfig] = useState({ show: false, message: '' });
   const [formData, setFormData] = useState({
     fmo: '',
     area_fk: '',
@@ -77,16 +79,36 @@ const EditWorkstationModal = ({ equipo, isOpen, onClose }) => {
       });
 
       if (response.ok) {
-        alert('Equipo actualizado con éxito');
-        window.dispatchEvent(new Event('workstation-created')); // Re-fetch list
-        onClose();
+        setAlertConfig({
+          show: true,
+          type: 'success',
+          message: 'Equipo actualizado con éxito',
+          showCancel: false,
+          confirmText: 'Aceptar',
+          onConfirm: () => {
+            window.dispatchEvent(new Event('workstation-created')); // Re-fetch list
+            onClose();
+          }
+        });
       } else {
         const errorData = await response.json();
-        alert('Error al actualizar: ' + (errorData.message || 'Intente de nuevo'));
+        setAlertConfig({
+          show: true,
+          type: 'error',
+          message: 'Error al actualizar: ' + (errorData.message || 'Intente de nuevo'),
+          showCancel: false,
+          confirmText: 'Aceptar'
+        });
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('Error de conexión con el servidor');
+      setAlertConfig({
+        show: true,
+        type: 'error',
+        message: 'Error de conexión con el servidor',
+        showCancel: false,
+        confirmText: 'Aceptar'
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -96,6 +118,7 @@ const EditWorkstationModal = ({ equipo, isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+      <CustomAlert config={alertConfig} setConfig={setAlertConfig} />
       <div className="bg-surface w-full max-w-lg rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[85vh] md:max-h-[90vh]">
         <div className="bg-surface-container px-8 py-6 border-b border-outline-variant/10 flex justify-between items-center shrink-0">
           <div>

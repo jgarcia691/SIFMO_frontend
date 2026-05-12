@@ -20,6 +20,11 @@ const AnalystContent = ({ activeView }) => {
   });
   const [dashboardTab, setDashboardTab] = useState('pendientes');
 
+  // Obtener usuario logueado para comparar
+  const storedUserStr = localStorage.getItem('user');
+  const currentUser = storedUserStr ? JSON.parse(storedUserStr) : null;
+  const currentFicha = currentUser ? currentUser.ficha : null;
+
   useEffect(() => {
     const fetchIncidents = async () => {
       try {
@@ -245,13 +250,22 @@ const AnalystContent = ({ activeView }) => {
                   <div className="flex justify-between items-start mb-6">
                     <div className="flex flex-col gap-1">
                       <span className="text-[10px] font-label font-bold text-stone-400 dark:text-on-surface-variant"># {incident.id} • CLIENTE: {incident.solicitante}</span>
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
                         <span className={`${typeClass} text-[10px] font-label font-black px-2 py-1 rounded-sm uppercase tracking-tighter w-fit`}>
                           {incident.tipo}
                         </span>
-                        <span className="text-[10px] font-label font-bold text-primary bg-primary/5 px-2 py-1 rounded-sm border border-primary/10 uppercase tracking-tighter">
-                          Asignado a ti
-                        </span>
+                        
+                        {incident.cliente === currentFicha && (
+                          <span className="text-[10px] font-label font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded-sm border border-amber-200 uppercase tracking-tighter">
+                            Reportado por mí
+                          </span>
+                        )}
+                        
+                        {incident.encargado === currentFicha && (
+                          <span className="text-[10px] font-label font-bold text-primary bg-primary/5 px-2 py-1 rounded-sm border border-primary/10 uppercase tracking-tighter">
+                            Asignado a ti
+                          </span>
+                        )}
                       </div>
                     </div>
                     <span className="text-stone-400 text-xs font-label">{incident.date}</span>
@@ -338,9 +352,21 @@ const AnalystContent = ({ activeView }) => {
                             <span className="font-label font-bold text-primary">#{incident.id}</span>
                           </td>
                           <td className="px-6 py-4">
-                            <div className="flex flex-col">
+                            <div className="flex flex-col gap-1">
                               <span className="font-headline font-bold text-on-surface-variant uppercase text-sm">{incident.tipo}</span>
                               <span className="text-[10px] font-label text-stone-400 uppercase">{incident.solicitante}</span>
+                              <div className="flex flex-wrap items-center gap-1 mt-1">
+                                {incident.cliente === currentFicha && (
+                                  <span className="text-[8px] font-label font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded-sm border border-amber-200 uppercase tracking-tighter w-fit">
+                                    Reportado por mí
+                                  </span>
+                                )}
+                                {incident.encargado === currentFicha && (
+                                  <span className="text-[8px] font-label font-bold text-primary bg-primary/5 px-1.5 py-0.5 rounded-sm border border-primary/10 uppercase tracking-tighter w-fit">
+                                    Asignado a ti
+                                  </span>
+                                )}
+                              </div>
                             </div>
                           </td>
                           <td className="px-6 py-4">
@@ -422,6 +448,20 @@ const AnalystContent = ({ activeView }) => {
                         </div>
                         <h4 className="font-headline font-bold text-on-surface-variant uppercase text-sm leading-tight truncate">{incident.tipo}</h4>
                         <p className="text-[11px] text-stone-500 font-body truncate">{incident.solicitante}</p>
+                        
+                        <div className="flex flex-wrap items-center gap-1 my-1">
+                          {incident.cliente === currentFicha && (
+                            <span className="text-[8px] font-label font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded-sm border border-amber-200 uppercase tracking-tighter">
+                              Reportado por mí
+                            </span>
+                          )}
+                          {incident.encargado === currentFicha && (
+                            <span className="text-[8px] font-label font-bold text-primary bg-primary/5 px-1.5 py-0.5 rounded-sm border border-primary/10 uppercase tracking-tighter">
+                              Asignado a ti
+                            </span>
+                          )}
+                        </div>
+
                         <div className="flex items-center gap-2 mt-1">
                           <span className={`w-1.5 h-1.5 rounded-full ${statusStyle.color}`}></span>
                           <span className={`text-[9px] font-label font-black uppercase ${statusStyle.text}`}>{incident.status}</span>

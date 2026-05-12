@@ -175,7 +175,7 @@ const LoginForm = () => {
             
             <div className="mt-auto pt-12 flex justify-between items-center text-[9px] text-stone-400 font-label uppercase tracking-[0.3em]">
                 <span>FMO • TELEMÁTICA</span>
-                <span>2024</span>
+                <span>2026</span>
             </div>
         </div>
     );

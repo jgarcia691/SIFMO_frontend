@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { API_URL } from '../../../config/api';
+import CustomAlert from '../../../components/common/CustomAlert';
 
 const IncidentDetailsModal = ({ incident, isOpen, onClose }) => {
   const [users, setUsers] = useState([]);
@@ -8,7 +9,7 @@ const IncidentDetailsModal = ({ incident, isOpen, onClose }) => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isContactExpanded, setIsContactExpanded] = useState(false);
-  const [isClientContactExpanded, setIsClientContactExpanded] = useState(false);
+  const [alertConfig, setAlertConfig] = useState({ show: false, message: '' });
   
   const getEmailLink = (email) => {
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
@@ -32,7 +33,6 @@ const IncidentDetailsModal = ({ incident, isOpen, onClose }) => {
       setNewEncargado(incident.encargado || '');
       setObservacion(incident.observacion || '');
       setIsContactExpanded(false); 
-      setIsClientContactExpanded(false);
     }
   }, [isOpen, incident]);
 
@@ -72,13 +72,30 @@ const IncidentDetailsModal = ({ incident, isOpen, onClose }) => {
 
       if (response.ok) {
         const data = await response.json();
-        window.dispatchEvent(new Event('incident-created'));
+        
+        let successMessage = '';
         if (data.emailSent) {
-          alert('Estado actualizado y correo de notificación enviado al usuario.');
+          successMessage = 'Estado actualizado y correo de notificación enviado al usuario.';
         } else if (newStatus !== incident.status) {
-          alert('Estado actualizado. (No se envió correo)');
+          successMessage = 'Estado actualizado. (No se envió correo)';
         }
-        onClose();
+
+        if (successMessage) {
+          setAlertConfig({
+            show: true,
+            type: 'success',
+            message: successMessage,
+            showCancel: false,
+            confirmText: 'Aceptar',
+            onConfirm: () => {
+              window.dispatchEvent(new Event('incident-created'));
+              onClose();
+            }
+          });
+        } else {
+          window.dispatchEvent(new Event('incident-created'));
+          onClose();
+        }
       }
     } catch (error) {
       console.error("Error updating incident:", error);
@@ -119,6 +136,7 @@ const IncidentDetailsModal = ({ incident, isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-start md:items-center justify-center p-2 md:p-4 bg-black/50 backdrop-blur-sm overflow-y-auto pt-16 md:pt-4">
+      <CustomAlert config={alertConfig} setConfig={setAlertConfig} />
       <div className="flex flex-col md:flex-row items-center md:items-stretch gap-0 md:gap-4 max-w-[95vw] w-full md:w-auto pb-32 md:pb-0">
         
         {/* Main Modal Panel */}
@@ -359,27 +377,18 @@ const IncidentDetailsModal = ({ incident, isOpen, onClose }) => {
               <div className="bg-surface-container-lowest p-6 rounded-2xl border border-outline-variant/10">
                  <h3 className="text-xs font-label font-bold text-stone-400 uppercase tracking-widest mb-1">Solicitante</h3>
                  <p className="text-base font-body font-bold text-on-surface-variant">{incident.solicitante || 'Usuario Desconocido'}</p>
-                 {canEditStatus && (
-                    <button 
-                      onClick={() => setIsClientContactExpanded(!isClientContactExpanded)}
-                      className="mt-2 text-xs font-label font-bold text-primary uppercase flex items-center gap-1 hover:bg-primary/5 px-3 py-1.5 rounded w-fit transition-colors"
-                    >
-                      <span className="material-symbols-outlined text-sm">contact_page</span>
-                      {isClientContactExpanded ? 'Ocultar Contacto' : 'Ver Contacto Cliente'}
-                    </button>
-                  )}
               </div>
             </div>
 
-            {/* Analyst Contact Toggle */}
-            {incident.encargado && (
+            {/* Communication Toggle */}
+            {(incident.encargado || canEditStatus) && (
               <div className="flex justify-center mt-6">
                 <button
                   onClick={() => setIsContactExpanded(!isContactExpanded)}
                   className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary hover:bg-primary/20 rounded-full font-label font-bold uppercase transition-colors"
                 >
-                  <span className="material-symbols-outlined text-[18px]">support_agent</span>
-                  {isContactExpanded ? 'Ocultar Contacto' : 'Ver Vías de Comunicación'}
+                  <span className="material-symbols-outlined text-[18px]">contact_phone</span>
+                  {isContactExpanded ? 'Ocultar Contactos' : 'Ver Vías de Comunicación'}
                   <span className={`material-symbols-outlined text-[18px] transition-transform duration-300 ${isContactExpanded ? 'rotate-180' : ''}`}>
                     arrow_forward
                   </span>
@@ -456,106 +465,110 @@ const IncidentDetailsModal = ({ incident, isOpen, onClose }) => {
           </div>
         </div>
 
-        {/* Side Panel (Analyst Contact Information) */}
-        {incident.encargado && (
+        {/* Side Panel (Communication Information) */}
+        {(incident.encargado || canEditStatus) && (
           <div className={`transition-all duration-300 ease-in-out overflow-hidden shrink-0 ${isContactExpanded ? 'w-full md:w-80 max-h-[500px] md:max-h-[90vh] opacity-100 mt-4 md:mt-0 md:ml-4' : 'max-h-0 md:max-h-full w-full md:w-0 opacity-0'}`}>
             <div className="bg-surface w-full md:w-80 rounded-2xl shadow-xl h-full border border-primary/20 flex flex-col overflow-hidden">
               <div className="p-6 border-b border-outline-variant/20 bg-surface-container-lowest flex items-center gap-3 shrink-0">
                 <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center">
-                  <span className="material-symbols-outlined">support_agent</span>
+                  <span className="material-symbols-outlined">contact_phone</span>
                 </div>
                 <div>
-                  <h3 className="text-sm font-label font-bold text-primary uppercase tracking-wider">Analista Asignado</h3>
-                  <p className="text-xs text-stone-500 font-body">{incident.encargado_nombre || 'Analista'}</p>
+                  <h3 className="text-sm font-label font-bold text-primary uppercase tracking-wider">Vías de Comunicación</h3>
+                  <p className="text-xs text-stone-500 font-body">Contactos del Ticket</p>
                 </div>
               </div>
               
               <div className="p-6 flex flex-col gap-6 overflow-y-auto">
 
-                {incident.encargado_extension !== null && (
-                  <div className="flex flex-col gap-2">
-                    <div className="p-4 bg-stone-50 dark:bg-stone-900/30 rounded-xl border border-stone-200/50">
-                      <p className="text-[10px] font-label font-bold text-stone-400 uppercase tracking-widest mb-1 flex items-center gap-1">
-                        <span className="material-symbols-outlined text-[14px]">phone_callback</span>
-                        Extensión del Área
-                      </p>
-                      <p className="text-base font-body font-bold text-stone-700 dark:text-on-surface-variant">{incident.encargado_extension}</p>
+                {incident.encargado && (
+                  <div className="flex flex-col gap-4">
+                    <div>
+                      <h4 className="text-xs font-label font-bold text-stone-400 uppercase tracking-widest mb-1 border-b border-outline-variant/10 pb-1">Analista Asignado</h4>
+                      <p className="text-sm font-bold text-stone-700 dark:text-on-surface-variant">{incident.encargado_nombre || 'Analista'}</p>
                     </div>
+
+                    {incident.encargado_extension !== null && (
+                      <div className="p-4 bg-stone-50 dark:bg-stone-900/30 rounded-xl border border-stone-900 dark:border-stone-700">
+                        <p className="text-[10px] font-label font-bold text-stone-400 uppercase tracking-widest mb-1 flex items-center gap-1">
+                          <span className="material-symbols-outlined text-[14px]">phone_callback</span>
+                          Extensión del Área
+                        </p>
+                        <p className="text-base font-body font-bold text-stone-700 dark:text-on-surface-variant">{incident.encargado_extension}</p>
+                      </div>
+                    )}
+
+                    {incident.encargado_correo && (
+                      <div className="flex flex-col gap-2">
+                        <div className="flex items-center gap-2 text-stone-600">
+                          <span className="material-symbols-outlined text-sm">mail</span>
+                          <span className="text-sm font-body truncate" title={incident.encargado_correo}>{incident.encargado_correo}</span>
+                        </div>
+                        <a 
+                          href={getEmailLink(incident.encargado_correo)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-center gap-2 px-4 py-3 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-xl text-sm font-bold uppercase transition-colors w-full"
+                        >
+                          <span className="material-symbols-outlined">send</span>
+                          Enviar Correo
+                        </a>
+                      </div>
+                    )}
                   </div>
                 )}
 
-                {incident.encargado_correo && (
-                  <div className="flex flex-col gap-2">
-                    <div className="flex items-center gap-2 text-stone-600">
-                      <span className="material-symbols-outlined text-sm">mail</span>
-                      <span className="text-sm font-body truncate" title={incident.encargado_correo}>{incident.encargado_correo}</span>
+                {canEditStatus && (
+                  <div className="flex flex-col gap-4 mt-2">
+                    <div>
+                      <h4 className="text-xs font-label font-bold text-stone-400 uppercase tracking-widest mb-1 border-b border-outline-variant/10 pb-1">Contacto del Cliente</h4>
+                      <p className="text-sm font-bold text-stone-700 dark:text-on-surface-variant">{incident.solicitante}</p>
                     </div>
-                    <a 
-                      href={getEmailLink(incident.encargado_correo)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 px-4 py-3 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-xl text-sm font-bold uppercase transition-colors w-full"
-                    >
-                      <span className="material-symbols-outlined">send</span>
-                      Enviar Correo
-                    </a>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
 
-        {/* Side Panel (Client Contact Information for Analysts) */}
-        {canEditStatus && (
-          <div className={`transition-all duration-300 ease-in-out overflow-hidden shrink-0 ${isClientContactExpanded ? 'w-full md:w-80 max-h-[500px] md:max-h-[90vh] opacity-100 mt-4 md:mt-0 md:ml-4' : 'max-h-0 md:max-h-full w-full md:w-0 opacity-0'}`}>
-            <div className="bg-surface w-full md:w-80 rounded-2xl shadow-xl h-full border border-primary/20 flex flex-col overflow-hidden">
-              <div className="p-6 border-b border-outline-variant/20 bg-surface-container-lowest flex items-center gap-3 shrink-0">
-                <div className="w-10 h-10 rounded-full bg-stone-200 text-stone-600 flex items-center justify-center">
-                  <span className="material-symbols-outlined">person</span>
-                </div>
-                <div>
-                  <h3 className="text-sm font-label font-bold text-stone-600 uppercase tracking-wider">Contacto del Cliente</h3>
-                  <p className="text-xs text-stone-500 font-body">{incident.solicitante}</p>
-                </div>
-              </div>
-              
-              <div className="p-6 flex flex-col gap-6 overflow-y-auto">
+                    {incident.solicitante_extension !== null && (
+                      <div className="p-4 bg-stone-50 dark:bg-stone-900/30 rounded-xl border border-stone-900 dark:border-stone-700">
+                        <p className="text-[10px] font-label font-bold text-stone-400 uppercase tracking-widest mb-1 flex items-center gap-1">
+                          <span className="material-symbols-outlined text-[14px]">phone_callback</span>
+                          Extensión del Área
+                        </p>
+                        <p className="text-base font-body font-bold text-stone-700 dark:text-on-surface-variant">{incident.solicitante_extension}</p>
+                      </div>
+                    )}
 
-                {incident.solicitante_extension !== null && (
-                  <div className="flex flex-col gap-2">
-                    <div className="p-4 bg-stone-50 dark:bg-stone-900/30 rounded-xl border border-stone-200/50">
-                      <p className="text-[10px] font-label font-bold text-stone-400 uppercase tracking-widest mb-1 flex items-center gap-1">
-                        <span className="material-symbols-outlined text-[14px]">phone_callback</span>
-                        Extensión del Área
-                      </p>
-                      <p className="text-base font-body font-bold text-stone-700 dark:text-on-surface-variant">{incident.solicitante_extension}</p>
-                    </div>
-                  </div>
-                )}
+                    {incident.solicitante_numero && (
+                      <div className="p-4 bg-stone-50 dark:bg-stone-900/30 rounded-xl border border-stone-900 dark:border-stone-700">
+                        <p className="text-[10px] font-label font-bold text-stone-400 uppercase tracking-widest mb-1 flex items-center gap-1">
+                          <span className="material-symbols-outlined text-[14px]">smartphone</span>
+                          Número de Teléfono
+                        </p>
+                        <p className="text-base font-body font-bold text-stone-700 dark:text-on-surface-variant">{incident.solicitante_numero}</p>
+                      </div>
+                    )}
 
-                {incident.solicitante_correo && (
-                  <div className="flex flex-col gap-2">
-                    <div className="flex items-center gap-2 text-stone-600">
-                      <span className="material-symbols-outlined text-sm">mail</span>
-                      <span className="text-sm font-body truncate" title={incident.solicitante_correo}>{incident.solicitante_correo}</span>
-                    </div>
-                    <a 
-                      href={getEmailLink(incident.solicitante_correo)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 px-4 py-3 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-xl text-sm font-bold uppercase transition-colors w-full"
-                    >
-                      <span className="material-symbols-outlined">send</span>
-                      Enviar Correo
-                    </a>
-                  </div>
-                )}
+                    {incident.solicitante_correo && (
+                      <div className="flex flex-col gap-2">
+                        <div className="flex items-center gap-2 text-stone-600">
+                          <span className="material-symbols-outlined text-sm">mail</span>
+                          <span className="text-sm font-body truncate" title={incident.solicitante_correo}>{incident.solicitante_correo}</span>
+                        </div>
+                        <a 
+                          href={getEmailLink(incident.solicitante_correo)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-center gap-2 px-4 py-3 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-xl text-sm font-bold uppercase transition-colors w-full"
+                        >
+                          <span className="material-symbols-outlined">send</span>
+                          Enviar Correo
+                        </a>
+                      </div>
+                    )}
 
-                {!incident.solicitante_numero && !incident.solicitante_correo && (
-                  <div className="text-center py-8">
-                    <span className="material-symbols-outlined text-stone-300 text-4xl mb-2">person_off</span>
-                    <p className="text-xs text-stone-500 italic">No hay vías de contacto registradas para este cliente.</p>
+                    {!incident.solicitante_extension && !incident.solicitante_correo && !incident.solicitante_numero && (
+                      <div className="text-center py-4 bg-surface-container-lowest rounded-xl border border-dashed border-outline-variant/20">
+                        <span className="material-symbols-outlined text-stone-300 text-3xl mb-1">person_off</span>
+                        <p className="text-[10px] text-stone-500 font-label uppercase tracking-widest">Sin vías de contacto</p>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

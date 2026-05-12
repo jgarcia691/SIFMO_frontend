@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { API_URL } from '../../../config/api';
+import CustomAlert from '../../../components/common/CustomAlert';
 
 const NewIncidentModal = () => {
   const [step, setStep] = useState('selection'); // 'selection' or 'form'
@@ -159,7 +160,13 @@ const NewIncidentModal = () => {
     const user = storedUser ? JSON.parse(storedUser) : null;
     
     if (!user) {
-      alert('Error: No se detectó una sesión activa. Por favor, inicie sesión nuevamente.');
+      setAlertConfig({
+        show: true,
+        type: 'error',
+        message: 'Error: No se detectó una sesión activa. Por favor, inicie sesión nuevamente.',
+        showCancel: false,
+        confirmText: 'Aceptar'
+      });
       setIsSubmitting(false);
       return;
     }
@@ -209,19 +216,36 @@ const NewIncidentModal = () => {
 
       if (response.ok) {
         const result = await response.json();
-        alert('Incidente creado con éxito. ID: ' + (result.id || 'Generado'));
-        
-        // Disparar evento para recargar la lista en el dashboard
-        window.dispatchEvent(new Event('incident-created'));
-        
-        window.location.hash = '#'; // Cerrar modal
+        setAlertConfig({
+          show: true,
+          type: 'success',
+          message: 'Incidente creado con éxito. ID: ' + (result.id || 'Generado'),
+          showCancel: false,
+          confirmText: 'Aceptar',
+          onConfirm: () => {
+            window.dispatchEvent(new Event('incident-created'));
+            window.location.hash = '#'; // Cerrar modal
+          }
+        });
       } else {
         const errorData = await response.json();
-        alert('Error al crear el incidente: ' + (errorData.message || 'Intente de nuevo'));
+        setAlertConfig({
+          show: true,
+          type: 'error',
+          message: 'Error al crear el incidente: ' + (errorData.message || 'Intente de nuevo'),
+          showCancel: false,
+          confirmText: 'Aceptar'
+        });
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('Error de conexión con el servidor');
+      setAlertConfig({
+        show: true,
+        type: 'error',
+        message: 'Error de conexión con el servidor',
+        showCancel: false,
+        confirmText: 'Aceptar'
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -244,42 +268,7 @@ const NewIncidentModal = () => {
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-stone-900/60 backdrop-blur-sm p-4 opacity-0 pointer-events-none transition-opacity duration-300 target:opacity-100 target:pointer-events-auto" id="modal-new-incident">
       
-      {/* Alert Modal Overlay */}
-      {alertConfig.show && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-stone-900/80 backdrop-blur-md p-4 animate-in fade-in duration-200 pointer-events-auto">
-          <div className="bg-surface w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 border border-outline-variant/10">
-            <div className="p-6 text-center">
-              <div className="w-16 h-16 bg-amber-500/10 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-4 relative">
-                <span className="absolute inset-0 bg-amber-500/30 rounded-full animate-ping opacity-75"></span>
-                <span className="material-symbols-outlined text-3xl relative z-10 animate-pulse">warning</span>
-              </div>
-              <h3 className="text-xl font-headline font-bold text-on-surface mb-2 tracking-tight uppercase">Aviso Importante</h3>
-              <p className="text-sm font-body text-stone-500 dark:text-on-surface-variant mb-6">{alertConfig.message}</p>
-              
-              <div className="flex gap-3">
-                <button 
-                  type="button"
-                  onClick={() => setAlertConfig({ show: false, message: '', redirectHash: '' })}
-                  className="flex-1 py-3 text-on-surface-variant font-headline font-bold text-xs uppercase tracking-wider rounded-lg bg-surface-container hover:bg-surface-container-high transition-colors"
-                >
-                  Cancelar
-                </button>
-                <button 
-                  type="button"
-                  onClick={() => {
-                    const hash = alertConfig.redirectHash;
-                    setAlertConfig({ show: false, message: '', redirectHash: '' });
-                    window.location.hash = hash;
-                  }}
-                  className="flex-1 py-3 bg-primary text-on-primary font-headline font-bold text-xs uppercase tracking-wider rounded-lg transition-transform active:scale-95 shadow-lg shadow-primary/20"
-                >
-                  Continuar
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <CustomAlert config={alertConfig} setConfig={setAlertConfig} />
 
       <div className="bg-surface w-full max-w-lg rounded-xl shadow-2xl overflow-hidden relative max-h-[90vh] flex flex-col">
         <div className="bg-surface-container px-8 py-6 border-b border-outline-variant/10 flex justify-between items-center shrink-0">

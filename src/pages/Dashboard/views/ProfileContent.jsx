@@ -8,7 +8,8 @@ const ProfileContent = () => {
     nombre: '',
     correo: '',
     numero: '',
-    id_area: ''
+    id_area: '',
+    password: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
@@ -21,7 +22,8 @@ const ProfileContent = () => {
         nombre: storedUser.nombre || '',
         correo: storedUser.correo || '',
         numero: storedUser.numero || '',
-        id_area: storedUser.id_area || ''
+        id_area: storedUser.id_area || '',
+        password: ''
       });
     }
 
@@ -49,12 +51,17 @@ const ProfileContent = () => {
     setMessage({ type: '', text: '' });
 
     try {
+      const updateData = { ...formData };
+      if (!updateData.password) {
+        delete updateData.password;
+      }
+
       const response = await fetch(`${API_URL}/users/${user.ficha}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(updateData)
       });
 
       if (response.ok) {
@@ -191,6 +198,21 @@ const ProfileContent = () => {
                         onChange={handleChange}
                         className="w-full pl-12 pr-4 py-3 bg-surface border border-outline-variant/20 rounded-xl outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-body"
                         placeholder="04XX-XXXXXXX"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2 md:col-span-2 border-t border-outline-variant/10 pt-4 mt-2">
+                    <label className="text-[10px] font-label font-bold text-stone-400 dark:text-on-surface-variant uppercase tracking-widest ml-2">Cambiar Contraseña</label>
+                    <div className="relative">
+                      <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-stone-400">lock</span>
+                      <input 
+                        type="password" 
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        className="w-full pl-12 pr-4 py-3 bg-surface border border-outline-variant/20 rounded-xl outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-body"
+                        placeholder="Dejar en blanco para no cambiar"
                       />
                     </div>
                   </div>
