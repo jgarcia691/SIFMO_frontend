@@ -8,7 +8,8 @@ const AddUserModal = ({ isOpen, onClose }) => {
     id_area: '',
     numero: '',
     rol: 'Analista',
-    correo: ''
+    correo: '',
+    password: ''
   });
   const [areas, setAreas] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -36,7 +37,8 @@ const AddUserModal = ({ isOpen, onClose }) => {
         id_area: '',
         numero: '',
         rol: 'Analista',
-        correo: ''
+        correo: '',
+        password: ''
       });
       setError(null);
     }
@@ -191,19 +193,37 @@ const AddUserModal = ({ isOpen, onClose }) => {
                 </div>
             </div>
 
-            <div className="space-y-2">
-                <label className="font-label text-xs font-semibold uppercase tracking-widest text-on-surface-variant" htmlFor="correo">
-                    Correo Electrónico (Opcional)
-                </label>
-                <input 
-                    className="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg h-12 px-4 text-sm font-headline font-semibold focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all" 
-                    id="correo" 
-                    name="correo"
-                    value={formData.correo}
-                    onChange={handleChange}
-                    placeholder="m.lopez@ferrominera.com" 
-                    type="email" 
-                />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                    <label className="font-label text-[10px] font-semibold uppercase tracking-widest text-on-surface-variant" htmlFor="password">
+                        Contraseña
+                    </label>
+                    <input 
+                        className="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg h-12 px-4 text-sm font-headline font-semibold focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all" 
+                        id="password" 
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        placeholder="••••••••" 
+                        type="password" 
+                        required
+                    />
+                </div>
+
+                <div className="space-y-2">
+                    <label className="font-label text-[10px] font-semibold uppercase tracking-widest text-on-surface-variant" htmlFor="correo">
+                        Correo Electrónico (Opcional)
+                    </label>
+                    <input 
+                        className="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg h-12 px-4 text-sm font-headline font-semibold focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all" 
+                        id="correo" 
+                        name="correo"
+                        value={formData.correo}
+                        onChange={handleChange}
+                        placeholder="m.lopez@ferrominera.com" 
+                        type="email" 
+                    />
+                </div>
             </div>
           </form>
         </div>
