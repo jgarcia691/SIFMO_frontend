@@ -3,7 +3,7 @@
 const getApiUrl = () => {
   const hostname = window.location.hostname;
   // Si estamos en desarrollo y accedemos vía IP, usamos esa misma IP para el backend
-  return `http://${hostname}:3000/api`;
+  return `http://${hostname}:3010/api`;
 };
 
 export const API_URL = getApiUrl();
